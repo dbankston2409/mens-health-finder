@@ -1,5 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { PushNotification, notificationQueue } from '../../../apps/worker/utils/pushNotificationQueue';
+
+// Local type definitions for notifications
+interface PushNotification {
+  id?: string;
+  type: 'achievement' | 'reminder' | 'seo-issue' | 'milestone';
+  title: string;
+  message: string;
+  timestamp: Date;
+  isRead?: boolean;
+  priority?: 'low' | 'medium' | 'high';
+  actionUrl?: string;
+  metadata?: Record<string, any>;
+}
+
+// Mock notification queue for web app
+const notificationQueue = {
+  markAsRead: async (id: string, clinicSlug: string) => {
+    console.log('Mark as read:', id, clinicSlug);
+  },
+  dismiss: async (id: string, clinicSlug: string) => {
+    console.log('Dismiss notification:', id, clinicSlug);
+  }
+};
 
 interface NotificationFeedProps {
   clinicSlug: string;
