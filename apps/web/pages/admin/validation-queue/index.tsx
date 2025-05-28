@@ -450,8 +450,8 @@ const ValidationQueuePanel: React.FC = () => {
         <ValidationSidebar
           clinic={selectedClinic}
           onClose={handleCloseSidebar}
-          onUpdateField={(field: string, value: any) => updateClinicField(selectedClinic.id, field, value)}
-          onUpdateTags={(tagsToAdd: string[], tagsToRemove: string[]) => updateTags(selectedClinic.id, tagsToAdd, tagsToRemove)}
+          onUpdateField={(field: string, value: any) => updateClinicField(selectedClinic?.id || '', field, value)}
+          onUpdateTags={(tagsToAdd: string[], tagsToRemove: string[]) => updateTags(selectedClinic?.id || '', tagsToAdd, tagsToRemove)}
           onValidate={handleValidateClinic}
           onReject={handleRejectClinic}
           onSkip={handleSkipClinic}
