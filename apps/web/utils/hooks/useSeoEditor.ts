@@ -6,7 +6,7 @@ import { db } from '../../lib/firebase';
 
 // Temporary local AuthContext type
 interface AuthContextType {
-  user: { uid: string; email: string } | null;
+  user: { uid: string; email: string; displayName?: string } | null;
 }
 
 // Use a mock context until AuthContext is properly exported
@@ -164,8 +164,8 @@ export function useSeoEditor(clinicId: string): UseSeoEditorResult {
         seoContent: editData.seoContent
       });
 
-      // Log audit (append to existing trail)
-      await logSeoAudit(clinicId, auditEntry);
+      // Log audit (append to existing trail) - disabled until worker app is available
+      // await logSeoAudit(clinicId, auditEntry);
 
       // Update local state
       setOriginalData({ ...editData });
@@ -202,7 +202,7 @@ export function useSeoEditor(clinicId: string): UseSeoEditorResult {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user?.accessToken || ''}` // Include auth token if available
+          'Authorization': `Bearer ${(user as any)?.accessToken || ''}` // Include auth token if available
         },
         body: JSON.stringify({ 
           clinicId,

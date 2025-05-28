@@ -38,11 +38,11 @@ export const getLostRevenue = async (): Promise<LostRevenueMetrics> => {
     lostThisMonth: mockAdminMetrics.lostRevenue.totalEstimate / 12,
     lostThisYear: mockAdminMetrics.lostRevenue.totalEstimate,
     breakdownByReason: {
-      canceled: mockAdminMetrics.lostRevenue.reasonBreakdown[reasonKeys[0]],
-      downgrade: mockAdminMetrics.lostRevenue.reasonBreakdown[reasonKeys[1]],
-      failedPayment: mockAdminMetrics.lostRevenue.reasonBreakdown[reasonKeys[2]],
-      missedUpsell: mockAdminMetrics.lostRevenue.reasonBreakdown[reasonKeys[3]] || 0,
-      expiredTrial: mockAdminMetrics.lostRevenue.reasonBreakdown[reasonKeys[4]] || 0
+      canceled: (mockAdminMetrics.lostRevenue.reasonBreakdown as any)[reasonKeys[0]] || 0,
+      downgrade: (mockAdminMetrics.lostRevenue.reasonBreakdown as any)[reasonKeys[1]] || 0,
+      failedPayment: (mockAdminMetrics.lostRevenue.reasonBreakdown as any)[reasonKeys[2]] || 0,
+      missedUpsell: (mockAdminMetrics.lostRevenue.reasonBreakdown as any)[reasonKeys[3]] || 0,
+      expiredTrial: (mockAdminMetrics.lostRevenue.reasonBreakdown as any)[reasonKeys[4]] || 0
     },
     rawEvents: mockAdminMetrics.lostRevenue.clinicBreakdown.map(clinic => ({
       clinicId: String(clinic.id),

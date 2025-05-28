@@ -83,7 +83,7 @@ export const useBilling = (clinicId: string | undefined) => {
             plan: data.plan || 'Unknown',
             status: data.status || 'unknown',
             notes: data.notes,
-            renewalDate: renewalDate,
+            renewalDate: renewalDate || undefined,
             paymentMethod: data.paymentMethod,
             cancellationReason: data.cancellationReason,
           };
@@ -101,7 +101,7 @@ export const useBilling = (clinicId: string | undefined) => {
           currentPlan = {
             name: latestSuccessful.plan,
             amount: latestSuccessful.amount,
-            renewalDate: latestSuccessful.renewalDate || null,
+            renewalDate: null,
             status: latestSuccessful.status === 'canceled' ? 'canceled' : 'active',
           };
         }
