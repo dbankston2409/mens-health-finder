@@ -65,7 +65,7 @@ const LocationPromptModal: React.FC<LocationPromptModalProps> = ({
       }));
 
       // Try to reverse geocode to get city and state
-      let locationData = { lat: latitude, lng: longitude };
+      let locationData: { lat: number; lng: number; city?: string; state?: string } = { lat: latitude, lng: longitude };
 
       try {
         const response = await fetch(
