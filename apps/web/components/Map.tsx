@@ -47,7 +47,7 @@ if (typeof window !== 'undefined') {
 
 // Create client-side only leaflet components with optimized loading
 const MapComponents = dynamic(
-  () => {
+  (() => {
     // If we already have the preloaded module, use it immediately
     if (preloadedReactLeaflet) {
       console.log("Using preloaded react-leaflet components");
@@ -206,7 +206,7 @@ const MapComponents = dynamic(
         };
       }
     });
-  },
+  }) as any,
   { 
     ssr: false,
     loading: () => (
