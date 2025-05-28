@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ClockIcon, UserIcon, SparklesIcon, PencilIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
-import { getSeoAuditTrail, formatAuditEntry } from '../../../../../worker/utils/seoAuditLogger';
+import { getSeoAuditTrail, formatAuditEntry } from '../../../../utils/hooks/stubs/seoTypes';
 
 interface SeoEditHistoryProps {
   clinicId: string;
@@ -31,13 +31,8 @@ export function SeoEditHistory({ clinicId }: SeoEditHistoryProps) {
         setLoading(true);
         setError(null);
         
-        const result = await getSeoAuditTrail(clinicId);
-        
-        if (result.error) {
-          setError(result.error);
-        } else {
-          setAuditTrail(result.auditTrail);
-        }
+        const auditTrail = await getSeoAuditTrail(clinicId);
+        setAuditTrail(auditTrail);
       } catch (err) {
         console.error('Error fetching audit trail:', err);
         setError('Failed to load edit history');
