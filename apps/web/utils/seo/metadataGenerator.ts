@@ -21,8 +21,8 @@ export async function generateSeoMeta(clinic: Clinic): Promise<SeoMeta> {
   const { name, city, state, services, tags } = clinic;
   
   // Generate primary service or specialization
-  const primaryService = services[0] || "men's health";
-  const otherServices = services.slice(1, 3);
+  const primaryService = (services || [])[0] || "men's health";
+  const otherServices = (services || []).slice(1, 3);
   
   // Generate a title with primary service, clinic name, and location
   const title = `${primaryService} in ${city} | ${name} – Men's Health Finder`;
@@ -37,8 +37,8 @@ export async function generateSeoMeta(clinic: Clinic): Promise<SeoMeta> {
     `${primaryService} ${city}`,
     `men's health ${city}`, 
     `${city} ${state} men's clinic`,
-    ...services,
-    ...tags || []
+    ...(services || []),
+    ...(tags || [])
   ];
   
   return {
