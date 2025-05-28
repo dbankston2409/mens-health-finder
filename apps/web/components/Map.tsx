@@ -422,7 +422,7 @@ const Map: React.FC<MapProps> = ({
   const mapCenter = defaultToUS ? defaultCenter : (center || defaultCenter);
   
   // Get map components from dynamic import
-  const { MapContainer, TileLayer, Marker, Popup, MapBounds, MapCenter } = MapComponents;
+  const { MapContainer, TileLayer, Marker, Popup, MapBounds, MapCenter } = MapComponents as any;
   
   // Debug logging for center prop changes
   useEffect(() => {
