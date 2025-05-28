@@ -26,14 +26,26 @@ export async function getClinicEngagement(
     const limit = options.limit || 10;
     
     // Get previous period for trend comparison
-    const periodLengthMs = endDate instanceof Timestamp 
-      ? endDate.toMillis() - startDate.toMillis()
-      : endDate.getTime() - startDate.getTime();
+    const endTimeMs = endDate instanceof Timestamp 
+      ? endDate.toMillis()
+      : endDate.getTime();
+      
+    const startTimeMs = startDate instanceof Timestamp
+      ? startDate.toMillis()
+      : startDate.getTime();
+      
+    const periodLengthMs = endTimeMs - startTimeMs;
     
-    const previousPeriodStart = new Timestamp(
-      startDate.seconds - Math.floor(periodLengthMs / 1000),
-      startDate.nanoseconds || 0
-    );
+    let previousPeriodStart;
+    if (startDate instanceof Timestamp) {
+      previousPeriodStart = new Timestamp(
+        startDate.seconds - Math.floor(periodLengthMs / 1000),
+        startDate.nanoseconds || 0
+      );
+    } else {
+      const prevDate = new Date(startDate.getTime() - periodLengthMs);
+      previousPeriodStart = Timestamp.fromDate(prevDate);
+    }
     
     // Query traffic logs for this clinic
     const trafficLogsRef = db.collection('traffic_logs');
