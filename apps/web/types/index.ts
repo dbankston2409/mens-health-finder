@@ -25,7 +25,9 @@ export interface Clinic {
   // Status and metadata
   status?: 'Active' | 'Trial' | 'Paused' | 'Canceled' | 'active' | 'trial' | 'paused' | 'canceled' | string;
   joinDate?: string;
+  signUpDate?: Date | string;
   lastContact?: string;
+  lastContacted?: Date | string | null;
   engagementScore?: number;
   salesRep?: string;
   tags?: string[];

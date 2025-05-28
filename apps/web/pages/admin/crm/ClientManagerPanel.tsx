@@ -9,7 +9,8 @@ import {
   ChevronDownIcon,
   DocumentTextIcon
 } from '@heroicons/react/24/outline';
-import ClientTable, { Clinic } from './ClientTable';
+import ClientTable from './ClientTable';
+import { Clinic } from '../../../types';
 import ClientFilters from './ClientFilters';
 import PaginationControls from './PaginationControls';
 import LoadingSkeletons, { FilterSkeleton } from './LoadingSkeletons';
@@ -192,13 +193,13 @@ const ClientManagerPanel: React.FC = () => {
     // Apply filters
     if (activeFilters.packageTier.length > 0) {
       results = results.filter(clinic => 
-        activeFilters.packageTier.includes(clinic.packageTier)
+        activeFilters.packageTier.includes(clinic.packageTier || clinic.package || clinic.tier || '')
       );
     }
     
     if (activeFilters.status.length > 0) {
       results = results.filter(clinic => 
-        activeFilters.status.includes(clinic.status)
+        activeFilters.status.includes(clinic.status || '')
       );
     }
     

@@ -7,19 +7,7 @@ import {
 import ClientQuickActions from './ClientQuickActions';
 import LoadingSkeletons from './LoadingSkeletons';
 
-export type Clinic = {
-  id: string;
-  name: string;
-  city: string;
-  state: string;
-  packageTier: string;
-  status: 'active' | 'paused' | 'trial' | 'canceled';
-  engagementScore: number;
-  signUpDate: Date | string;
-  lastContacted: Date | string | null;
-  tags: string[];
-  [key: string]: any;
-};
+import { Clinic } from '../../../types';
 
 type SortField = 'name' | 'location' | 'packageTier' | 'status' | 'engagementScore' | 'signUpDate' | 'lastContacted';
 type SortDirection = 'asc' | 'desc';

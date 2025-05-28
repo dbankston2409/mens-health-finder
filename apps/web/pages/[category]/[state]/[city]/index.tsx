@@ -151,7 +151,7 @@ export default function CityPage({ categoryInfo, locationInfo, clinics }: CityPa
                       <p className="text-sm text-textSecondary mb-4">{clinic.phone}</p>
                       
                       <div className="flex flex-wrap gap-2">
-                        {clinic.services.map((service) => (
+                        {clinic.services?.map((service: string) => (
                           <span key={service} className="bg-gray-800 text-xs px-3 py-1 rounded-full">{service}</span>
                         ))}
                       </div>
@@ -312,9 +312,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   
   // Sort clinics by tier and then by rating
   const sortedClinics = [...clinicsInCity].sort((a, b) => {
-    const tierOrder = { 'high': 0, 'low': 1, 'free': 2 };
-    if (tierOrder[a.tier] !== tierOrder[b.tier]) {
-      return tierOrder[a.tier] - tierOrder[b.tier];
+    const tierOrder: Record<string, number> = { 'high': 0, 'low': 1, 'free': 2 };
+    const aTierOrder = tierOrder[a.tier] ?? 3;
+    const bTierOrder = tierOrder[b.tier] ?? 3;
+    if (aTierOrder !== bTierOrder) {
+      return aTierOrder - bTierOrder;
     }
     return b.rating - a.rating;
   });

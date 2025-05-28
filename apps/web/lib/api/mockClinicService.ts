@@ -1,6 +1,6 @@
 // Mock implementation of clinic service for development mode
 import { mockClinics } from '../mockData';
-import { Clinic, ClinicFilter } from './clinicService';
+import { Clinic, ClinicFilter } from '../../types';
 import { Timestamp } from 'firebase/firestore';
 
 // Helper function to convert mock data to match Firestore schema
