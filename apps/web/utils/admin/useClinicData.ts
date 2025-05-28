@@ -20,6 +20,13 @@ export interface Clinic {
   services: string[];
   tags?: string[];
   notes?: string[];
+  seoMeta?: {
+    title?: string;
+    description?: string;
+    keywords?: string[];
+    indexed?: boolean;
+    lastIndexed?: Date;
+  };
 }
 
 export interface ClientsData {

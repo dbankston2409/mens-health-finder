@@ -10,7 +10,13 @@ interface PushNotification {
   isRead?: boolean;
   priority?: 'low' | 'medium' | 'high';
   actionUrl?: string;
+  actionText?: string;
   metadata?: Record<string, any>;
+  readAt?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+  category?: string;
+  clinicSlug?: string;
 }
 
 // Mock notification queue for web app
@@ -276,7 +282,7 @@ const NotificationFeed: React.FC<NotificationFeedProps> = ({
               onClick={() => handleMarkAsRead(notification)}
               className={`
                 relative border-l-4 rounded-lg p-4 cursor-pointer transition-all duration-200
-                ${getPriorityColor(notification.priority)}
+                ${getPriorityColor(notification.priority || 'low')}
                 ${!notification.readAt ? 'shadow-md hover:shadow-lg' : 'opacity-75'}
                 hover:transform hover:-translate-y-0.5
               `}
@@ -317,7 +323,7 @@ const NotificationFeed: React.FC<NotificationFeedProps> = ({
                   
                   <div className="flex items-center justify-between mt-2">
                     <span className="text-xs text-gray-500 dark:text-gray-400">
-                      {formatTimeAgo(notification.createdAt)}
+                      {formatTimeAgo(notification.createdAt || notification.timestamp)}
                     </span>
                     
                     {notification.actionUrl && notification.actionText && (

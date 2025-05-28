@@ -46,6 +46,13 @@ export interface Clinic {
     method: string;
     websiteOK: boolean;
   };
+  seoMeta?: {
+    title?: string;
+    description?: string;
+    keywords?: string[];
+    indexed?: boolean;
+    lastIndexed?: Date;
+  };
 }
 
 // Search filters for the clinics

@@ -11,7 +11,7 @@ import {
   XCircleIcon,
   ArrowPathIcon,
   MapPinIcon,
-  FilterIcon,
+  FunnelIcon,
   AdjustmentsHorizontalIcon
 } from '@heroicons/react/24/outline';
 
@@ -223,7 +223,7 @@ const IndexedClinicMap: React.FC<IndexedClinicMapProps> = ({ className = '' }) =
       <div className="p-4 bg-[#0a0a0a] border-b border-[#222222]">
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center">
-            <FilterIcon className="h-4 w-4 text-gray-500 mr-2" />
+            <FunnelIcon className="h-4 w-4 text-gray-500 mr-2" />
             <span className="text-sm text-gray-400">Filters:</span>
           </div>
           
