@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
-import { SeoMeta } from '../../../worker/types/clinic';
+import { SeoMeta } from './stubs/seoTypes';
 
 interface UseSeoMetaResult {
   seoMeta: SeoMeta | null;

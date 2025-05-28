@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { doc, onSnapshot, updateDoc, arrayRemove, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
-import { ClinicSuggestion } from '../../../worker/utils/analyzeClinicTags';
-import { runSingleClinicAudit } from '../../../worker/tasks/runTagAudit';
+import { ClinicSuggestion, runSingleClinicAudit } from './stubs/tagAnalysis';
 
 export interface UseTagSuggestionsResult {
   tags: string[];

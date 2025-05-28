@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Exclude worker app from build
+  transpilePackages: [],
+  experimental: {
+    externalDir: true,
+  },
   reactStrictMode: true,
   images: {
     remotePatterns: [
