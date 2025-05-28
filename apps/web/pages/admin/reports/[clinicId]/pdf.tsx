@@ -12,11 +12,8 @@ import {
   EyeIcon
 } from '@heroicons/react/24/outline';
 
-// Dynamically import the PDF generation utility to avoid SSR issues
-const DynamicPDFGenerator = dynamic(
-  () => import('../../../../utils/generateClinicReportPDF').then(mod => mod.default),
-  { ssr: false }
-);
+// Import the PDF generation utility
+import { generateClinicReportPDF } from '../../../../utils/generateClinicReportPDF';
 
 const ClinicReportPDFPage: React.FC = () => {
   const router = useRouter();
@@ -33,7 +30,7 @@ const ClinicReportPDFPage: React.FC = () => {
     
     setIsGenerating(true);
     try {
-      await DynamicPDFGenerator(clinicId as string, 'download', userData?.name);
+      await generateClinicReportPDF(clinicId as string, 'download', userData?.name);
     } catch (error) {
       console.error('Error generating PDF:', error);
       alert('There was an error generating the PDF. Please try again.');
@@ -48,7 +45,7 @@ const ClinicReportPDFPage: React.FC = () => {
     
     setIsGenerating(true);
     try {
-      await DynamicPDFGenerator(clinicId as string, 'preview', userData?.name);
+      await generateClinicReportPDF(clinicId as string, 'preview', userData?.name);
     } catch (error) {
       console.error('Error generating PDF preview:', error);
       alert('There was an error generating the PDF preview. Please try again.');
