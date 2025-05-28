@@ -25,7 +25,7 @@ export interface Clinic {
     description?: string;
     keywords?: string[];
     indexed?: boolean;
-    lastIndexed?: Date;
+    lastIndexed?: Date | any;
   };
 }
 

@@ -329,7 +329,10 @@ const IndexedClinicMap: React.FC<IndexedClinicMapProps> = ({ className = '' }) =
                   <td className="py-3 px-4">
                     {clinic.seoMeta?.lastIndexed ? (
                       <span className="text-xs text-gray-400">
-                        {new Date(clinic.seoMeta.lastIndexed.seconds * 1000).toLocaleDateString()}
+                        {(clinic.seoMeta.lastIndexed instanceof Date 
+                          ? clinic.seoMeta.lastIndexed 
+                          : new Date((clinic.seoMeta.lastIndexed as any)?.seconds * 1000 || clinic.seoMeta.lastIndexed)
+                        ).toLocaleDateString()}
                       </span>
                     ) : (
                       <span className="text-xs text-gray-500">Never</span>
