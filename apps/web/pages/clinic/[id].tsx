@@ -109,13 +109,13 @@ const ClinicProfile = () => {
               // Non-blocking error - we'll just show the page without SEO content
             }
           } else {
-            setSeoContent(clinicData.seoContent);
+            setSeoContent(clinicData.seoContent?.content || null);
           }
           
           // Log the clinic view
           // In a real app, we'd capture the search query from localStorage or URL params
           const searchQuery = localStorage.getItem('lastSearchQuery') || '';
-          await logClinicTraffic(searchQuery, clinicData.slug);
+          await logClinicTraffic(searchQuery, clinicData.slug || '');
         } else {
           setError('Clinic not found');
         }
@@ -180,12 +180,14 @@ const ClinicProfile = () => {
   // In a real implementation, this would come from the database
   const mockClinic = mockClinicsWithMHFReviews.find(c => c.name.toLowerCase().includes(clinic.name.toLowerCase()));
   
-  const tier = clinic.package === 'premium' ? 'high' : 
-               clinic.package === 'basic' ? 'low' : 'free';
+  const tier = clinic.package === 'premium' ? 'high' as const : 
+               clinic.package === 'basic' ? 'low' as const : 'free' as const;
   
   // Temporary data enhancement until we have full schema in Firestore
   const enhancedClinic = {
     ...clinic,
+    lat: clinic.lat ?? undefined,
+    lng: clinic.lng ?? undefined,
     id: clinic.id || clinic.slug || 'unknown',
     tier,
     rating: mockClinic?.rating || 4.5,
@@ -194,11 +196,11 @@ const ClinicProfile = () => {
     googleReviewCount: mockClinic?.reviewCount || clinic.reviewCount || 8,
     yelpRating: mockClinic?.rating || clinic.rating || 4.3,
     yelpReviewCount: mockClinic?.reviewCount || clinic.reviewCount || 4,
-    description: mockClinic?.description || `${clinic.name} specializes in men's health services including ${clinic.services.join(', ')}. Our clinic provides personalized care to help men improve their health and quality of life.`,
+    description: mockClinic?.description || `${clinic.name} specializes in men's health services including ${(clinic.services || []).join(', ')}. Our clinic provides personalized care to help men improve their health and quality of life.`,
     faqs: mockClinic?.faqs || [
       {
         question: 'What services does your clinic offer?',
-        answer: `We offer a range of men's health services including ${clinic.services.join(', ')}.`
+        answer: `We offer a range of men's health services including ${(clinic.services || []).join(', ')}.`
       },
       {
         question: 'Do I need a referral to visit your clinic?',
@@ -235,11 +237,11 @@ const ClinicProfile = () => {
         </title>
         <meta name="description" content={
           enhancedClinic.seoMeta?.description || 
-          `${enhancedClinic.name} is a men's health clinic in ${enhancedClinic.city}, ${enhancedClinic.state} specializing in ${enhancedClinic.services.join(', ')}`
+          `${enhancedClinic.name} is a men's health clinic in ${enhancedClinic.city}, ${enhancedClinic.state} specializing in ${(enhancedClinic.services || []).join(', ')}`
         } />
         <meta name="keywords" content={
           enhancedClinic.seoMeta?.keywords?.join(', ') || 
-          `men's health, ${enhancedClinic.services.join(', ')}, ${enhancedClinic.city}, ${enhancedClinic.state}`
+          `men's health, ${(enhancedClinic.services || []).join(', ')}, ${enhancedClinic.city}, ${enhancedClinic.state}`
         } />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="canonical" href={`https://menshealthfinder.com/clinic/${enhancedClinic.id}`} />
@@ -320,7 +322,7 @@ const ClinicProfile = () => {
                   </div>
                   
                   <div className="flex flex-wrap gap-2 mt-4">
-                    {enhancedClinic.services.map((service) => (
+                    {(enhancedClinic.services || []).map((service) => (
                       <span key={service} className="bg-gray-800 text-sm px-3 py-1 rounded-full">{service}</span>
                     ))}
                   </div>
@@ -433,7 +435,7 @@ const ClinicProfile = () => {
               
               <h3 className="text-xl font-bold mb-3">Services</h3>
               <ul className="list-disc pl-6 mb-6 space-y-2">
-                {enhancedClinic.services.map((service) => (
+                {(enhancedClinic.services || []).map((service) => (
                   <li key={service}>{service}</li>
                 ))}
               </ul>
@@ -489,7 +491,7 @@ const ClinicProfile = () => {
             {/* Reviews Section */}
             <div ref={reviewsRef} id="reviews" className="scroll-mt-24">
               <ReviewsSection 
-                clinicId={enhancedClinic.id || ''} 
+                clinicId={parseInt(enhancedClinic.id || '0', 10)} 
                 clinicName={enhancedClinic.name} 
                 reviews={enhancedClinic.reviews || []} 
               />
@@ -558,7 +560,7 @@ const ClinicProfile = () => {
             <div className="mt-12 mb-8 bg-gray-900 rounded-xl p-8">
               <h2 className="text-2xl font-bold mb-6">About {enhancedClinic.name} in {enhancedClinic.city}</h2>
               <SeoContentSection 
-                content={seoContent || enhancedClinic.seoContent || ''} 
+                content={seoContent || (typeof enhancedClinic.seoContent === 'string' ? enhancedClinic.seoContent : enhancedClinic.seoContent?.content) || ''} 
                 className="text-textSecondary"
               />
             </div>
@@ -567,7 +569,7 @@ const ClinicProfile = () => {
           {/* Recommended Providers section for Free tier */}
           {tier === 'free' && (
             <RecommendedProviders 
-              currentClinicId={enhancedClinic.id || ''}
+              currentClinicId={parseInt(enhancedClinic.id || '0', 10)}
               currentCity={enhancedClinic.city}
               currentState={enhancedClinic.state}
               clinics={mockClinicsWithMHFReviews}
