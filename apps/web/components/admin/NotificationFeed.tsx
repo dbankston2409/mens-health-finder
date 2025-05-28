@@ -323,7 +323,7 @@ const NotificationFeed: React.FC<NotificationFeedProps> = ({
                   
                   <div className="flex items-center justify-between mt-2">
                     <span className="text-xs text-gray-500 dark:text-gray-400">
-                      {formatTimeAgo(notification.createdAt || notification.timestamp)}
+                      {formatTimeAgo(notification.createdAt || notification.timestamp || new Date())}
                     </span>
                     
                     {notification.actionUrl && notification.actionText && (
