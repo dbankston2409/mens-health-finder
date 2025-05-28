@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Clinic, ClinicLocation, TierCountsFlexible, safeObjectAccess } from '../types';
-import { ClinicFilter } from '../lib/api/clinicService';
+import { Clinic, ClinicLocation, TierCountsFlexible, ClinicFilter, safeObjectAccess } from '../types';
 import TierBadge from '../components/TierBadge';
 import dynamic from 'next/dynamic';
 import { geocodeCityState, reverseGeocode } from '../components/Map';
@@ -292,7 +291,7 @@ const SearchPage: React.FC = () => {
   };
   
   // Get package tier display name
-  const getTierFromPackage = (pkg: string): string => {
+  const getTierFromPackage = (pkg: string): 'free' | 'low' | 'high' => {
     switch (pkg) {
       case 'premium':
         return 'high';
@@ -305,8 +304,8 @@ const SearchPage: React.FC = () => {
   
   // Sort clinics by package (premium first, then basic, then free)
   const sortedResults = [...results].sort((a, b) => {
-    const packageOrder = { 'premium': 0, 'basic': 1, 'free': 2 };
-    return packageOrder[a.package] - packageOrder[b.package];
+    const packageOrder: Record<string, number> = { 'premium': 0, 'basic': 1, 'free': 2 };
+    return (packageOrder[a.package || 'free'] || 2) - (packageOrder[b.package || 'free'] || 2);
   });
   
   return (
@@ -534,14 +533,14 @@ const SearchPage: React.FC = () => {
               <div className="mb-8">
                 <Map 
                   locations={sortedResults.map(clinic => ({
-                    id: clinic.id || '0',
+                    id: parseInt(clinic.id || '0', 10),
                     name: clinic.name,
                     address: clinic.address,
                     city: clinic.city,
                     state: clinic.state,
                     lat: clinic.lat || 0,
                     lng: clinic.lng || 0,
-                    tier: getTierFromPackage(clinic.package),
+                    tier: getTierFromPackage(clinic.package || ''),
                     rating: 4.5, // Placeholder since we don't have this field yet
                     phone: clinic.phone
                   }))}
@@ -664,7 +663,7 @@ const SearchPage: React.FC = () => {
                           <p className="text-sm text-textSecondary mb-4">{clinic.phone}</p>
                           
                           <div className="flex flex-wrap gap-2">
-                            {clinic.services.map((service) => (
+                            {(clinic.services || []).map((service) => (
                               <span key={service} className="bg-gray-800 text-xs px-3 py-1 rounded-full">{service}</span>
                             ))}
                           </div>

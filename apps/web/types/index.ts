@@ -154,7 +154,7 @@ export const toDate = (timestamp: Timestamp | Date | null | undefined): Date => 
     return new Date(timestamp.seconds * 1000);
   }
   if (typeof timestamp === 'object' && 'toDate' in timestamp) {
-    return timestamp.toDate();
+    return (timestamp as any).toDate();
   }
   return new Date(timestamp as any);
 };
