@@ -15,56 +15,8 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase';
 
-// Clinic interface matches our Firestore schema
-export interface Clinic {
-  id?: string;
-  name: string;
-  slug: string;
-  address: string;
-  city: string;
-  state: string;
-  zip: string;
-  country: string;
-  lat: number | null;
-  lng: number | null;
-  phone: string;
-  website: string;
-  services: string[];
-  package: string;
-  status: string;
-  tags: string[];
-  importSource: string;
-  createdAt: Timestamp;
-  lastUpdated: Timestamp;
-  trafficMeta: {
-    totalClicks: number;
-    topSearchTerms: string[];
-    lastViewed: Timestamp | null;
-  };
-  validationStatus: {
-    verified: boolean;
-    method: string;
-    websiteOK: boolean;
-  };
-  seoMeta?: {
-    title?: string;
-    description?: string;
-    keywords?: string[];
-    indexed?: boolean;
-    lastIndexed?: Date | Timestamp;
-  };
-}
-
-// Search filters for the clinics
-export interface ClinicFilter {
-  city?: string;
-  state?: string;
-  services?: string[];
-  searchTerm?: string;
-  tags?: string[];
-  status?: string;
-  package?: string;
-}
+// Import unified types
+import type { Clinic, ClinicFilter } from '../types';
 
 interface ClinicQueryResult {
   clinics: Clinic[];

@@ -12,7 +12,8 @@ import LocationPromptModal from '../components/LocationPromptModal';
 import useGeoSearch, { useUserLocation } from '../utils/hooks/useGeoSearch';
 
 // Import types
-import { Clinic, ClinicFilter } from '../lib/api/clinicService';
+import { Clinic, ExtendedClinic, ClinicLocation, TierCountsFlexible, safeObjectAccess } from '../types';
+import { ClinicFilter } from '../lib/api/clinicService';
 
 // Import either the real service or the mock service based on environment
 import * as realClinicService from '../lib/api/clinicService';
@@ -240,8 +241,8 @@ const SearchPage: React.FC = () => {
         results.sort((a, b) => (b.rating || 0) - (a.rating || 0));
         break;
       case 'tier':
-        const tierOrder = { 'premium': 0, 'basic': 1, 'free': 2 };
-        results.sort((a, b) => tierOrder[a.package] - tierOrder[b.package]);
+        const tierOrder: Record<string, number> = { 'premium': 0, 'basic': 1, 'free': 2, 'high': 0, 'low': 1 };
+        results.sort((a, b) => tierOrder[a.package || a.tier || 'free'] - tierOrder[b.package || b.tier || 'free']);
         break;
     }
   };

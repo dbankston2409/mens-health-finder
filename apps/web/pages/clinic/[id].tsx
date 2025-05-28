@@ -9,7 +9,7 @@ import RecommendedProviders from '../../components/RecommendedProviders';
 import ReviewsSection from '../../components/ReviewsSection';
 import TrackedPhoneLink from '../../components/TrackedPhoneLink';
 import SeoContentSection from '../../components/SeoContentSection';
-import { Clinic } from '../../lib/api/clinicService';
+import type { Clinic } from '../../types';
 import { mockClinics } from '../../lib/mockData';
 import { generateSeoMeta } from '../../utils/seo/metadataGenerator';
 import { generateSeoContent } from '../../utils/seo/contentGenerator';
@@ -189,10 +189,10 @@ const ClinicProfile = () => {
     tier,
     rating: mockClinic?.rating || 4.5,
     reviewCount: mockClinic?.reviewCount || 12,
-    googleRating: mockClinic?.googleRating || 4.5,
-    googleReviewCount: mockClinic?.googleReviewCount || 8,
-    yelpRating: mockClinic?.yelpRating || 4.3,
-    yelpReviewCount: mockClinic?.yelpReviewCount || 4,
+    googleRating: mockClinic?.rating || clinic.rating || 4.5,
+    googleReviewCount: mockClinic?.reviewCount || clinic.reviewCount || 8,
+    yelpRating: mockClinic?.rating || clinic.rating || 4.3,
+    yelpReviewCount: mockClinic?.reviewCount || clinic.reviewCount || 4,
     description: mockClinic?.description || `${clinic.name} specializes in men's health services including ${clinic.services.join(', ')}. Our clinic provides personalized care to help men improve their health and quality of life.`,
     faqs: mockClinic?.faqs || [
       {

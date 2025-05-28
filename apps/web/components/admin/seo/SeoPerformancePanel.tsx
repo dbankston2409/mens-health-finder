@@ -8,8 +8,9 @@ import {
   limit, 
   Timestamp 
 } from 'firebase/firestore';
+import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import { db } from '../../../lib/firebase';
-import { Clinic } from '../../../lib/api/clinicService';
+import { Clinic } from '../../../types';
 import { batchGenerateSeoMeta } from '../../../utils/seo/metadataGenerator';
 import { batchGenerateSeoContent } from '../../../utils/seo/contentGenerator';
 

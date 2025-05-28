@@ -64,7 +64,7 @@ const SearchPage: React.FC = () => {
     
     // Geocode the location if provided in URL
     if (location) {
-      setIsLoading(true);
+      setLoading(true);
       const [city, state] = (location as string).split(', ');
       if (city && state) {
         geocodeAndSetCenter(city, state);

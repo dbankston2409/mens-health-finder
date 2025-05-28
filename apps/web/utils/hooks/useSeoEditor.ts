@@ -1,8 +1,16 @@
-import { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
-import { logSeoAudit } from '../../../worker/utils/seoAuditLogger';
-import { AuthContext } from '../../lib/contexts/authContext';
+// Remove cross-app import - implement locally or use API
+// import { logSeoAudit } from '../../../worker/utils/seoAuditLogger';
+
+// Temporary local AuthContext type
+interface AuthContextType {
+  user: { uid: string; email: string } | null;
+}
+
+// Use a mock context until AuthContext is properly exported
+const AuthContext = React.createContext<AuthContextType>({ user: null });
 
 interface SeoEditData {
   title: string;

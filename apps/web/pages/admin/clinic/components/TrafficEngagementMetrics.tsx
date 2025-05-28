@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   ArrowTrendingUpIcon, 
   EyeIcon, 
-  MousePointerIcon,
+  CursorArrowRaysIcon as MousePointerIcon,
   MagnifyingGlassIcon,
   ClockIcon,
   MapPinIcon
