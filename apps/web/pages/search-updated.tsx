@@ -12,8 +12,7 @@ import LocationPromptModal from '../components/LocationPromptModal';
 import useGeoSearch, { useUserLocation } from '../utils/hooks/useGeoSearch';
 
 // Import types
-import { Clinic, ExtendedClinic, ClinicLocation, TierCountsFlexible, safeObjectAccess } from '../types';
-import { ClinicFilter } from '../lib/api/clinicService';
+import { Clinic, ExtendedClinic, ClinicLocation, TierCountsFlexible, ClinicFilter, safeObjectAccess } from '../types';
 
 // Import either the real service or the mock service based on environment
 import * as realClinicService from '../lib/api/clinicService';
@@ -38,10 +37,6 @@ const Map = dynamic(() => import('../components/Map'), {
     </div>
   )
 });
-
-interface ExtendedClinic extends Clinic {
-  distance?: number;
-}
 
 const SearchPage: React.FC = () => {
   const router = useRouter();
@@ -271,14 +266,14 @@ const SearchPage: React.FC = () => {
 
   // Convert results to map format
   const mapLocations = results.map(clinic => ({
-    id: clinic.id || '0',
+    id: parseInt(clinic.id || '0', 10),
     name: clinic.name,
     address: clinic.address,
     city: clinic.city,
     state: clinic.state,
     lat: clinic.lat || 0,
     lng: clinic.lng || 0,
-    tier: getTierFromPackage(clinic.package),
+    tier: getTierFromPackage(clinic.package || ''),
     rating: clinic.rating,
     phone: clinic.phone
   }));
@@ -426,8 +421,8 @@ const SearchPage: React.FC = () => {
                         address: clinic.address,
                         city: clinic.city,
                         state: clinic.state,
-                        services: clinic.services,
-                        tier: getTierFromPackage(clinic.package),
+                        services: clinic.services || [],
+                        tier: getTierFromPackage(clinic.package || ''),
                         phone: clinic.phone,
                         website: clinic.website,
                         rating: clinic.rating,
