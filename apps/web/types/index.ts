@@ -157,6 +157,20 @@ export const toDate = (timestamp: Timestamp | Date | null | undefined): Date => 
   return new Date(timestamp as any);
 };
 
+// Clinic filter interface
+export interface ClinicFilter {
+  city?: string;
+  state?: string;
+  services?: string[];
+  searchTerm?: string;
+  tags?: string[];
+  status?: string;
+  package?: string;
+  lat?: number;
+  lng?: number;
+  radius?: number;
+}
+
 // Safe object access helper
 export const safeObjectAccess = <T>(obj: Record<string, T> | undefined, key: string, defaultValue: T): T => {
   return obj?.[key] ?? defaultValue;

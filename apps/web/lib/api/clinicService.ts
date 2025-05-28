@@ -16,7 +16,7 @@ import {
 import { db } from '../firebase';
 
 // Import unified types
-import type { Clinic, ClinicFilter } from '../types';
+import type { Clinic, ClinicFilter } from '../../types';
 
 interface ClinicQueryResult {
   clinics: Clinic[];
@@ -226,9 +226,9 @@ export async function searchClinics(
       const nameMatch = clinic.name.toLowerCase().includes(searchLower);
       const cityMatch = clinic.city.toLowerCase().includes(searchLower);
       const stateMatch = clinic.state.toLowerCase().includes(searchLower);
-      const serviceMatch = clinic.services.some(
+      const serviceMatch = clinic.services?.some(
         service => service.toLowerCase().includes(searchLower)
-      );
+      ) || false;
       
       if (nameMatch || cityMatch || stateMatch || serviceMatch) {
         results.push(clinic);
@@ -418,4 +418,4 @@ export type {
   ClinicLocation, 
   ExtendedClinic, 
   WebsiteHealth 
-} from '../types';
+} from '../../types';
