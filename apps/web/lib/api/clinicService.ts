@@ -411,3 +411,11 @@ function calculateDistance(
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   return R * c;
 }
+
+// Re-export from types for backward compatibility
+export type { 
+  Clinic as ClinicType, 
+  ClinicLocation, 
+  ExtendedClinic, 
+  WebsiteHealth 
+} from '../types';

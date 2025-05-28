@@ -8,7 +8,7 @@ import {
   PhoneIcon,
   GlobeAltIcon
 } from '@heroicons/react/24/outline';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, collection, addDoc } from 'firebase/firestore';
 import { db } from '../../../../lib/firebase';
 import { Clinic } from '../../../../utils/hooks/useClinic';
 import TagsEditor from './TagsEditor';

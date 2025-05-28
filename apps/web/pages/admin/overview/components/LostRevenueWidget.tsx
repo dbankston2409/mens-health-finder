@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDownIcon, ChevronUpIcon, ArrowPathIcon, ExclamationTriangleIcon, BanknotesIcon } from '@heroicons/react/24/solid';
 import { LostRevenueMetrics, LostRevenueEvent } from '../../../../utils/metrics/types';
+import { toDate } from '../../../../types';
 import { 
   PieChart, 
   Pie, 
@@ -230,7 +231,7 @@ const LostRevenueWidget: React.FC<LostRevenueWidgetProps> = ({ data, loading, on
                       </thead>
                       <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         {filteredEvents.slice(0, 10).map((event) => (
-                          <tr key={event.clinicId + event.date.seconds} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                          <tr key={event.clinicId + toDate(event.date).getTime()} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                               {event.clinicName}
                             </td>
@@ -246,7 +247,7 @@ const LostRevenueWidget: React.FC<LostRevenueWidgetProps> = ({ data, loading, on
                               </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                              {formatDate(event.date.toDate())}
+                              {formatDate(toDate(event.date))}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                               {event.reason === "canceled" && (

@@ -8,6 +8,7 @@ import {
   CheckCircleIcon
 } from '@heroicons/react/24/solid';
 import { SearchVisibilityMetrics } from '../../../../utils/metrics/types';
+import { WebsiteHealth } from '../../../../types';
 import useAdminMetrics from '../../../../utils/hooks/useAdminMetrics';
 
 interface WebsiteHealthCardProps {
@@ -33,18 +34,23 @@ const WebsiteHealthCard: React.FC<WebsiteHealthCardProps> = ({ onRefresh }) => {
   // Use website health data from the searchVisibility, or fall back to mock data
   const websiteHealth = data.searchVisibility?.websiteHealth || fallbackHealthData;
   
+  // Type guard for performance metrics
+  const hasPerformanceMetrics = (health: any): health is { performance: number; seo: number; accessibility: number } => {
+    return health && typeof health.performance === 'number';
+  };
+
   // Create processed data from either source
   const websiteHealthData = {
     uptimeStatus: 'up', // We'll assume site is up in mock mode
-    avgLoadTime: websiteHealth.performance ? (3 - websiteHealth.performance * 2).toFixed(1) : fallbackHealthData.avgLoadTime, // Convert performance score to load time
+    avgLoadTime: hasPerformanceMetrics(websiteHealth) ? (3 - websiteHealth.performance * 2).toFixed(1) : fallbackHealthData.avgLoadTime, // Convert performance score to load time
     indexedPages: data.searchVisibility?.totalSearchImpressions ? 
       Math.floor(data.searchVisibility.totalSearchImpressions / 100) : 
       fallbackHealthData.indexedPages,
-    errorPages: websiteHealth.performance && websiteHealth.performance < 0.85 ? 3 : 0,
+    errorPages: hasPerformanceMetrics(websiteHealth) && websiteHealth.performance < 0.85 ? 3 : 0,
     lastChecked: new Date(),
-    speedScore: websiteHealth.performance ? Math.floor(websiteHealth.performance * 100) : fallbackHealthData.speedScore,
-    seoScore: websiteHealth.seo ? Math.floor(websiteHealth.seo * 100) : fallbackHealthData.seoScore,
-    accessibilityScore: websiteHealth.accessibility ? Math.floor(websiteHealth.accessibility * 100) : fallbackHealthData.accessibilityScore,
+    speedScore: hasPerformanceMetrics(websiteHealth) ? Math.floor(websiteHealth.performance * 100) : fallbackHealthData.speedScore,
+    seoScore: hasPerformanceMetrics(websiteHealth) ? Math.floor(websiteHealth.seo * 100) : fallbackHealthData.seoScore,
+    accessibilityScore: hasPerformanceMetrics(websiteHealth) ? Math.floor(websiteHealth.accessibility * 100) : fallbackHealthData.accessibilityScore,
   };
   
   const getStatusBadge = (status: string) => {

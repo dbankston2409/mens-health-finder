@@ -157,8 +157,8 @@ const SeoPerformancePanel: React.FC<SeoPerformancePanelProps> = ({
       
       // Combine data for top performing clinics
       const clinicPerformance = allClinics.map(clinic => {
-        const impressions = clinicImpressions[clinic.id] || 0;
-        const clicks = clinicClicks[clinic.id] || 0;
+        const impressions = clinic.id ? clinicImpressions[clinic.id] || 0 : 0;
+        const clicks = clinic.id ? clinicClicks[clinic.id] || 0 : 0;
         return { clinic, impressions, clicks };
       });
       

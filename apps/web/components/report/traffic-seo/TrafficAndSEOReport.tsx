@@ -26,7 +26,7 @@ const TrafficAndSEOReport: React.FC<TrafficAndSEOReportProps> = ({
   isPrintable = false
 }) => {
   const { clinic, reportData, loading, error } = useClinicTrafficReport(clinicId);
-  const [activeTab, setActiveTab] = useState<'overview' | 'search' | 'analytics'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'search' | 'analytics' | 'calls'>('overview');
   
   if (loading) {
     return (

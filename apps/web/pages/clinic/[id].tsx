@@ -186,6 +186,7 @@ const ClinicProfile = () => {
   // Temporary data enhancement until we have full schema in Firestore
   const enhancedClinic = {
     ...clinic,
+    id: clinic.id || clinic.slug || 'unknown',
     tier,
     rating: mockClinic?.rating || 4.5,
     reviewCount: mockClinic?.reviewCount || 12,
