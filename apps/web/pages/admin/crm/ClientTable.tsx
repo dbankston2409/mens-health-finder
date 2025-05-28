@@ -59,20 +59,20 @@ const ClientTable: React.FC<ClientTableProps> = ({
         compareB = `${b.state}, ${b.city}`.toLowerCase();
         break;
       case 'packageTier':
-        compareA = a.packageTier.toLowerCase();
-        compareB = b.packageTier.toLowerCase();
+        compareA = (a.packageTier || a.package || a.tier || '').toLowerCase();
+        compareB = (b.packageTier || b.package || b.tier || '').toLowerCase();
         break;
       case 'status':
-        compareA = a.status.toLowerCase();
-        compareB = b.status.toLowerCase();
+        compareA = (a.status || '').toLowerCase();
+        compareB = (b.status || '').toLowerCase();
         break;
       case 'engagementScore':
         compareA = a.engagementScore;
         compareB = b.engagementScore;
         break;
       case 'signUpDate':
-        compareA = new Date(a.signUpDate).getTime();
-        compareB = new Date(b.signUpDate).getTime();
+        compareA = a.signUpDate ? new Date(a.signUpDate).getTime() : 0;
+        compareB = b.signUpDate ? new Date(b.signUpDate).getTime() : 0;
         break;
       case 'lastContacted':
         compareA = a.lastContacted ? new Date(a.lastContacted).getTime() : 0;
@@ -287,20 +287,20 @@ const ClientTable: React.FC<ClientTableProps> = ({
                 <div className="text-sm text-gray-900">{clinic.packageTier}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border ${getStatusBadgeClass(clinic.status)}`}>
-                  {clinic.status.charAt(0).toUpperCase() + clinic.status.slice(1)}
+                <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border ${getStatusBadgeClass(clinic.status || '')}`}>
+                  {(clinic.status || '').charAt(0).toUpperCase() + (clinic.status || '').slice(1)}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className={`text-sm font-medium ${getEngagementScoreColor(clinic.engagementScore)}`}>
-                  {clinic.engagementScore}
+                <div className={`text-sm font-medium ${getEngagementScoreColor(clinic.engagementScore ?? 0)}`}>
+                  {clinic.engagementScore ?? 0}
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-500">{formatDate(clinic.signUpDate)}</div>
+                <div className="text-sm text-gray-500">{formatDate(clinic.signUpDate || null)}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-500">{formatDate(clinic.lastContacted)}</div>
+                <div className="text-sm text-gray-500">{formatDate(clinic.lastContacted || null)}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <ClientQuickActions

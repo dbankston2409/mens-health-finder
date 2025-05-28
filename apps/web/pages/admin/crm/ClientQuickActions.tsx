@@ -9,14 +9,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { updateDoc, doc } from 'firebase/firestore';
 import { db } from '../../../lib/firebase';
-
-type Clinic = {
-  id: string;
-  name: string;
-  status: 'active' | 'paused' | 'trial' | 'canceled';
-  tags: string[];
-  [key: string]: any;
-};
+import { Clinic } from '../../../types';
 
 interface ClientQuickActionsProps {
   clinic: Clinic;
@@ -45,6 +38,7 @@ const ClientQuickActions: React.FC<ClientQuickActionsProps> = ({
     setLoading(true);
     try {
       const newStatus = clinic.status === 'active' ? 'paused' : 'active';
+      if (!clinic.id) throw new Error('Clinic ID is required');
       await updateDoc(doc(db, 'clinics', clinic.id), { status: newStatus });
       onStatusChange(clinic, newStatus);
       refreshData();
@@ -65,6 +59,7 @@ const ClientQuickActions: React.FC<ClientQuickActionsProps> = ({
     }
 
     try {
+      if (!clinic.id) throw new Error('Clinic ID is required');
       await updateDoc(doc(db, 'clinics', clinic.id), { tags: newTags });
       onTagsChange(clinic, newTags);
       refreshData();

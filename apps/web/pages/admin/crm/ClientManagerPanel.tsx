@@ -217,18 +217,19 @@ const ClientManagerPanel: React.FC = () => {
     
     if (activeFilters.tags.length > 0) {
       results = results.filter(clinic => 
-        clinic.tags && activeFilters.tags.some(tag => clinic.tags.includes(tag))
+        clinic.tags && activeFilters.tags.some(tag => clinic.tags?.includes(tag))
       );
     }
     
     if (activeFilters.minClicks !== null) {
       results = results.filter(clinic => 
-        clinic.engagementScore >= (activeFilters.minClicks || 0)
+        (clinic.engagementScore ?? 0) >= (activeFilters.minClicks || 0)
       );
     }
     
     if (activeFilters.dateRange.start || activeFilters.dateRange.end) {
       results = results.filter(clinic => {
+        if (!clinic.signUpDate) return false;
         const clinicDate = new Date(clinic.signUpDate);
         
         if (activeFilters.dateRange.start && activeFilters.dateRange.end) {
@@ -321,7 +322,7 @@ const ClientManagerPanel: React.FC = () => {
         clinic.packageTier,
         clinic.status,
         clinic.engagementScore,
-        formatDate(clinic.signUpDate),
+        formatDate(clinic.signUpDate || ''),
         formatDate(clinic.lastContacted || '')
       ].join(','))
     ].join('\n');
