@@ -1,6 +1,6 @@
 import { db } from '../../lib/firebase';
 import { doc, updateDoc, getDoc, Timestamp } from 'firebase/firestore';
-import { Clinic } from '../../lib/api/clinicService';
+import { Clinic } from '../../types';
 
 export interface SeoMeta {
   title: string;

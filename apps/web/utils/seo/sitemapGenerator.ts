@@ -1,6 +1,6 @@
 import { db } from '../../lib/firebase';
 import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
-import { Clinic } from '../../lib/api/clinicService';
+import { Clinic } from '../../types';
 import { createClinicSlug, slugify } from '../../lib/utils';
 import fs from 'fs';
 import path from 'path';

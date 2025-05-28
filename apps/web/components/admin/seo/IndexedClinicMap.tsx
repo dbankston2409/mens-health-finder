@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
 import { db } from '../../../lib/firebase';
-import { Clinic } from '../../../lib/api/clinicService';
+import { Clinic } from '../../../types';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
