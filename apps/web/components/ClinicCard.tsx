@@ -61,8 +61,8 @@ const ClinicCard: React.FC<ClinicCardProps> = ({
 
   const handleCallClick = () => {
     // Track call interaction
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'call_click', {
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'call_click', {
         event_category: 'engagement',
         event_label: clinic.name,
         clinic_id: clinic.id
@@ -72,8 +72,8 @@ const ClinicCard: React.FC<ClinicCardProps> = ({
 
   const handleWebsiteClick = () => {
     // Track website click
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'website_click', {
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'website_click', {
         event_category: 'engagement',
         event_label: clinic.name,
         clinic_id: clinic.id

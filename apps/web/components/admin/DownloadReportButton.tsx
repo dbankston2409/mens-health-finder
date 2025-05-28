@@ -109,8 +109,8 @@ const DownloadReportButton: React.FC<DownloadReportButtonProps> = ({
       console.log(`✅ Report downloaded: ${filename}`);
       
       // Track download event
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'report_download', {
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'report_download', {
           event_category: 'engagement',
           event_label: finalOptions.reportType,
           clinic_slug: clinicSlug
