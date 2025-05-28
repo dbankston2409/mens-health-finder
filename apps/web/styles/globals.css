@@ -1,0 +1,276 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background-color: #000000;
+  --primary-color: #FF3B3B;
+  --text-primary: #FFFFFF;
+  --text-secondary: #AAAAAA;
+  --card-bg: #111111;
+  --card-hover: #181818;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+}
+
+@layer components {
+  .card {
+    @apply bg-[#111111] rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all border border-[#222222];
+  }
+  
+  .stat-card {
+    @apply p-5 bg-[#111111] rounded-2xl shadow-md flex flex-col items-center justify-center border border-[#222222];
+  }
+  
+  .btn {
+    @apply bg-primary hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-md inline-flex items-center justify-center relative overflow-hidden;
+  }
+  
+  .btn::after {
+    @apply content-[''] absolute inset-0 opacity-0 bg-gradient-to-r from-red-500 to-red-600 transition-opacity duration-300;
+  }
+  
+  .btn:hover::after {
+    @apply opacity-100;
+  }
+  
+  .btn span {
+    @apply relative z-10;
+  }
+  
+  .btn-secondary {
+    @apply bg-[#222222] hover:bg-[#333333] text-white font-bold py-3 px-6 rounded-xl transition-colors shadow-md inline-flex items-center justify-center;
+  }
+  
+  .btn-lg {
+    @apply py-4 px-8 text-lg;
+  }
+  
+  .input {
+    @apply w-full px-4 py-3 rounded-xl bg-[#0D0D0D] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary border border-[#222222];
+  }
+  
+  .section-title {
+    @apply text-2xl md:text-3xl font-bold mb-8 relative;
+  }
+  
+  .section-title:after {
+    @apply content-[''] absolute bottom-[-10px] left-0 w-20 h-1 bg-primary rounded-full;
+  }
+  
+  .badge {
+    @apply bg-[#222222] text-sm px-3 py-1 rounded-full inline-flex items-center;
+  }
+  
+  .stat-number {
+    @apply text-4xl font-bold text-white;
+  }
+  
+  .stat-label {
+    @apply text-sm text-gray-400 mt-1;
+  }
+  
+  .circle-icon {
+    @apply rounded-full bg-white p-3 mb-4 inline-flex items-center justify-center shadow-md;
+  }
+  
+  /* Glassmorphism Card */
+  .glass-card {
+    @apply rounded-2xl overflow-hidden relative transition-all;
+    background: rgba(17, 17, 17, 0.5);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), 
+                inset 0 1px 1px rgba(255, 255, 255, 0.05),
+                inset 0 -1px 1px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  
+  /* Treatment Pills */
+  .treatment-pills {
+    @apply flex flex-wrap gap-2 px-1.5 py-1.5 overflow-x-auto justify-center;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .treatment-pills::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .treatment-pill {
+    @apply px-4 py-2 rounded-full text-sm font-medium inline-flex items-center gap-2 transition-all cursor-pointer flex-shrink-0;
+    background: rgba(34, 34, 34, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .treatment-pill:hover {
+    @apply bg-opacity-80;
+    background: rgba(51, 51, 51, 0.7);
+    transform: translateY(-1px);
+  }
+  
+  .treatment-pill.active {
+    @apply bg-primary bg-opacity-20 text-white border-primary;
+    border: 1px solid rgba(255, 59, 59, 0.5);
+  }
+  
+  /* Searchable Dropdown */
+  .custom-select {
+    @apply relative;
+  }
+  
+  .custom-select-header {
+    @apply w-full px-4 py-3 rounded-xl bg-[#0D0D0D] text-white 
+           flex items-center justify-between cursor-pointer border border-[#222222]
+           transition-all hover:border-gray-600;
+  }
+  
+  .custom-select-header:focus {
+    @apply outline-none ring-2 ring-primary;
+  }
+  
+  .custom-select-dropdown {
+    @apply absolute top-full left-0 right-0 mt-2 rounded-xl overflow-hidden z-20
+           bg-[#0D0D0D] border border-[#222222] shadow-lg max-h-60 overflow-y-auto;
+    transform-origin: top center;
+  }
+  
+  .custom-select-search {
+    @apply p-3 sticky top-0 bg-[#0D0D0D] border-b border-[#222222];
+  }
+  
+  .custom-select-search input {
+    @apply w-full px-3 py-2 rounded-lg bg-[#171717] text-white 
+           placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-primary
+           border border-[#333333];
+  }
+  
+  .custom-select-option {
+    @apply px-4 py-3 cursor-pointer flex items-center gap-2.5 hover:bg-[#151515] transition-colors;
+  }
+  
+  .custom-select-option.selected {
+    @apply bg-[#151515] text-primary;
+  }
+  
+  /* Selected Tag Pills */
+  .selected-tag {
+    @apply bg-[#222222] text-white text-sm px-3 py-1.5 rounded-full inline-flex items-center gap-1.5 m-1;
+  }
+  
+  .selected-tag-remove {
+    @apply ml-1 rounded-full hover:bg-[#333333] w-4 h-4 inline-flex items-center justify-center transition-colors;
+  }
+  
+  /* Map Marker Customization */
+  .marker-high {
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
+    z-index: 1000 !important;
+    transition: transform 0.2s ease;
+  }
+  
+  .marker-low {
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.3));
+    z-index: 500 !important;
+    transition: transform 0.2s ease;
+  }
+  
+  .marker-free {
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+    z-index: 0 !important;
+    transition: transform 0.2s ease;
+  }
+  
+  .marker-high:hover,
+  .marker-low:hover,
+  .marker-free:hover {
+    transform: scale(1.1);
+  }
+}
+
+/* Print styles for reports */
+@media print {
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+  
+  .page-break-before {
+    page-break-before: always;
+  }
+  
+  header, footer, nav, button, 
+  .no-print, .admin-sidebar {
+    display: none !important;
+  }
+  
+  main, .print-full-width {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* Reset dark mode for print */
+  .dark\:bg-gray-800, 
+  .dark\:bg-gray-900,
+  .dark\:bg-gray-700,
+  .dark\:bg-black,
+  .bg-\[\#111111\],
+  .bg-gray-800,
+  .bg-gray-900 {
+    background-color: white !important;
+  }
+  
+  .dark\:text-white,
+  .dark\:text-gray-300,
+  .dark\:text-gray-400 {
+    color: black !important;
+  }
+  
+  .dark\:border-gray-700,
+  .border-\[\#222222\] {
+    border-color: #e5e7eb !important;
+  }
+  
+  /* PrintableSEOReport specific styling */
+  .pdf-page-section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    min-height: auto !important; /* Override min-height in print view */
+  }
+}
+
+/* PDF generation mode */
+body.generating-pdf {
+  background-color: white;
+}
+
+body.generating-pdf .pdf-page-section {
+  width: 210mm; /* A4 width */
+  min-height: 297mm; /* A4 height */
+  padding: 20mm;
+  box-sizing: border-box;
+  background-color: white;
+  color: black;
+  position: relative;
+  page-break-after: always;
+}
+
+/* Hide everything except the report container */
+body.generating-pdf *:not(#pdf-report-container):not(#pdf-report-container *) {
+  display: none !important;
+}
+
+/* Ensure the container is visible */
+body.generating-pdf #pdf-report-container {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: white !important;
+}

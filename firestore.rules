@@ -1,0 +1,86 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow public read access to clinics
+    match /clinics/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Users can read/write their own data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if isAdmin();
+    }
+    
+    // Public read for reviews, authenticated write
+    match /reviews/{document} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow update, delete: if isAdmin() || isOwner();
+    }
+    
+    // Leads - admin access only
+    match /leads/{document} {
+      allow read, write: if isAdmin();
+    }
+    
+    // CRM data - admin only
+    match /contacts/{document} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /followUps/{document} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /outreachQueue/{document} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /salesLeads/{document} {
+      allow read, write: if isAdmin();
+    }
+    
+    // Analytics - admin only
+    match /traffic_logs/{document} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /conversionEvents/{document} {
+      allow create: if true; // Allow anonymous conversion tracking
+      allow read, update, delete: if isAdmin();
+    }
+    
+    match /variantTests/{document} {
+      allow read: if true; // Allow public read for A/B testing
+      allow write: if isAdmin();
+    }
+    
+    match /sessionEvents/{document} {
+      allow create: if true; // Allow anonymous session tracking
+      allow read, update, delete: if isAdmin();
+    }
+    
+    // Admin-only collections
+    match /admin/{document=**} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /settings/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+    
+    // Helper functions
+    function isAdmin() {
+      return request.auth != null && 
+             request.auth.token.admin == true;
+    }
+    
+    function isOwner() {
+      return request.auth != null && 
+             request.auth.uid == resource.data.userId;
+    }
+  }
+}

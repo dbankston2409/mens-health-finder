@@ -1,0 +1,14 @@
+# robots.txt for Men's Health Finder
+
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Disallow admin and internal pages
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /profile/
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://menshealthfinder.com/sitemap.xml

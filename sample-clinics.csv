@@ -1,0 +1,6 @@
+name,address,city,state,zip,phone,website,services,package,status
+"Austin Men's Health Clinic","123 Main St","Austin","TX","78701","(512) 555-0123","https://austinmenshealth.com","TRT,ED Treatment,Weight Loss","premium","active"
+"Dallas Testosterone Center","456 Oak Ave","Dallas","TX","75201","(214) 555-0456","https://dallastrt.com","TRT,Hormone Therapy","basic","active"
+"Houston Men's Wellness","789 Pine Rd","Houston","TX","77001","(713) 555-0789","https://houstonwellness.com","TRT,ED Treatment,Hair Restoration,Weight Loss","premium","active"
+"San Antonio Male Health","321 Elm St","San Antonio","TX","78201","(210) 555-0321","https://samalehealth.com","TRT,ED Treatment","basic","active"
+"Fort Worth Men's Clinic","654 Cedar Dr","Fort Worth","TX","76101","(817) 555-0654","https://fortworthmc.com","TRT,Weight Loss","basic","active"
