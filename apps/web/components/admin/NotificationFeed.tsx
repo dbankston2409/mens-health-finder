@@ -6,7 +6,7 @@ interface PushNotification {
   type: 'achievement' | 'reminder' | 'seo-issue' | 'milestone';
   title: string;
   message: string;
-  timestamp: Date;
+  timestamp?: Date;
   isRead?: boolean;
   priority?: 'low' | 'medium' | 'high';
   actionUrl?: string;

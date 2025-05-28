@@ -312,7 +312,7 @@ const IndexedClinicMap: React.FC<IndexedClinicMapProps> = ({ className = '' }) =
                   </td>
                   <td className="py-3 px-4">
                     <div className="font-medium">{clinic.name}</div>
-                    <div className="text-xs text-gray-500">{clinic.id.substring(0, 8)}...</div>
+                    <div className="text-xs text-gray-500">{clinic.id?.substring(0, 8)}...</div>
                   </td>
                   <td className="py-3 px-4">
                     {clinic.city}, {clinic.state}
