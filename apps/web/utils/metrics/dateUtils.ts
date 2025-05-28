@@ -10,7 +10,7 @@ const Timestamp = ClientTimestamp;
  * @param date Optional date to use instead of current date
  * @returns Firestore Timestamp representing the start of the month
  */
-export function getStartOfMonth(date: Date = new Date()): typeof Timestamp {
+export function getStartOfMonth(date: Date = new Date()) {
   const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
   startOfMonth.setHours(0, 0, 0, 0);
   return Timestamp.fromDate(startOfMonth);
@@ -22,7 +22,7 @@ export function getStartOfMonth(date: Date = new Date()): typeof Timestamp {
  * @param date Optional date to use instead of current date
  * @returns Firestore Timestamp representing the start of the year
  */
-export function getStartOfYear(date: Date = new Date()): typeof Timestamp {
+export function getStartOfYear(date: Date = new Date()) {
   const startOfYear = new Date(date.getFullYear(), 0, 1);
   startOfYear.setHours(0, 0, 0, 0);
   return Timestamp.fromDate(startOfYear);
@@ -35,7 +35,7 @@ export function getStartOfYear(date: Date = new Date()): typeof Timestamp {
  * @param date Optional date to use instead of current date
  * @returns Firestore Timestamp representing the date X days ago
  */
-export function getDateDaysAgo(daysAgo: number, date: Date = new Date()): typeof Timestamp {
+export function getDateDaysAgo(daysAgo: number, date: Date = new Date()) {
   const pastDate = new Date(date);
   pastDate.setDate(pastDate.getDate() - daysAgo);
   pastDate.setHours(0, 0, 0, 0);
@@ -49,7 +49,7 @@ export function getDateDaysAgo(daysAgo: number, date: Date = new Date()): typeof
  * @param date Optional end date (defaults to current date)
  * @returns Object with startDate and endDate as Timestamps
  */
-export function getDateRange(daysAgo: number, date: Date = new Date()): { startDate: typeof Timestamp, endDate: typeof Timestamp } {
+export function getDateRange(daysAgo: number, date: Date = new Date()) {
   const endDate = new Date(date);
   endDate.setHours(23, 59, 59, 999);
   
@@ -65,8 +65,9 @@ export function getDateRange(daysAgo: number, date: Date = new Date()): { startD
  * @param date Date or Timestamp to format
  * @returns Formatted date string
  */
-export function formatDate(date: Date | typeof Timestamp): string {
-  const dateObj = date instanceof Timestamp ? date.toDate() : date;
+export function formatDate(date: Date | ClientTimestamp | null): string {
+  if (!date) return '';
+  const dateObj = date instanceof Date ? date : date.toDate();
   return dateObj.toISOString().split('T')[0];
 }
 
@@ -87,7 +88,7 @@ export function getMonthName(date: Date | typeof Timestamp): string {
  * @param timestamp Firestore Timestamp
  * @returns String in format "YYYY-MM" for grouping
  */
-export function getMonthKey(timestamp: typeof Timestamp): string {
+export function getMonthKey(timestamp: ClientTimestamp): string {
   const date = timestamp.toDate();
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 }
@@ -95,7 +96,7 @@ export function getMonthKey(timestamp: typeof Timestamp): string {
 /**
  * Helper to determine if a timestamp is from the current month
  */
-export function isCurrentMonth(timestamp: typeof Timestamp): boolean {
+export function isCurrentMonth(timestamp: ClientTimestamp): boolean {
   const now = new Date();
   const date = timestamp.toDate();
   return date.getMonth() === now.getMonth() && 
@@ -105,7 +106,7 @@ export function isCurrentMonth(timestamp: typeof Timestamp): boolean {
 /**
  * Helper to determine if a timestamp is from the current year
  */
-export function isCurrentYear(timestamp: typeof Timestamp): boolean {
+export function isCurrentYear(timestamp: ClientTimestamp): boolean {
   const now = new Date();
   const date = timestamp.toDate();
   return date.getFullYear() === now.getFullYear();
