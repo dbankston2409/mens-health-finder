@@ -329,10 +329,16 @@ const IndexedClinicMap: React.FC<IndexedClinicMapProps> = ({ className = '' }) =
                   <td className="py-3 px-4">
                     {clinic.seoMeta?.lastIndexed ? (
                       <span className="text-xs text-gray-400">
-                        {(clinic.seoMeta.lastIndexed instanceof Date 
-                          ? clinic.seoMeta.lastIndexed 
-                          : new Date((clinic.seoMeta.lastIndexed as any)?.seconds * 1000 || clinic.seoMeta.lastIndexed)
-                        ).toLocaleDateString()}
+                        {(() => {
+                          const date = clinic.seoMeta.lastIndexed;
+                          if (date instanceof Date) {
+                            return date.toLocaleDateString();
+                          } else if (date && typeof date === 'object' && 'seconds' in date) {
+                            return new Date((date as any).seconds * 1000).toLocaleDateString();
+                          } else {
+                            return new Date(date as any).toLocaleDateString();
+                          }
+                        })()}
                       </span>
                     ) : (
                       <span className="text-xs text-gray-500">Never</span>
