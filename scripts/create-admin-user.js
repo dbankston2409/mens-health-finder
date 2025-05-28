@@ -1,11 +1,8 @@
 const admin = require('firebase-admin');
 
 // Initialize Firebase Admin SDK
-const serviceAccount = require('../serviceAccountKey.json');
-
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  projectId: process.env.FIREBASE_PROJECT_ID
+  projectId: 'mens-health-finder-825e0'
 });
 
 async function createAdminUser(email, password, displayName) {
