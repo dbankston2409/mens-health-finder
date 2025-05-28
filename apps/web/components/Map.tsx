@@ -439,8 +439,8 @@ const Map: React.FC<MapProps> = ({
         locations.map(l => ({ id: l.id, name: l.name, coords: [l.lat, l.lng], tier: l.tier })));
       
       // Check if any locations have the exact same coordinates (could cause map issues)
-      const coordsMap = {}; // Use a simple object instead of JS built-in Map to avoid naming conflict
-      const duplicates = [];
+      const coordsMap: { [key: string]: any } = {}; // Use a simple object instead of JS built-in Map to avoid naming conflict
+      const duplicates: any[] = [];
       
       for (const loc of locations) {
         const coordKey = `${loc.lat},${loc.lng}`;
