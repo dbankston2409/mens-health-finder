@@ -137,44 +137,44 @@ export const useValidationQueue = (): ValidationQueueHook => {
       setError(null);
 
       // Build query based on current filters
-      let q = collection(db, 'clinics');
+      const clinicsCollection = collection(db, 'clinics');
       
       // For demo, we'll just get clinics with any validation tag
-      const constraints: any[] = [];
+      let clinicsQuery;
 
-      // Always filter by validation tags if no specific tags are selected
+      // Start building the query
       if (filters.tags.length === 0) {
-        constraints.push(where('tags', 'array-contains-any', VALIDATION_TAGS));
+        // Always filter by validation tags if no specific tags are selected
+        clinicsQuery = query(clinicsCollection, where('tags', 'array-contains-any', VALIDATION_TAGS));
       } else {
         // Filter by specific tags if selected
-        constraints.push(where('tags', 'array-contains-any', filters.tags));
+        clinicsQuery = query(clinicsCollection, where('tags', 'array-contains-any', filters.tags));
       }
 
       // Add other filters if specified
       if (filters.state) {
-        constraints.push(where('state', '==', filters.state));
+        clinicsQuery = query(clinicsQuery, where('state', '==', filters.state));
       }
       
       if (filters.importSource) {
-        constraints.push(where('importSource', '==', filters.importSource));
+        clinicsQuery = query(clinicsQuery, where('importSource', '==', filters.importSource));
       }
       
       if (filters.status) {
-        constraints.push(where('status', '==', filters.status));
+        clinicsQuery = query(clinicsQuery, where('status', '==', filters.status));
       }
 
-      // Add ordering and pagination
-      constraints.push(orderBy('updatedAt', 'desc'));
-      constraints.push(limit(25)); // Fetch 25 at a time
+      // Add ordering
+      clinicsQuery = query(clinicsQuery, orderBy('updatedAt', 'desc'));
       
-      // Use the last document for pagination
+      // Add pagination
       if (lastDoc && !isInitialLoad) {
-        constraints.push(startAfter(lastDoc));
+        clinicsQuery = query(clinicsQuery, startAfter(lastDoc), limit(25));
+      } else {
+        clinicsQuery = query(clinicsQuery, limit(25));
       }
       
-      q = query(q, ...constraints);
-      
-      const querySnapshot = await getDocs(q);
+      const querySnapshot = await getDocs(clinicsQuery);
       
       // Update the last document for pagination
       const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
