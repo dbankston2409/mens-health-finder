@@ -27,6 +27,8 @@ export interface MHFUser {
   photoUrl?: string;
   savedProviders?: string[];
   reviewsCount?: number;
+  isAdmin?: boolean;
+  role?: string;
 }
 
 // Define the shape of our auth context
