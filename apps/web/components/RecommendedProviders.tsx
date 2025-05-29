@@ -7,7 +7,7 @@ interface Clinic {
   name: string;
   city: string;
   state: string;
-  tier: 'free' | 'low' | 'high';
+  tier: 'free' | 'standard' | 'advanced' | 'low' | 'high'; // Support both new and legacy tier values
   services?: string[];
   rating?: number;
   reviewCount?: number;
@@ -26,12 +26,13 @@ const RecommendedProviders: React.FC<RecommendedProvidersProps> = ({
   currentState,
   clinics
 }) => {
-  // Filter to show only paid providers (low or high tier) in the same city/state
+  // Filter to show only paid providers (standard/low or advanced/high tier) in the same city/state
   // Exclude the current clinic and limit to 2
   const recommendations = clinics
     .filter(clinic => 
       clinic.id !== currentClinicId && 
-      (clinic.tier === 'low' || clinic.tier === 'high') &&
+      (clinic.tier === 'standard' || clinic.tier === 'advanced' || 
+       clinic.tier === 'low' || clinic.tier === 'high') &&
       clinic.city === currentCity &&
       clinic.state === currentState
     )
