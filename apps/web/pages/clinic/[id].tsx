@@ -28,10 +28,17 @@ const { getClinicById, logClinicTraffic } = clinicService;
 
 // Temporarily use mock data until we have real reviews in the database
 const mockClinicsWithMHFReviews = mockClinics.map(clinic => {
-  // Add some MHF native reviews only to high tier clinics
-  if (clinic.tier === 'high') {
+  // Convert legacy tier to standardized tier
+  const standardizedTier = clinic.tier === 'high' ? 'advanced' : 
+                          clinic.tier === 'low' ? 'standard' : 
+                          clinic.tier === 'advanced' ? 'advanced' : 
+                          clinic.tier === 'standard' ? 'standard' : 'free';
+  
+  // Add some MHF native reviews only to advanced tier clinics
+  if (standardizedTier === 'advanced') {
     return {
       ...clinic,
+      tier: standardizedTier, // Use standardized tier
       reviews: [
         ...(clinic.reviews || []),
         { 
@@ -52,10 +59,11 @@ const mockClinicsWithMHFReviews = mockClinics.map(clinic => {
     };
   }
   
-  // Add fewer MHF reviews to low tier clinics
-  if (clinic.tier === 'low') {
+  // Add fewer MHF reviews to standard tier clinics
+  if (standardizedTier === 'standard') {
     return {
       ...clinic,
+      tier: standardizedTier, // Use standardized tier
       reviews: [
         ...(clinic.reviews || []),
         { 
@@ -70,7 +78,10 @@ const mockClinicsWithMHFReviews = mockClinics.map(clinic => {
   }
   
   // Keep free tier clinics with only external reviews
-  return clinic;
+  return {
+    ...clinic,
+    tier: standardizedTier // Use standardized tier
+  };
 });
 
 const ClinicProfile = () => {
@@ -181,8 +192,10 @@ const ClinicProfile = () => {
   // In a real implementation, this would come from the database
   const mockClinic = mockClinicsWithMHFReviews.find(c => c.name.toLowerCase().includes(clinic.name.toLowerCase()));
   
-  const tier = clinic.package === 'premium' ? 'high' as const : 
-               clinic.package === 'basic' ? 'low' as const : 'free' as const;
+  // Convert package to standardized tier
+  const tier = clinic.tier || 
+               (clinic.package === 'premium' ? 'advanced' : 
+               clinic.package === 'basic' ? 'standard' : 'free');
   
   // Temporary data enhancement until we have full schema in Firestore
   const enhancedClinic = {
@@ -190,7 +203,7 @@ const ClinicProfile = () => {
     lat: clinic.lat ?? undefined,
     lng: clinic.lng ?? undefined,
     id: clinic.id || clinic.slug || 'unknown',
-    tier,
+    tier, // Use the standardized tier value
     rating: mockClinic?.rating || 4.5,
     reviewCount: mockClinic?.reviewCount || 12,
     googleRating: mockClinic?.rating || clinic.rating || 4.5,
@@ -224,11 +237,11 @@ const ClinicProfile = () => {
     reviews: mockClinic?.reviews || []
   };
 
-  // Determine if the clinic has a logo (only for Starter and Premium tiers)
-  const hasLogo = tier === 'high' || tier === 'low';
+  // Determine if the clinic has a logo (only for Standard and Advanced tiers)
+  const hasLogo = tier === 'advanced' || tier === 'standard';
   
-  // Determine if the clinic has a CTA button (only for Premium tier)
-  const hasCTAButton = tier === 'high';
+  // Determine if the clinic has a CTA button (only for Advanced tier)
+  const hasCTAButton = tier === 'advanced';
 
   return (
     <>
@@ -331,8 +344,8 @@ const ClinicProfile = () => {
               </div>
               
               <div className="flex flex-col gap-3 w-full md:w-auto">
-                {/* Social Media Links for Starter & Premium Tiers */}
-                {(tier === 'high' || tier === 'low') && (
+                {/* Social Media Links for Standard & Advanced Tiers */}
+                {(tier === 'advanced' || tier === 'standard') && (
                   <div className="flex gap-2 mb-3">
                     <a href="#" className="p-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition-colors">
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -545,8 +558,8 @@ const ClinicProfile = () => {
             </div>
           </div>
           
-          {/* CTA Section for Premium tier */}
-          {tier === 'high' && (
+          {/* CTA Section for Advanced tier */}
+          {tier === 'advanced' && (
             <div id="book" className="bg-gray-900 rounded-xl p-8 text-center mb-8">
               <h2 className="text-2xl font-bold mb-4">Ready to book an appointment?</h2>
               <p className="text-textSecondary mb-6 max-w-2xl mx-auto">Schedule a consultation with our medical professionals to discuss your health goals and treatment options.</p>
