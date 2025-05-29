@@ -191,10 +191,20 @@ export async function queryClinics(
       
       // Get normalized tier value (handle legacy values)
       const getTierPriority = (clinic: Clinic) => {
-        const tier = clinic.tier || 'free';
-        if (tier === 'high') return tierPriority['advanced'];
-        if (tier === 'low') return tierPriority['standard'];
-        return tierPriority[tier as keyof typeof tierPriority] || tierPriority['free'];
+        // Use string type to avoid TypeScript errors with string comparisons
+        const tier = (clinic.tier || 'free') as string;
+        const tierLower = tier.toLowerCase();
+        
+        // Handle legacy values
+        if (tierLower === 'high' || tierLower === 'premium') return tierPriority['advanced'];
+        if (tierLower === 'low' || tierLower === 'basic') return tierPriority['standard'];
+        
+        // Handle standard values
+        if (tierLower === 'advanced') return tierPriority['advanced'];
+        if (tierLower === 'standard') return tierPriority['standard'];
+        
+        // Default to free
+        return tierPriority['free'];
       };
       
       const aPriority = getTierPriority(a);
