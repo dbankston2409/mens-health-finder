@@ -46,7 +46,7 @@ interface ClinicLocation {
   state: string;
   lat: number;
   lng: number;
-  tier: 'free' | 'low' | 'high';
+  tier: 'free' | 'standard' | 'advanced';
   rating?: number;
   phone?: string;
   services?: string[];
