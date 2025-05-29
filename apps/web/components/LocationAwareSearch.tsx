@@ -383,7 +383,7 @@ const LocationAwareSearch: React.FC = () => {
               {suggestions.map((suggestion, index) => (
                 <li 
                   key={`${suggestion.type}-${index}`}
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center text-gray-800"
                   onClick={() => handleSuggestionClick(suggestion)}
                 >
                   {suggestion.type === 'city' && (
@@ -424,7 +424,7 @@ const LocationAwareSearch: React.FC = () => {
                 {JSON.parse(localStorage.getItem('recentSearches') || '[]').map((search: string, index: number) => (
                   <li 
                     key={`recent-${index}`}
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center text-gray-800"
                     onClick={() => {
                       setSearchText(search);
                       setShowSuggestions(false);
