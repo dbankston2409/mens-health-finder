@@ -33,34 +33,8 @@ if (typeof window !== 'undefined') {
   });
 }
 
-// Define the type for the MapComponentsWrapper component
-type MapComponentsWrapperType = React.FC<{ children?: React.ReactNode }> & {
-  MapContainer: any;
-  TileLayer: any;
-  Marker: any;
-  Popup: any;
-  MapBounds: React.FC<{ locations: any[] }>;
-  MapCenter: React.FC<{ lat: number; lng: number; zoom: number }>;
-  createCustomMarkerIcon: (tier: 'free' | 'low' | 'high') => any;
-};
-
-// Import the map components wrapper dynamically with proper typing
-const MapComponentsLoader = dynamic<MapComponentsWrapperType>(
-  () => import('./MapComponentsWrapper'),
-  { 
-    ssr: false,
-    loading: () => (
-      <div style={{ height: '400px', width: '100%' }} 
-        className="rounded-xl overflow-hidden shadow-lg border border-[#222222] bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mx-auto mb-2"></div>
-          <p className="text-[#AAAAAA]">Loading map...</p>
-          <p className="text-xs text-[#666666] mt-2">This may take a moment on first load</p>
-        </div>
-      </div>
-    )
-  }
-);
+// We'll dynamically load map components in the component's useEffect
+// This ensures all imports happen client-side only
 
 // Interface definitions moved to MapComponentsWrapper.tsx
 
@@ -104,8 +78,34 @@ const Map: React.FC<MapProps> = ({
   // If defaultToUS is true, always use the US default center
   const mapCenter = defaultToUS ? defaultCenter : (center || defaultCenter);
   
-  // Get map components from dynamic import with proper typing
-  const { MapContainer, TileLayer, Marker, Popup, MapBounds, MapCenter, createCustomMarkerIcon } = MapComponentsLoader;
+  // Import the map components with a dynamic approach
+  // Use dynamic imports to load at runtime
+  const [mapLoaded, setMapLoaded] = useState(false);
+  const [mapImports, setMapImports] = useState<any>(null);
+  
+  // Load map components on client side only
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    // Import the map components directly
+    import('./MapComponentsWrapper')
+      .then(module => {
+        setMapImports(module.default);
+        setMapLoaded(true);
+      })
+      .catch(error => {
+        console.error("Failed to load map components:", error);
+      });
+  }, []);
+  
+  // Get map components once they're loaded
+  const MapContainer = mapImports?.MapContainer;
+  const TileLayer = mapImports?.TileLayer;
+  const Marker = mapImports?.Marker;
+  const Popup = mapImports?.Popup;
+  const MapBounds = mapImports?.MapBounds;
+  const MapCenter = mapImports?.MapCenter;
+  const createCustomMarkerIcon = mapImports?.createCustomMarkerIcon;
   
   // Log locations being passed to the map
   useEffect(() => {
@@ -141,8 +141,8 @@ const Map: React.FC<MapProps> = ({
     setIsMapReady(true);
   };
   
-  // If MapContainer isn't loaded yet, show loading state
-  if (!MapContainer) {
+  // If map components aren't loaded yet, show loading state
+  if (!mapLoaded || !mapImports || !MapContainer) {
     return (
       <div style={{ height, width: '100%' }} className="rounded-xl overflow-hidden shadow-lg border border-[#222222] bg-gray-900 flex items-center justify-center">
         <div className="text-center">

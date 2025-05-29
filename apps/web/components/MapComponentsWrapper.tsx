@@ -162,38 +162,22 @@ export const mapUtils = {
   createCustomMarkerIcon
 };
 
-// Create a proper React component for dynamic import
-// This component will be the main exported component for dynamic import
-interface MapComponentsWrapperProps {
-  children?: React.ReactNode;
-}
-
-const MapComponentsWrapper: React.FC<MapComponentsWrapperProps> = ({ children }) => {
-  return (
-    <div>
-      {children || "Map components loaded"}
-    </div>
-  );
+// Create a simplified export object for Next.js dynamic imports
+// This approach is more compatible with Next.js dynamic import system
+const MapComponentsWrapper = {
+  // Export a default component for React
+  default: function MapWrapper({ children }: { children?: React.ReactNode }) {
+    return <div>{children || "Map components loaded"}</div>;
+  },
+  
+  // Export all the map components directly
+  MapContainer,
+  TileLayer,
+  Marker, 
+  Popup,
+  MapBounds,
+  MapCenter,
+  createCustomMarkerIcon
 };
 
-// Define the component type with proper TypeScript typing
-interface MapComponentsWrapperType extends React.FC<MapComponentsWrapperProps> {
-  MapContainer: typeof MapContainer;
-  TileLayer: typeof TileLayer;
-  Marker: typeof Marker;
-  Popup: typeof Popup;
-  MapBounds: typeof MapBounds;
-  MapCenter: typeof MapCenter;
-  createCustomMarkerIcon: typeof createCustomMarkerIcon;
-}
-
-// Attach utilities to the component with correct typing
-(MapComponentsWrapper as MapComponentsWrapperType).MapContainer = MapContainer;
-(MapComponentsWrapper as MapComponentsWrapperType).TileLayer = TileLayer;
-(MapComponentsWrapper as MapComponentsWrapperType).Marker = Marker;
-(MapComponentsWrapper as MapComponentsWrapperType).Popup = Popup;
-(MapComponentsWrapper as MapComponentsWrapperType).MapBounds = MapBounds;
-(MapComponentsWrapper as MapComponentsWrapperType).MapCenter = MapCenter;
-(MapComponentsWrapper as MapComponentsWrapperType).createCustomMarkerIcon = createCustomMarkerIcon;
-
-export default MapComponentsWrapper as MapComponentsWrapperType;
+export default MapComponentsWrapper;
