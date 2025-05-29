@@ -19,7 +19,7 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({ initialFilters, u
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState<boolean>(true);
-  const [lastDoc, setLastDoc] = useState<QueryDocumentSnapshot<DocumentData> | null>(null);
+  const [lastDoc, setLastDoc] = useState<DocumentData | null>(null);
   const [filters, setFilters] = useState<ClinicFilter>(initialFilters);
   const [sortBy, setSortBy] = useState<'relevance' | 'distance' | 'rating'>('relevance');
   
