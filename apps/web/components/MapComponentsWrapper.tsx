@@ -69,7 +69,7 @@ export const MapCenter = ({ lat, lng, zoom }: { lat: number; lng: number; zoom: 
 };
 
 // Tier-based marker customization
-export const createCustomMarkerIcon = (tier: 'free' | 'low' | 'high') => {
+export const createCustomMarkerIcon = (tier: 'free' | 'standard' | 'advanced' | 'low' | 'high' | string) => {
   // Only create icons on the client side where L (leaflet) is available
   if (typeof window === 'undefined' || !L) {
     return null;
@@ -80,17 +80,23 @@ export const createCustomMarkerIcon = (tier: 'free' | 'low' | 'high') => {
   let iconUrl: string;
   let fallbackColor: string;
   
+  // Normalize tier value to handle legacy values
+  const normalizedTier = 
+    tier === 'high' ? 'advanced' :
+    tier === 'low' ? 'standard' :
+    tier;
+  
   try {
-    switch (tier) {
-      case 'high':
-        // Premium tier: Largest map pin (Gold)
+    switch (normalizedTier) {
+      case 'advanced':
+        // Advanced tier: Largest map pin (Gold)
         size = [42, 42];
         iconUrl = '/images/markers/marker-high.png';
         zIndexOffset = 1000;
         fallbackColor = '#FFD700'; // Gold
         break;
-      case 'low':
-        // Enhanced tier: Mid-sized pin (Red)
+      case 'standard':
+        // Standard tier: Mid-sized pin (Red)
         size = [36, 36];
         iconUrl = '/images/markers/marker-low.png';
         zIndexOffset = 500;
@@ -112,7 +118,7 @@ export const createCustomMarkerIcon = (tier: 'free' | 'low' | 'high') => {
         iconSize: size,
         iconAnchor: [size[0] / 2, size[1]],
         popupAnchor: [0, -size[1]],
-        className: `marker-${tier}`,
+        className: `marker-${normalizedTier}`,
         zIndexOffset
       });
     } catch (iconError) {
@@ -122,7 +128,7 @@ export const createCustomMarkerIcon = (tier: 'free' | 'low' | 'high') => {
     
     // Create div-based icon as fallback
     return L.divIcon({
-      className: `marker-${tier}-fallback`,
+      className: `marker-${normalizedTier}-fallback`,
       html: `
         <div style="
           background-color: ${fallbackColor}; 

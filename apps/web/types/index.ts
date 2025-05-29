@@ -18,10 +18,12 @@ export interface Clinic {
   services?: string[];
   imageUrl?: string;
   
-  // Package/Tier (support both naming conventions)
+  // Tier system
+  tier: 'free' | 'standard' | 'advanced';
+  
+  // Legacy fields (for backward compatibility)
   package?: 'Free' | 'Basic' | 'Premium' | string;
   packageTier?: 'free' | 'basic' | 'premium' | string;
-  tier?: 'free' | 'low' | 'high' | string;
   
   // Status and metadata
   status?: 'Active' | 'Trial' | 'Paused' | 'Canceled' | 'active' | 'trial' | 'paused' | 'canceled' | string;
@@ -54,6 +56,32 @@ export interface Clinic {
   lastUpdated?: Timestamp | Date;
   
   // SEO and content
+  seo?: {
+    description: string; // 500+ word markdown
+    keywords: string[];
+    title?: string;
+    indexed?: boolean;
+    lastIndexed?: Date | Timestamp;
+  };
+  
+  // Features enabled based on tier
+  tierFeatures?: {
+    fullProfile: boolean;
+    seoDescription: boolean;
+    publicContact: boolean;
+    locationMapping: boolean;
+    basicSearch: boolean;
+    verifiedBadge: boolean;
+    enhancedSearch: boolean;
+    treatmentsLimit: number;
+    reviewDisplay: 'basic' | 'enhanced' | 'premium';
+    enhancedContactUX: boolean;
+    customTracking: boolean;
+    snapshotReport: boolean;
+    priorityListing: boolean;
+  };
+  
+  // Legacy SEO fields (for backward compatibility)
   seoMeta?: {
     title?: string;
     description?: string;
@@ -103,7 +131,7 @@ export interface ClinicLocation {
   state: string;
   lat: number;
   lng: number;
-  tier: string;
+  tier: 'free' | 'standard' | 'advanced';
   rating?: number;
   phone: string;
 }
@@ -136,8 +164,11 @@ export interface LostRevenueEvent {
 }
 
 // Utility types for safe object access
-export type TierCounts = Record<'premium' | 'basic' | 'free', number>;
+export type TierCounts = Record<'advanced' | 'standard' | 'free', number>;
 export type TierCountsFlexible = Record<string, number> & TierCounts;
+
+// Legacy tier counts (for backward compatibility)
+export type LegacyTierCounts = Record<'premium' | 'basic' | 'free', number>;
 
 // Tab types
 export type TabType = 'search' | 'analytics' | 'overview';
@@ -173,7 +204,8 @@ export interface ClinicFilter {
   searchTerm?: string;
   tags?: string[];
   status?: string;
-  package?: string;
+  tier?: 'free' | 'standard' | 'advanced';
+  package?: string; // Legacy field
   lat?: number;
   lng?: number;
   radius?: number;

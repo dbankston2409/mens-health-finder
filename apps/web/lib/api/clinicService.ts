@@ -128,8 +128,13 @@ export async function queryClinics(
       queryConstraints.push(where('status', '==', filters.status));
     }
     
-    // For package filters
-    if (filters.package) {
+    // For tier filters
+    if (filters.tier) {
+      queryConstraints.push(where('tier', '==', filters.tier));
+    }
+    
+    // For legacy package filters
+    else if (filters.package) {
       queryConstraints.push(where('package', '==', filters.package));
     }
     
@@ -140,7 +145,9 @@ export async function queryClinics(
       queryConstraints.push(where('tags', 'array-contains-any', tagsToQuery));
     }
     
-    // Add sorting - typically by popularity (totalClicks) or date added
+    // Add sorting priority
+    // Use a separate numeric field for sort order, or sort in memory after fetching
+    // For now, we'll sort in memory after fetching the results
     queryConstraints.push(orderBy('trafficMeta.totalClicks', 'desc'));
     
     // Add limit for pagination
@@ -172,6 +179,36 @@ export async function queryClinics(
       clinics.push(convertDocToClinic(doc));
       // Track the last document for pagination
       lastDoc = doc;
+    });
+    
+    // Sort results by tier priority (advanced > standard > free)
+    clinics.sort((a, b) => {
+      const tierPriority = {
+        'advanced': 0,
+        'standard': 1,
+        'free': 2
+      };
+      
+      // Get normalized tier value (handle legacy values)
+      const getTierPriority = (clinic: Clinic) => {
+        const tier = clinic.tier || 'free';
+        if (tier === 'high') return tierPriority['advanced'];
+        if (tier === 'low') return tierPriority['standard'];
+        return tierPriority[tier as keyof typeof tierPriority] || tierPriority['free'];
+      };
+      
+      const aPriority = getTierPriority(a);
+      const bPriority = getTierPriority(b);
+      
+      // Sort by tier first, then by clicks
+      if (aPriority !== bPriority) {
+        return aPriority - bPriority;
+      }
+      
+      // If same tier, sort by clicks
+      const aClicks = a.trafficMeta?.totalClicks || 0;
+      const bClicks = b.trafficMeta?.totalClicks || 0;
+      return bClicks - aClicks;
     });
     
     return { clinics, lastDoc, hasMore };
