@@ -130,20 +130,23 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({ initialFilters, u
         return ratingB - ratingA; // Higher ratings first
       });
     } else {
-      // Default sort - by relevance (premium first, then basic, then free)
+      // Default sort - by relevance (advanced first, then standard, then free)
       sorted.sort((a, b) => {
         // Sort by tier/package first
         const tierOrder: { [key: string]: number } = { 
-          'premium': 0, 
-          'advanced': 1, 
-          'basic': 2, 
-          'free': 3
+          'advanced': 0,
+          'high': 0, // Legacy value
+          'premium': 0, // Legacy value
+          'standard': 1,
+          'low': 1, // Legacy value
+          'basic': 1, // Legacy value
+          'free': 2
         };
         
         const aTier = a.tier || a.package || 'free';
         const bTier = b.tier || b.package || 'free';
         
-        const tierDiff = (tierOrder[aTier] || 3) - (tierOrder[bTier] || 3);
+        const tierDiff = (tierOrder[aTier.toLowerCase()] || 2) - (tierOrder[bTier.toLowerCase()] || 2);
         
         if (tierDiff !== 0) return tierDiff;
         
@@ -289,8 +292,8 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({ initialFilters, u
             <div 
               key={clinic.id} 
               className={`card p-6 border-l-4 ${
-                tier === 'premium' ? 'border-primary' : 
-                tier === 'advanced' || tier === 'basic' ? 'border-yellow-500' : 
+                tier === 'advanced' || tier === 'premium' || tier === 'high' ? 'border-primary' : 
+                tier === 'standard' || tier === 'basic' || tier === 'low' ? 'border-yellow-500' : 
                 'border-gray-600'
               }`}
             >
@@ -368,7 +371,7 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({ initialFilters, u
                     View Profile
                   </Link>
                   
-                  {(tier === 'premium' || tier === 'advanced') && (
+                  {(tier === 'advanced' || tier === 'premium' || tier === 'high') && (
                     <Link 
                       href={`/clinic/${clinic.slug || clinic.id}#book`}
                       className="btn bg-green-600 hover:bg-green-700 text-center"
@@ -377,7 +380,7 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({ initialFilters, u
                     </Link>
                   )}
                   
-                  {clinic.website && (tier === 'premium' || tier === 'advanced' || tier === 'basic') && (
+                  {clinic.website && (tier !== 'free') && (
                     <a 
                       href={clinic.website} 
                       target="_blank" 
