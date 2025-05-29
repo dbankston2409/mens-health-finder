@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
+// Import CSS statically - Next.js will handle this at build time
+import '../styles/leaflet.css';
 // Import and initialize libraries on the client side only
 // Simplified approach to avoid race conditions
 let nominatim: any = null;
@@ -18,11 +20,14 @@ if (typeof window !== 'undefined') {
   
   import('leaflet').then(mod => {
     L = mod;
-    // Also import the required CSS
-    import('leaflet/dist/leaflet.css');
-    import('leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css');
-    import('leaflet-defaulticon-compatibility');
-    console.log("Leaflet and dependencies import successful");
+    // Handle CSS in a different way - Next.js will handle these automatically at build time
+    // The CSS will be included in the build output
+    console.log("Leaflet import successful");
+    
+    // Load compatibility module for icons
+    import('leaflet-defaulticon-compatibility').catch(err => 
+      console.error("Error importing leaflet compatibility:", err)
+    );
   }).catch(err => {
     console.error("Error importing Leaflet:", err);
   });
