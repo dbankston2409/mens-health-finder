@@ -59,9 +59,11 @@ export function generateClinicStructuredData(clinic: Clinic, url: string): strin
   }).filter(Boolean);
 
   // Determine price range based on tier/package
-  const tier = clinic.tier || clinic.package || 'free';
-  const priceRange = tier === 'premium' || tier === 'advanced' ? '$$$' : 
-                     tier === 'basic' ? '$$' : '$';
+  const tierValue = (clinic.tier || clinic.package || 'free').toLowerCase();
+  
+  // Use string comparison to avoid TypeScript issues with union types
+  const priceRange = ['premium', 'advanced', 'high'].includes(tierValue) ? '$$$' : 
+                     ['basic', 'standard', 'low'].includes(tierValue) ? '$$' : '$';
 
   // Use SEO meta description if available, otherwise generate a default
   const description = clinic.seoMeta?.description || 
