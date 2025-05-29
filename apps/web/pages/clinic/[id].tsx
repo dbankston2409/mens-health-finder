@@ -27,12 +27,13 @@ const clinicService = process.env.NODE_ENV === 'development'
 const { getClinicById, logClinicTraffic } = clinicService;
 
 // Temporarily use mock data until we have real reviews in the database
+// Use explicit type assertion to match RecommendedProviders Clinic interface
 const mockClinicsWithMHFReviews = mockClinics.map(clinic => {
   // Convert legacy tier to standardized tier using type assertion for mockClinics
   // mockClinics uses 'high', 'low', 'free' while we need 'advanced', 'standard', 'free'
   const mockTier = clinic.tier as 'high' | 'low' | 'free';
-  const standardizedTier = mockTier === 'high' ? 'advanced' : 
-                          mockTier === 'low' ? 'standard' : 'free';
+  const standardizedTier = mockTier === 'high' ? 'advanced' as const : 
+                          mockTier === 'low' ? 'standard' as const : 'free' as const;
   
   // Add some MHF native reviews only to advanced tier clinics
   if (standardizedTier === 'advanced') {
@@ -586,7 +587,7 @@ const ClinicProfile = () => {
               currentClinicId={parseInt(enhancedClinic.id || '0', 10)}
               currentCity={enhancedClinic.city}
               currentState={enhancedClinic.state}
-              clinics={mockClinicsWithMHFReviews}
+              clinics={mockClinicsWithMHFReviews as any}
             />
           )}
         </div>
