@@ -28,11 +28,11 @@ const { getClinicById, logClinicTraffic } = clinicService;
 
 // Temporarily use mock data until we have real reviews in the database
 const mockClinicsWithMHFReviews = mockClinics.map(clinic => {
-  // Convert legacy tier to standardized tier
-  const standardizedTier = clinic.tier === 'high' ? 'advanced' : 
-                          clinic.tier === 'low' ? 'standard' : 
-                          clinic.tier === 'advanced' ? 'advanced' : 
-                          clinic.tier === 'standard' ? 'standard' : 'free';
+  // Convert legacy tier to standardized tier using type assertion for mockClinics
+  // mockClinics uses 'high', 'low', 'free' while we need 'advanced', 'standard', 'free'
+  const mockTier = clinic.tier as 'high' | 'low' | 'free';
+  const standardizedTier = mockTier === 'high' ? 'advanced' : 
+                          mockTier === 'low' ? 'standard' : 'free';
   
   // Add some MHF native reviews only to advanced tier clinics
   if (standardizedTier === 'advanced') {
