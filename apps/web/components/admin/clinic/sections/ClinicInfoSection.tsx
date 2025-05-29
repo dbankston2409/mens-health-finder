@@ -1,7 +1,7 @@
 import React from 'react';
 import { DetailedClinic } from '../../../../utils/admin/useClinicData';
 import TierEditor from './TierEditor';
-import { convertToStandardTier } from '@/utils/tierUtils';
+import { convertToStandardTier } from '../../../../utils/tierUtils';
 
 interface ClinicInfoSectionProps {
   clinic: DetailedClinic;

@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { doc, updateDoc, getFirestore } from 'firebase/firestore';
-import { Clinic } from '@/types';
+import { DetailedClinic } from '../../../../utils/admin/useClinicData';
 import { 
   generateTierFeatures, 
   convertToStandardTier, 
   getTierDisplayName 
-} from '@/utils/tierUtils';
+} from '../../../../utils/tierUtils';
 
 interface TierEditorProps {
-  clinic: Clinic;
-  onUpdate?: (updatedClinic: Clinic) => void;
+  clinic: DetailedClinic;
+  onUpdate?: (updatedClinic: DetailedClinic) => void;
 }
 
 const TierEditor: React.FC<TierEditorProps> = ({ clinic, onUpdate }) => {

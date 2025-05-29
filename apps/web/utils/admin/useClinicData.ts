@@ -11,7 +11,11 @@ export interface Clinic {
   phone: string;
   email: string;
   website?: string;
+  // Standardized tier system
+  tier?: 'free' | 'standard' | 'advanced';
+  // Legacy fields
   package: 'Free' | 'Basic' | 'Premium';
+  packageTier?: 'free' | 'basic' | 'premium' | string;
   status: 'Active' | 'Trial' | 'Paused' | 'Canceled';
   joinDate: string;
   lastContact?: string;
@@ -26,6 +30,22 @@ export interface Clinic {
     keywords?: string[];
     indexed?: boolean;
     lastIndexed?: Date | any;
+  };
+  // Tier-specific features
+  tierFeatures?: {
+    fullProfile: boolean;
+    seoDescription: boolean;
+    publicContact: boolean;
+    locationMapping: boolean;
+    basicSearch: boolean;
+    verifiedBadge: boolean;
+    enhancedSearch: boolean;
+    treatmentsLimit: number;
+    reviewDisplay: 'basic' | 'enhanced' | 'premium';
+    enhancedContactUX: boolean;
+    customTracking: boolean;
+    snapshotReport: boolean;
+    priorityListing: boolean;
   };
 }
 
@@ -81,6 +101,16 @@ export const useClientsData = (
           const joinDate = randomDate(new Date(2022, 0, 1), new Date());
           const lastContact = randomDate(joinDate, new Date());
           
+          // Map package to tier
+          const tierMap = {
+            'Free': 'free',
+            'Basic': 'standard',
+            'Premium': 'advanced'
+          };
+          
+          const pkg = packages[i % packages.length];
+          const tier = tierMap[pkg];
+          
           return {
             id: `clinic-${(i + 1).toString().padStart(3, '0')}`,
             name: `Men's Health Clinic ${i + 1}`,
@@ -90,7 +120,9 @@ export const useClientsData = (
             phone: `(555) ${100 + i}-${1000 + i}`,
             email: `clinic${i + 1}@example.com`,
             website: i % 3 === 0 ? `https://clinic${i + 1}.com` : undefined,
-            package: packages[i % packages.length],
+            tier: tier as 'free' | 'standard' | 'advanced',
+            package: pkg,
+            packageTier: tier,
             status: statuses[i % statuses.length],
             joinDate: joinDate.toISOString().split('T')[0],
             lastContact: lastContact.toISOString().split('T')[0],
@@ -100,7 +132,50 @@ export const useClientsData = (
             tags: i % 5 === 0 ? ['High Engagement', 'New Market'] : 
                   i % 5 === 1 ? ['Needs Photos'] : 
                   i % 5 === 2 ? ['Priority Client'] : undefined,
-            notes: i % 4 === 0 ? ['Client requested follow-up on website updates', 'Interested in upgrading to premium tier'] : undefined
+            notes: i % 4 === 0 ? ['Client requested follow-up on website updates', 'Interested in upgrading to premium tier'] : undefined,
+            tierFeatures: tier === 'advanced' ? {
+              fullProfile: true,
+              seoDescription: true,
+              publicContact: true,
+              locationMapping: true,
+              basicSearch: true,
+              verifiedBadge: true,
+              enhancedSearch: true,
+              treatmentsLimit: 20,
+              reviewDisplay: 'premium',
+              enhancedContactUX: true,
+              customTracking: true,
+              snapshotReport: true,
+              priorityListing: true
+            } : tier === 'standard' ? {
+              fullProfile: true,
+              seoDescription: true,
+              publicContact: true,
+              locationMapping: true,
+              basicSearch: true,
+              verifiedBadge: true,
+              enhancedSearch: true,
+              treatmentsLimit: 10,
+              reviewDisplay: 'enhanced',
+              enhancedContactUX: false,
+              customTracking: false,
+              snapshotReport: false,
+              priorityListing: false
+            } : {
+              fullProfile: true,
+              seoDescription: true,
+              publicContact: true,
+              locationMapping: true,
+              basicSearch: true,
+              verifiedBadge: false,
+              enhancedSearch: false,
+              treatmentsLimit: 5,
+              reviewDisplay: 'basic',
+              enhancedContactUX: false,
+              customTracking: false,
+              snapshotReport: false,
+              priorityListing: false
+            }
           };
         });
         
@@ -289,7 +364,9 @@ export const useClinicDetail = (clinicId: string | null): {
           phone: '(512) 555-1234',
           email: 'info@premiermenshealth.com',
           website: 'https://premiermenshealth.com',
+          tier: 'advanced',
           package: 'Premium',
+          packageTier: 'premium',
           status: 'Active',
           joinDate: '2023-04-15',
           lastContact: '2023-10-10',
@@ -298,6 +375,21 @@ export const useClinicDetail = (clinicId: string | null): {
           services: ['TRT', 'ED Treatment', 'Weight Management', 'Hair Loss'],
           tags: ['High Engagement', 'Priority Client'],
           notes: ['Client requested follow-up on website updates', 'Interested in expanding services'],
+          tierFeatures: {
+            fullProfile: true,
+            seoDescription: true,
+            publicContact: true,
+            locationMapping: true,
+            basicSearch: true,
+            verifiedBadge: true,
+            enhancedSearch: true,
+            treatmentsLimit: 20,
+            reviewDisplay: 'premium',
+            enhancedContactUX: true,
+            customTracking: true,
+            snapshotReport: true,
+            priorityListing: true
+          },
           billing: {
             history: [
               {
