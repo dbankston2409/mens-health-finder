@@ -9,6 +9,23 @@ Disallow: /admin/
 Disallow: /dashboard/
 Disallow: /profile/
 Disallow: /api/
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /complete-profile
+Disallow: /review/create/
+Disallow: /review/edit/
+
+# Crawl delay for heavy bots
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+# Host directive helps confirm the canonical hostname
+Host: menshealthfinder.com
 
 # Sitemap location
 Sitemap: https://menshealthfinder.com/sitemap.xml

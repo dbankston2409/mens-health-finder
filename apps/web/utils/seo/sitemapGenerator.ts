@@ -1,5 +1,5 @@
 import { db } from '../../lib/firebase';
-import { collection, query, where, getDocs, Timestamp } from 'firebase/firestore';
+import { collection, query, where, getDocs, Timestamp, limit, orderBy } from 'firebase/firestore';
 import { Clinic } from '../../types';
 import { createClinicSlug, slugify } from '../../lib/utils';
 import fs from 'fs';
@@ -12,9 +12,29 @@ import axios from 'axios';
  */
 export async function generateSitemap(): Promise<string> {
   try {
-    // Fetch all active clinics
+    // Fetch all active clinics that are publicly visible
     const clinicsRef = collection(db, 'clinics');
-    const q = query(clinicsRef, where('status', '==', 'active'));
+    
+    // We'll need multiple queries since Firestore doesn't support OR conditions
+    const queries = [
+      // Query for clinics with tier field
+      query(
+        clinicsRef, 
+        where('status', '==', 'active'),
+        where('tier', 'in', ['premium', 'advanced', 'basic', 'free']),
+        orderBy('lastUpdated', 'desc'),
+        limit(1000) // Reasonable limit for sitemap size
+      ),
+      
+      // Query for clinics with package field (for backward compatibility)
+      query(
+        clinicsRef,
+        where('status', '==', 'active'),
+        where('package', 'in', ['premium', 'advanced', 'basic', 'free']),
+        orderBy('lastUpdated', 'desc'),
+        limit(1000) // Reasonable limit for sitemap size
+      )
+    ];
     const querySnapshot = await getDocs(q);
     
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://menshealthfinder.com';
@@ -52,8 +72,20 @@ export async function generateSitemap(): Promise<string> {
     
     // Add each clinic
     const clinicUrls: string[] = [];
+    const processedClinicIds = new Set<string>();
+    const cities = new Map<string, string[]>(); // state -> [city1, city2, ...]
+    const states = new Set<string>();
+    const services = new Set<string>();
     
-    querySnapshot.forEach((doc) => {
+    // Process each query
+    for (const q of queries) {
+      const querySnapshot = await getDocs(q);
+      console.log(`Processing ${querySnapshot.size} clinics from query...`);
+      
+      querySnapshot.forEach((doc) => {
+        // Skip if already processed
+        if (processedClinicIds.has(doc.id)) return;
+        processedClinicIds.add(doc.id);
       const clinic = doc.data() as Clinic;
       clinic.id = doc.id;
       
@@ -77,7 +109,31 @@ export async function generateSitemap(): Promise<string> {
       
       // Always include the direct URL
       clinicUrls.push(clinicUrl);
+      
+      // Track states and cities for generating index pages
+      const stateCode = clinic.state.toLowerCase();
+      states.add(stateCode);
+      
+      if (!cities.has(stateCode)) {
+        cities.set(stateCode, []);
+      }
+      
+      const cityList = cities.get(stateCode) || [];
+      if (!cityList.includes(citySlug)) {
+        cityList.push(citySlug);
+        cities.set(stateCode, cityList);
+      }
+      
+      // Track services for category pages
+      if (clinic.services && clinic.services.length > 0) {
+        clinic.services.forEach(service => {
+          services.add(slugify(service));
+        });
+      }
     });
+    }
+    
+    console.log(`Processed ${processedClinicIds.size} unique clinics`);
     
     // Add unique clinic URLs to sitemap
     const uniqueUrls = [...new Set(clinicUrls)];
@@ -90,6 +146,65 @@ export async function generateSitemap(): Promise<string> {
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>`;
+    }
+    
+    // Generate category pages
+    for (const service of services) {
+      // Category index
+      sitemap += `
+  <url>
+    <loc>${baseUrl}/${service}</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>`;
+      
+      // Add state-level pages for each category
+      for (const state of states) {
+        sitemap += `
+  <url>
+    <loc>${baseUrl}/${service}/${state}</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+        
+        // Add city-level pages for each state and category
+        const stateCities = cities.get(state) || [];
+        for (const city of stateCities) {
+          sitemap += `
+  <url>
+    <loc>${baseUrl}/${service}/${state}/${city}</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+        }
+      }
+    }
+    
+    // Add state pages
+    for (const state of states) {
+      sitemap += `
+  <url>
+    <loc>${baseUrl}/state/${state}</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+    }
+    
+    // Add city pages
+    for (const [state, stateCities] of cities.entries()) {
+      for (const city of stateCities) {
+        sitemap += `
+  <url>
+    <loc>${baseUrl}/city/${state}/${city}</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`;
+      }
     }
     
     // Close the sitemap

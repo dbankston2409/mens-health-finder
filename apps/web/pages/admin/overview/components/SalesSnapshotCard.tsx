@@ -1,6 +1,12 @@
 import React from 'react';
+import dynamic from 'next/dynamic';
 import { ArrowUpIcon, ArrowDownIcon, CurrencyDollarIcon, UserPlusIcon, UsersIcon, ArrowPathIcon } from '@heroicons/react/24/solid';
 import { SalesMetrics } from '../../../../utils/metrics/types';
+
+// Use dynamic import with SSR disabled to prevent server-side rendering issues
+const SalesSnapshotCard = dynamic(() => Promise.resolve(RawSalesSnapshotCard), {
+  ssr: false,
+});
 
 interface SalesSnapshotCardProps {
   data: SalesMetrics | null;
@@ -8,7 +14,7 @@ interface SalesSnapshotCardProps {
   onRefresh: () => void;
 }
 
-const SalesSnapshotCard: React.FC<SalesSnapshotCardProps> = ({ data, loading, onRefresh }) => {
+const RawSalesSnapshotCard: React.FC<SalesSnapshotCardProps> = ({ data, loading, onRefresh }) => {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',

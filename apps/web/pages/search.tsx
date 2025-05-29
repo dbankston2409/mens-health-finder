@@ -2,22 +2,16 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Clinic, ClinicLocation, TierCountsFlexible, ClinicFilter, safeObjectAccess } from '../types';
+import { Clinic, ClinicLocation, TierCountsFlexible, ClinicFilter } from '../types';
 import TierBadge from '../components/TierBadge';
 import dynamic from 'next/dynamic';
 import { geocodeCityState, reverseGeocode } from '../components/Map';
 import { createClinicUrl } from '../components/Map';
 import { getServiceSlug } from '../lib/utils';
+import SearchResultsList from '../components/SearchResultsList';
 
-// Import either the real service or the mock service based on environment
-import * as realClinicService from '../lib/api/clinicService';
-import * as mockClinicService from '../lib/api/mockClinicService';
-
-// Use mock service in development mode, real service in production
-const clinicService = process.env.NODE_ENV === 'development' 
-  ? mockClinicService 
-  : realClinicService;
-
+// Import the clinic service
+import * as clinicService from '../lib/api/clinicService';
 const { searchClinics, queryClinics } = clinicService;
 
 // Dynamic import for the Map component to avoid SSR issues with Leaflet
@@ -630,67 +624,11 @@ const SearchPage: React.FC = () => {
                 </div>
               )}
               
-              {/* Results list */}
-              {!loading && sortedResults.length > 0 && (
-                <div className="space-y-6">
-                  {sortedResults.map((clinic) => (
-                    <div 
-                      key={clinic.id} 
-                      className={`card p-6 border-l-4 ${clinic.package === 'premium' ? 'border-primary' : clinic.package === 'basic' ? 'border-yellow-500' : 'border-gray-600'}`}
-                    >
-                      <div className="flex flex-col md:flex-row gap-6">
-                        <div className="md:w-3/4">
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <Link 
-                                href={`/clinic/${clinic.id}`}
-                                className="text-xl font-bold hover:text-primary transition-colors"
-                              >
-                                {clinic.name}
-                              </Link>
-                              <p className="text-textSecondary">{clinic.city}, {clinic.state}</p>
-                            </div>
-                            
-                            {clinic.package === 'premium' && (
-                              <span className="bg-primary text-white text-xs font-bold px-2 py-1 rounded">PREMIUM</span>
-                            )}
-                            {clinic.package === 'basic' && (
-                              <span className="bg-yellow-600 text-white text-xs font-bold px-2 py-1 rounded">ENHANCED</span>
-                            )}
-                          </div>
-                          
-                          <p className="text-sm text-textSecondary mb-2">{clinic.address}</p>
-                          <p className="text-sm text-textSecondary mb-4">{clinic.phone}</p>
-                          
-                          <div className="flex flex-wrap gap-2">
-                            {(clinic.services || []).map((service) => (
-                              <span key={service} className="bg-gray-800 text-xs px-3 py-1 rounded-full">{service}</span>
-                            ))}
-                          </div>
-                        </div>
-                        
-                        <div className="md:w-1/4 flex flex-col justify-between gap-4">
-                          <Link 
-                            href={`/clinic/${clinic.id}`}
-                            className="btn text-center"
-                          >
-                            View Profile
-                          </Link>
-                          
-                          {(clinic.package === 'premium' || clinic.package === 'basic') && (
-                            <Link 
-                              href={`/clinic/${clinic.id}#book`}
-                              className="btn bg-green-600 hover:bg-green-700 text-center"
-                            >
-                              Book Appointment
-                            </Link>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              {/* Results list - Replace with new component */}
+              <SearchResultsList 
+                initialFilters={filters} 
+                userLocation={mapCenter ? { lat: mapCenter.lat, lng: mapCenter.lng } : null}
+              />
             </div>
           </div>
         </div>
