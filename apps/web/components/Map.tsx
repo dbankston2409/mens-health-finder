@@ -5,12 +5,7 @@ import dynamic from 'next/dynamic';
 let nominatim: any = null;
 let L: any = null;
 
-// Import CSS only on the client side
-if (typeof window !== 'undefined') {
-  // Import our custom CSS for maps
-  import('../styles/leaflet-custom.css')
-    .catch(err => console.error('Failed to load custom CSS:', err));
-}
+// We'll dynamically import all CSS in useEffect to avoid build issues
 
 // This will run in the browser, but not during server-side rendering
 if (typeof window !== 'undefined') {
@@ -92,15 +87,21 @@ const Map: React.FC<MapProps> = ({
   useEffect(() => {
     if (typeof window === 'undefined') return;
     
-    // Load required CSS first
-    Promise.all([
-      // These are dynamically imported to avoid Next.js CSS loader issues
-      import('leaflet/dist/leaflet.css'),
-      import('leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'),
-      import('../styles/leaflet-custom.css')
-    ]).catch(err => {
-      console.warn('CSS loading had an issue:', err);
-      // Non-critical error, we can continue
+    // Add CSS directly to the head using CDN links (more reliable than imports)
+    const addCssLink = (href: string) => {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href;
+      document.head.appendChild(link);
+    };
+    
+    // Load Leaflet CSS from CDN
+    addCssLink('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+    addCssLink('https://unpkg.com/leaflet-defaulticon-compatibility@0.1.2/dist/leaflet-defaulticon-compatibility.css');
+    
+    // Also load our custom CSS
+    import('../styles/leaflet-custom.css').catch(err => {
+      console.warn('Custom CSS loading had an issue:', err);
     });
     
     // Import the map components directly

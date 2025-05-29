@@ -7,13 +7,10 @@ if (typeof window !== 'undefined') {
   // This will execute only on the client side
   L = require('leaflet');
   
-  // Import CSS directly on the client side
-  // This avoids Next.js CSS loader issues
-  import('leaflet/dist/leaflet.css');
-  
   // Also require compatibility for icons
   require('leaflet-defaulticon-compatibility');
-  import('leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css');
+  
+  // CSS is handled in the Map component now - we're using CDN links
 }
 
 // Create MapBounds component

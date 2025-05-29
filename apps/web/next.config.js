@@ -58,14 +58,6 @@ const nextConfig = {
         querystring: false,
       };
     }
-    
-    // Exclude leaflet CSS from static imports to prevent build errors
-    // These will be loaded dynamically at runtime instead
-    config.module.rules.push({
-      test: /leaflet.*\.css$/,
-      loader: 'ignore-loader',
-      include: /node_modules/,
-    });
 
     return config;
   },
