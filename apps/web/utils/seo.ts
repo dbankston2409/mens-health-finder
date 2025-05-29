@@ -12,7 +12,7 @@ export function generateClinicStructuredData(clinic: Clinic, url: string): strin
   const aggregateRating = {
     '@type': 'AggregateRating',
     ratingValue: clinic.reviewStats?.averageRating || clinic.rating || 4.5,
-    reviewCount: clinic.reviewStats?.totalReviews || clinic.reviewCount || 10,
+    reviewCount: clinic.reviewStats?.count || clinic.reviewCount || 10,
     bestRating: '5',
     worstRating: '1'
   };
