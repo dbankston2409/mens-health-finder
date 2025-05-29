@@ -157,7 +157,16 @@ const SearchPage: React.FC = () => {
           clinicFilter.services = filters.services;
         }
         if (filters.tiers.length > 0) {
-          clinicFilter.package = filters.tiers[0]; // Assuming single tier for now
+          const tierValue = filters.tiers[0];
+          
+          // Check if the tier value is a standardized value
+          if (['free', 'standard', 'advanced'].includes(tierValue)) {
+            clinicFilter.tier = tierValue as 'free' | 'standard' | 'advanced';
+          } 
+          // Otherwise, it's a legacy package value
+          else {
+            clinicFilter.package = tierValue;
+          }
         }
         if (locationQuery) {
           const [city, state] = locationQuery.split(', ');
@@ -236,7 +245,11 @@ const SearchPage: React.FC = () => {
         results.sort((a, b) => (b.rating || 0) - (a.rating || 0));
         break;
       case 'tier':
-        const tierOrder: Record<string, number> = { 'premium': 0, 'basic': 1, 'free': 2, 'high': 0, 'low': 1 };
+        const tierOrder: Record<string, number> = { 
+          'premium': 0, 'advanced': 0, 'high': 0, 
+          'basic': 1, 'standard': 1, 'low': 1, 
+          'free': 2 
+        };
         results.sort((a, b) => tierOrder[a.package || a.tier || 'free'] - tierOrder[b.package || b.tier || 'free']);
         break;
     }
@@ -256,10 +269,10 @@ const SearchPage: React.FC = () => {
     setMapCenter({ lat: 39.8283, lng: -98.5795, zoom: 4 });
   };
 
-  const getTierFromPackage = (pkg: string): 'free' | 'low' | 'high' => {
+  const getTierFromPackage = (pkg: string): 'free' | 'standard' | 'advanced' => {
     switch (pkg) {
-      case 'premium': return 'high';
-      case 'basic': return 'low';
+      case 'premium': return 'advanced';
+      case 'basic': return 'standard';
       default: return 'free';
     }
   };

@@ -39,6 +39,14 @@ const SearchPage: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [filters, setFilters] = useState<ClinicFilter>({});
   
+  // Helper function to update a specific filter
+  const onFilterChange = (name: string, value: any) => {
+    setFilters(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+  
   const [results, setResults] = useState<Clinic[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +64,15 @@ const SearchPage: React.FC = () => {
     if (service) setSelectedService(service as string);
     if (location) setSelectedLocation(location as string);
     
+    // Handle tier filter from URL if present
+    if (router.query.tier) {
+      const tierValue = router.query.tier as string;
+      // Only set if it's one of our valid tier values
+      if (['free', 'standard', 'advanced'].includes(tierValue)) {
+        onFilterChange('tier', tierValue as 'free' | 'standard' | 'advanced');
+      }
+    }
+    
     // Geocode the location if provided in URL
     if (location) {
       setLoading(true);
@@ -69,7 +86,7 @@ const SearchPage: React.FC = () => {
       setHasAttemptedAutoLocation(true);
       getUserLocation(false); // false indicates this is an automatic attempt, not manual
     }
-  }, [q, city, state, service, location, hasAttemptedAutoLocation]);
+  }, [q, city, state, service, location, router.query.tier, hasAttemptedAutoLocation]);
   
   // When filters change, update URL and perform search
   useEffect(() => {
@@ -91,6 +108,11 @@ const SearchPage: React.FC = () => {
       newFilters.services = [selectedService];
     }
     
+    // Make sure to maintain any tier filters that were set via the buttons
+    if (filters.tier) {
+      newFilters.tier = filters.tier;
+    }
+    
     setFilters(newFilters);
     
     // Only update the URL if we came from a form submission
@@ -103,12 +125,13 @@ const SearchPage: React.FC = () => {
       if (selectedState) queryParams.set('state', selectedState);
       if (selectedService) queryParams.set('service', selectedService);
       if (selectedLocation) queryParams.set('location', selectedLocation);
+      if (filters.tier) queryParams.set('tier', filters.tier);
       
       const queryString = queryParams.toString();
       
       router.push(`/search?${queryString}`, undefined, { shallow: true });
     }
-  }, [searchTerm, selectedCity, selectedState, selectedService, selectedLocation]);
+  }, [searchTerm, selectedCity, selectedState, selectedService, selectedLocation, filters.tier]);
   
   // Perform search when filters change
   useEffect(() => {
@@ -284,22 +307,26 @@ const SearchPage: React.FC = () => {
     router.push(`/search?${queryString}`);
   };
   
-  // Get package tier display name
-  const getTierFromPackage = (pkg: string): 'free' | 'low' | 'high' => {
+  // Get standardized tier from package
+  const getTierFromPackage = (pkg: string): 'free' | 'standard' | 'advanced' => {
     switch (pkg) {
       case 'premium':
-        return 'high';
+        return 'advanced';
       case 'basic':
-        return 'low';
+        return 'standard';
       default:
         return 'free';
     }
   };
   
-  // Sort clinics by package (premium first, then basic, then free)
+  // Sort clinics by tier (advanced first, then standard, then free)
   const sortedResults = [...results].sort((a, b) => {
-    const packageOrder: Record<string, number> = { 'premium': 0, 'basic': 1, 'free': 2 };
-    return (packageOrder[a.package || 'free'] || 2) - (packageOrder[b.package || 'free'] || 2);
+    const tierOrder: Record<string, number> = { 
+      'premium': 0, 'advanced': 0, 'high': 0, 
+      'basic': 1, 'standard': 1, 'low': 1, 
+      'free': 2 
+    };
+    return (tierOrder[a.package || a.tier || 'free'] || 2) - (tierOrder[b.package || b.tier || 'free'] || 2);
   });
   
   return (
@@ -452,26 +479,26 @@ const SearchPage: React.FC = () => {
                       <label className="block text-sm text-white font-medium mb-2 ml-1">Tier</label>
                       <div className="flex flex-wrap gap-2">
                         <button 
-                          className={`px-3 py-2 rounded-lg text-sm transition-all ${!filters.package ? 'bg-primary text-white' : 'bg-[#222] text-[#AAA] hover:bg-[#333]'}`}
-                          onClick={() => onFilterChange('package', undefined)}
+                          className={`px-3 py-2 rounded-lg text-sm transition-all ${!filters.tier ? 'bg-primary text-white' : 'bg-[#222] text-[#AAA] hover:bg-[#333]'}`}
+                          onClick={() => onFilterChange('tier', undefined)}
                         >
                           All
                         </button>
                         <button 
-                          className={`px-3 py-2 rounded-lg text-sm transition-all ${filters.package === 'premium' ? 'bg-primary text-white' : 'bg-[#222] text-[#AAA] hover:bg-[#333]'}`}
-                          onClick={() => onFilterChange('package', 'premium')}
+                          className={`px-3 py-2 rounded-lg text-sm transition-all ${filters.tier === 'advanced' ? 'bg-primary text-white' : 'bg-[#222] text-[#AAA] hover:bg-[#333]'}`}
+                          onClick={() => onFilterChange('tier', 'advanced')}
                         >
-                          Premium
+                          Advanced
                         </button>
                         <button 
-                          className={`px-3 py-2 rounded-lg text-sm transition-all ${filters.package === 'basic' ? 'bg-yellow-600 text-white' : 'bg-[#222] text-[#AAA] hover:bg-[#333]'}`}
-                          onClick={() => onFilterChange('package', 'basic')}
+                          className={`px-3 py-2 rounded-lg text-sm transition-all ${filters.tier === 'standard' ? 'bg-yellow-600 text-white' : 'bg-[#222] text-[#AAA] hover:bg-[#333]'}`}
+                          onClick={() => onFilterChange('tier', 'standard')}
                         >
-                          Enhanced
+                          Standard
                         </button>
                         <button 
-                          className={`px-3 py-2 rounded-lg text-sm transition-all ${filters.package === 'basic' ? 'bg-gray-600 text-white' : 'bg-[#222] text-[#AAA] hover:bg-[#333]'}`}
-                          onClick={() => onFilterChange('package', 'free')}
+                          className={`px-3 py-2 rounded-lg text-sm transition-all ${filters.tier === 'free' ? 'bg-gray-600 text-white' : 'bg-[#222] text-[#AAA] hover:bg-[#333]'}`}
+                          onClick={() => onFilterChange('tier', 'free')}
                         >
                           Free
                         </button>
@@ -491,6 +518,7 @@ const SearchPage: React.FC = () => {
                       setSelectedState('');
                       setSelectedService('');
                       setSelectedLocation('');
+                      onFilterChange('tier', undefined); // Clear tier filter
                       setFilters({});
                       setMapCenter(null);
                       // Update the URL to remove query parameters
@@ -534,7 +562,7 @@ const SearchPage: React.FC = () => {
                     state: clinic.state,
                     lat: clinic.lat || 0,
                     lng: clinic.lng || 0,
-                    tier: getTierFromPackage(clinic.package || ''),
+                    tier: clinic.tier || getTierFromPackage(clinic.package || ''),
                     rating: 4.5, // Placeholder since we don't have this field yet
                     phone: clinic.phone
                   }))}
@@ -637,11 +665,7 @@ const SearchPage: React.FC = () => {
   );
 };
 
-// Helper function to update a specific filter
-const onFilterChange = (name: string, value: any) => {
-  // This is just a placeholder function that will be implemented
-  // inside the component as part of the state updates
-  console.log(name, value);
-};
+// The actual onFilterChange function is implemented inside the component
+// This is just to prevent TypeScript errors for the function referenced in JSX
 
 export default SearchPage;
