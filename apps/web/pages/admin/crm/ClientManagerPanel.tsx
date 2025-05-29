@@ -118,13 +118,28 @@ const ClientManagerPanel: React.FC = () => {
           ? (data.lastContacted instanceof Timestamp ? data.lastContacted.toDate() : new Date(data.lastContacted))
           : (Math.random() > 0.3 ? new Date(Date.now() - Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000)) : null);
         
+        // Map legacy package/packageTier to standardized tier
+        const packageTier = data.packageTier || 'Basic';
+        let tier: 'free' | 'standard' | 'advanced';
+        
+        // Convert packageTier to standardized tier
+        if (packageTier.toLowerCase() === 'premium' || packageTier.toLowerCase() === 'high' || packageTier.toLowerCase() === 'advanced') {
+          tier = 'advanced';
+        } else if (packageTier.toLowerCase() === 'basic' || packageTier.toLowerCase() === 'standard' || packageTier.toLowerCase() === 'low') {
+          tier = 'standard';
+        } else {
+          tier = 'free';
+        }
+        
         // Add clinic to the collection
         const clinic: Clinic = {
           id: doc.id,
           name: data.name || 'Unnamed Clinic',
           city: data.city || 'Unknown',
           state: data.state || 'XX',
-          packageTier: data.packageTier || 'Basic',
+          tier: data.tier || tier, // Use existing tier or convert from packageTier
+          package: data.package || packageTier, // For backward compatibility
+          packageTier: data.packageTier || packageTier,
           status: data.status || 'active',
           engagementScore,
           signUpDate,
@@ -133,7 +148,8 @@ const ClientManagerPanel: React.FC = () => {
           phone: data.phone || '',
           email: data.email || '',
           address: data.address || '',
-          zip: data.zip || ''
+          zip: data.zip || '',
+          services: data.services || []
         };
         
         clinicsData.push(clinic);
