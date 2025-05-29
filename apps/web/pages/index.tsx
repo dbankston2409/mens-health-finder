@@ -465,19 +465,26 @@ export default function Home() {
                 {/* Add key={userLocation.lat + ',' + userLocation.lng} to force map re-render on location change */}
                 <Map 
                   key={`map-${userLocation.lat.toFixed(6)},${userLocation.lng.toFixed(6)}-${nearbyClinics.length}`}
-                  locations={nearbyClinics.map(clinic => ({
-                    id: clinic.id,
-                    name: clinic.name,
-                    address: clinic.address,
-                    city: clinic.city,
-                    state: clinic.state,
-                    lat: clinic.lat || 0,
-                    lng: clinic.lng || 0,
-                    tier: clinic.tier,
-                    rating: clinic.rating,
-                    phone: clinic.phone,
-                    services: clinic.services
-                  }))}
+                  locations={nearbyClinics.map(clinic => {
+                    // Convert legacy tier to standardized tier
+                    const standardizedTier = 
+                      clinic.tier === 'high' ? 'advanced' as const : 
+                      clinic.tier === 'low' ? 'standard' as const : 'free' as const;
+                    
+                    return {
+                      id: clinic.id,
+                      name: clinic.name,
+                      address: clinic.address,
+                      city: clinic.city,
+                      state: clinic.state,
+                      lat: clinic.lat || 0,
+                      lng: clinic.lng || 0,
+                      tier: standardizedTier,
+                      rating: clinic.rating,
+                      phone: clinic.phone,
+                      services: clinic.services
+                    };
+                  })}
                   center={userLocation}
                   height="400px"
                   singleLocation={false}
