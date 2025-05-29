@@ -70,13 +70,64 @@ const Map: React.FC<MapProps> = ({
   defaultToUS = false
 }) => {
   const [isMapReady, setIsMapReady] = useState(false);
+  const [userLocation, setUserLocation] = useState<{lat: number; lng: number} | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
   
   // Default center is the US
   const defaultCenter = { lat: 39.8283, lng: -98.5795, zoom: 4 }; 
   
+  // Get user's location when component mounts
+  useEffect(() => {
+    // Skip if we're in server-side rendering
+    if (typeof window === 'undefined') return;
+    
+    // Skip if defaultToUS is true or we already have a specific center
+    if (defaultToUS || center) return;
+    
+    setIsGettingLocation(true);
+    
+    // Check if geolocation is available
+    if ('geolocation' in navigator) {
+      console.log('Requesting user location...');
+      
+      // Request the user's location
+      navigator.geolocation.getCurrentPosition(
+        // Success handler
+        (position) => {
+          console.log('Got user location:', position.coords);
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+          setIsGettingLocation(false);
+        },
+        // Error handler
+        (error) => {
+          console.warn('Geolocation error:', error.message);
+          setLocationError(error.message);
+          setIsGettingLocation(false);
+        },
+        // Options
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
+        }
+      );
+    } else {
+      console.warn('Geolocation is not supported by this browser');
+      setLocationError('Geolocation is not supported by this browser');
+      setIsGettingLocation(false);
+    }
+  }, [defaultToUS, center]);
+  
   // Make sure we always have a center point to prevent map loading issues
+  // Priority order: 1. Specific center prop, 2. User location, 3. Default US center
   // If defaultToUS is true, always use the US default center
-  const mapCenter = defaultToUS ? defaultCenter : (center || defaultCenter);
+  const mapCenter = defaultToUS 
+    ? defaultCenter 
+    : (center || (userLocation ? {...userLocation, zoom: 13} : defaultCenter));
   
   // Import the map components with a dynamic approach
   // Use dynamic imports to load at runtime
@@ -135,6 +186,20 @@ const Map: React.FC<MapProps> = ({
       
       .leaflet-popup-tip {
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+      }
+      
+      /* User location styling */
+      .user-location-active {
+        background-color: #4285F4 !important;
+      }
+      
+      .user-location-active svg {
+        color: white !important;
+      }
+      
+      /* User location marker */
+      .user-location-marker {
+        z-index: 1000 !important;
       }
     `;
     document.head.appendChild(style);
@@ -214,8 +279,72 @@ const Map: React.FC<MapProps> = ({
     location.lng !== 0
   ));
   
+  // Function to handle requesting the user's location
+  const handleRequestLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError('Geolocation is not supported by this browser');
+      return;
+    }
+    
+    setIsGettingLocation(true);
+    setLocationError(null);
+    
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        console.log('Got user location:', position.coords);
+        setUserLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        });
+        setIsGettingLocation(false);
+        
+        // If map is ready, center it on user's location
+        if (isMapReady && mapImports?.MapCenter) {
+          // This will be handled by the MapCenter component when userLocation changes
+          console.log('Map is ready, centering on user location');
+        }
+      },
+      (error) => {
+        console.warn('Geolocation error:', error.message);
+        setLocationError(error.message);
+        setIsGettingLocation(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+      }
+    );
+  };
+  
   return (
-    <div style={{ height, width: '100%' }} className="rounded-xl overflow-hidden shadow-lg border border-[#222222]">
+    <div style={{ height, width: '100%' }} className="rounded-xl overflow-hidden shadow-lg border border-[#222222] relative">
+      {/* Location button */}
+      <div className="absolute top-3 right-3 z-[1000]">
+        <button 
+          onClick={handleRequestLocation}
+          disabled={isGettingLocation}
+          className={`bg-white p-2 rounded-md shadow-md hover:bg-gray-100 transition-colors ${userLocation ? 'user-location-active' : ''}`}
+          title="Find my location"
+          aria-label="Find my location"
+        >
+          {isGettingLocation ? (
+            <div className="h-6 w-6 animate-spin rounded-full border-b-2 border-t-2 border-[#4285F4]"></div>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#4285F4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          )}
+        </button>
+        
+        {locationError && (
+          <div className="bg-white mt-2 p-2 rounded-md shadow-md text-xs text-red-500 max-w-[200px]">
+            {locationError}
+          </div>
+        )}
+      </div>
+      
       <MapContainer 
         center={[mapCenter.lat, mapCenter.lng]} 
         zoom={mapCenter.zoom} 
@@ -253,12 +382,57 @@ const Map: React.FC<MapProps> = ({
           </Marker>
         ))}
         
-        {/* Center the map appropriately */}
+        {/* Render user location marker if available */}
+        {userLocation && (
+          <Marker 
+            key="user-location" 
+            position={[userLocation.lat, userLocation.lng]}
+            icon={L ? L.divIcon({
+              html: `
+                <div style="
+                  background-color: #4285F4; 
+                  border: 2px solid white;
+                  border-radius: 50%;
+                  height: 16px;
+                  width: 16px;
+                  box-shadow: 0 0 0 2px #4285F4, 0 0 10px rgba(0,0,0,0.35);
+                "></div>
+                <div style="
+                  background-color: rgba(66, 133, 244, 0.2);
+                  border-radius: 50%;
+                  height: 40px;
+                  width: 40px;
+                  position: absolute;
+                  top: -12px;
+                  left: -12px;
+                  z-index: -1;
+                "></div>
+              `,
+              className: 'user-location-marker',
+              iconSize: [0, 0],
+              iconAnchor: [8, 8]
+            }) : undefined}
+          >
+            <Popup>
+              <div className="text-black">
+                <h3 className="font-bold text-base">Your Location</h3>
+                <p className="text-sm">This is your current location</p>
+              </div>
+            </Popup>
+          </Marker>
+        )}
+        
+        {/* Center on user location if available */}
+        {!defaultToUS && !center && userLocation && MapCenter && (
+          <MapCenter lat={userLocation.lat} lng={userLocation.lng} zoom={13} />
+        )}
+        
+        {/* Default centering options */}
         {defaultToUS && MapCenter && (
           <MapCenter lat={defaultCenter.lat} lng={defaultCenter.lng} zoom={defaultCenter.zoom} />
         )}
         
-        {!defaultToUS && !center && !singleLocation && validLocations.length > 0 && MapBounds && (
+        {!defaultToUS && !center && !userLocation && !singleLocation && validLocations.length > 0 && MapBounds && (
           <MapBounds locations={validLocations} />
         )}
         
@@ -266,7 +440,7 @@ const Map: React.FC<MapProps> = ({
           <MapCenter lat={center.lat} lng={center.lng} zoom={center.zoom} />
         )}
         
-        {!defaultToUS && !center && (!validLocations || validLocations.length === 0) && MapCenter && (
+        {!defaultToUS && !center && !userLocation && (!validLocations || validLocations.length === 0) && MapCenter && (
           <MapCenter lat={defaultCenter.lat} lng={defaultCenter.lng} zoom={defaultCenter.zoom} />
         )}
       </MapContainer>

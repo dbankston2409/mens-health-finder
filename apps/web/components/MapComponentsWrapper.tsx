@@ -54,7 +54,11 @@ export const MapCenter = ({ lat, lng, zoom }: { lat: number; lng: number; zoom: 
     }
     
     try {
-      map.setView([lat, lng], zoom);
+      // Animate the transition to the new center
+      map.flyTo([lat, lng], zoom, {
+        animate: true,
+        duration: 1.5 // Animation duration in seconds
+      });
       console.log("Map center set to:", { lat, lng, zoom });
     } catch (error) {
       console.error("Error setting map center:", error);
