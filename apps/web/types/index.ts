@@ -42,6 +42,11 @@ export interface Clinic {
   yelpRating?: number;
   yelpReviewCount?: number;
   verified?: boolean;
+  reviewStats?: {
+    averageRating: number;
+    count: number;
+    distribution?: Record<string, number>;
+  };
   
   // Timestamps
   createdAt?: Timestamp | Date;

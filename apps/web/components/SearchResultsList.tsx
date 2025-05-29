@@ -124,9 +124,9 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({ initialFilters, u
     } else if (sortBy === 'rating') {
       // Sort by rating
       sorted.sort((a, b) => {
-        // Use ratings from reviews if available, otherwise use 0
-        const ratingA = a.reviewStats?.averageRating || 0;
-        const ratingB = b.reviewStats?.averageRating || 0;
+        // Use ratings from reviewStats if available, otherwise use regular rating, or default to 0
+        const ratingA = a.reviewStats?.averageRating || a.rating || 0;
+        const ratingB = b.reviewStats?.averageRating || b.rating || 0;
         return ratingB - ratingA; // Higher ratings first
       });
     } else {
