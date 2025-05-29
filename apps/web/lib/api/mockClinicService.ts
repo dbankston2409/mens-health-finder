@@ -3,6 +3,24 @@ import { mockClinics } from '../mockData';
 import { Clinic, ClinicFilter } from '../../types';
 import { Timestamp } from 'firebase/firestore';
 
+// Convert legacy tier values to standardized tier format
+function convertTierToStandard(tier: string): 'free' | 'standard' | 'advanced' {
+  const normalized = tier.toLowerCase();
+  
+  if (normalized === 'high' || normalized === 'premium') {
+    return 'advanced';
+  }
+  
+  if (normalized === 'low' || normalized === 'basic') {
+    return 'standard';
+  }
+  
+  if (normalized === 'advanced') return 'advanced';
+  if (normalized === 'standard') return 'standard';
+  
+  return 'free';
+}
+
 // Helper function to convert mock data to match Firestore schema
 function convertMockClinic(clinic: any): Clinic {
   return {
@@ -19,7 +37,8 @@ function convertMockClinic(clinic: any): Clinic {
     phone: clinic.phone || '',
     website: clinic.website || '',
     services: clinic.services || [],
-    package: clinic.tier || 'free', // Map tier to package
+    tier: convertTierToStandard(clinic.tier || 'free'), // Use standardized tier
+    package: clinic.tier || 'free', // Keep legacy field for backward compatibility
     status: 'active',
     tags: [],
     importSource: 'manual',
@@ -97,10 +116,19 @@ export async function queryClinics(
     );
   }
   
-  if (filters.package) {
+  // Handle filtering by tier or package
+  if (filters.tier) {
+    // Filter by new tier field
+    filteredClinics = filteredClinics.filter(clinic => {
+      const clinicStandardTier = convertTierToStandard(clinic.tier || 'free');
+      return clinicStandardTier === filters.tier;
+    });
+  }
+  else if (filters.package) {
+    // Legacy filter by package
     // Map package to tier for mock data
     const tierEquivalent = filters.package === 'premium' ? 'high' : 
-                           filters.package === 'basic' ? 'low' : 'free';
+                          filters.package === 'basic' ? 'low' : 'free';
     
     filteredClinics = filteredClinics.filter(clinic => 
       clinic.tier === tierEquivalent
