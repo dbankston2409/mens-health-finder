@@ -35,7 +35,6 @@ export async function generateSitemap(): Promise<string> {
         limit(1000) // Reasonable limit for sitemap size
       )
     ];
-    const querySnapshot = await getDocs(q);
     
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://menshealthfinder.com';
     const currentDate = new Date().toISOString();
