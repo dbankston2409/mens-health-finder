@@ -10,7 +10,7 @@ interface Clinic {
   city: string;
   state: string;
   services: string[];
-  tier: 'free' | 'low' | 'high';
+  tier: 'free' | 'standard' | 'advanced';
   phone?: string;
   website?: string;
   rating?: number;
