@@ -4,12 +4,27 @@
 
 /**
  * Convert a tier string to the enum type expected by TierBadge
- * @param tier The tier string to convert (e.g. 'premium', 'advanced', 'basic', 'free')
- * @returns One of the acceptable tier enum values: 'free', 'low', or 'high'
+ * @param tier The tier string to convert (e.g. 'premium', 'advanced', 'standard', 'free')
+ * @returns One of the acceptable tier enum values: 'free', 'standard', or 'advanced'
  */
-export function convertTierToEnum(tier: string): 'free' | 'low' | 'high' {
-  if (tier === 'premium' || tier === 'advanced' || tier === 'featured') return 'high';
-  if (tier === 'basic' || tier === 'standard') return 'low';
+export function convertTierToEnum(tier: string): 'free' | 'standard' | 'advanced' | 'low' | 'high' {
+  const normalized = tier.toLowerCase();
+  
+  // Handle legacy 'high'/'premium' -> 'advanced'
+  if (normalized === 'high' || normalized === 'premium' || normalized === 'featured') {
+    return 'advanced';
+  }
+  
+  // Handle legacy 'low'/'basic' -> 'standard'
+  if (normalized === 'low' || normalized === 'basic') {
+    return 'standard';
+  }
+  
+  // Handle new tier values directly
+  if (normalized === 'advanced') return 'advanced';
+  if (normalized === 'standard') return 'standard';
+  
+  // Default to free
   return 'free';
 }
 

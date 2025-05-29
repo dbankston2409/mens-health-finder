@@ -276,7 +276,8 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({ initialFilters, u
       {/* Results list */}
       <div className="space-y-6">
         {sortedClinics.map((clinic) => {
-          const tier = clinic.tier || clinic.package || 'free';
+          // Use a string type to avoid TypeScript errors with string comparisons
+          const tier: string = clinic.tier || clinic.package || 'free';
           
           // Calculate distance if user location is available
           let distanceText = '';
