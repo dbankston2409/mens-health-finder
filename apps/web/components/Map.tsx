@@ -33,9 +33,20 @@ if (typeof window !== 'undefined') {
   });
 }
 
-// Import the map components wrapper dynamically
-const MapComponentsLoader = dynamic(
-  () => import('../components/MapComponentsWrapper'),
+// Define the type for the MapComponentsWrapper component
+type MapComponentsWrapperType = React.FC<{ children?: React.ReactNode }> & {
+  MapContainer: any;
+  TileLayer: any;
+  Marker: any;
+  Popup: any;
+  MapBounds: React.FC<{ locations: any[] }>;
+  MapCenter: React.FC<{ lat: number; lng: number; zoom: number }>;
+  createCustomMarkerIcon: (tier: 'free' | 'low' | 'high') => any;
+};
+
+// Import the map components wrapper dynamically with proper typing
+const MapComponentsLoader = dynamic<MapComponentsWrapperType>(
+  () => import('./MapComponentsWrapper'),
   { 
     ssr: false,
     loading: () => (
@@ -93,8 +104,8 @@ const Map: React.FC<MapProps> = ({
   // If defaultToUS is true, always use the US default center
   const mapCenter = defaultToUS ? defaultCenter : (center || defaultCenter);
   
-  // Get map components from dynamic import
-  const { MapContainer, TileLayer, Marker, Popup, MapBounds, MapCenter, createCustomMarkerIcon } = MapComponentsLoader as any;
+  // Get map components from dynamic import with proper typing
+  const { MapContainer, TileLayer, Marker, Popup, MapBounds, MapCenter, createCustomMarkerIcon } = MapComponentsLoader;
   
   // Log locations being passed to the map
   useEffect(() => {

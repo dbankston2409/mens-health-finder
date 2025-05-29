@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 
 // Import L only on the client side
@@ -14,7 +14,7 @@ if (typeof window !== 'undefined') {
 export const MapBounds = ({ locations }: { locations: any[] }) => {
   const map = useMap();
   
-  useEffect(() => {
+  React.useEffect(() => {
     if (!locations || locations.length === 0 || !L) {
       return; // Skip if no locations or Leaflet not loaded
     }
@@ -44,7 +44,7 @@ export const MapBounds = ({ locations }: { locations: any[] }) => {
 export const MapCenter = ({ lat, lng, zoom }: { lat: number; lng: number; zoom: number }) => {
   const map = useMap();
   
-  useEffect(() => {
+  React.useEffect(() => {
     if (isNaN(lat) || isNaN(lng)) {
       console.error("Invalid coordinates provided to MapCenter:", { lat, lng });
       return;
@@ -151,15 +151,49 @@ export const createCustomMarkerIcon = (tier: 'free' | 'low' | 'high') => {
   }
 };
 
-// Export all components
-const MapComponentsWrapper = {
+// Export shared utility functions
+export const mapUtils = {
   MapContainer,
   TileLayer,
-  Marker,
+  Marker, 
   Popup,
   MapBounds,
   MapCenter,
   createCustomMarkerIcon
 };
 
-export default MapComponentsWrapper;
+// Create a proper React component for dynamic import
+// This component will be the main exported component for dynamic import
+interface MapComponentsWrapperProps {
+  children?: React.ReactNode;
+}
+
+const MapComponentsWrapper: React.FC<MapComponentsWrapperProps> = ({ children }) => {
+  return (
+    <div>
+      {children || "Map components loaded"}
+    </div>
+  );
+};
+
+// Define the component type with proper TypeScript typing
+interface MapComponentsWrapperType extends React.FC<MapComponentsWrapperProps> {
+  MapContainer: typeof MapContainer;
+  TileLayer: typeof TileLayer;
+  Marker: typeof Marker;
+  Popup: typeof Popup;
+  MapBounds: typeof MapBounds;
+  MapCenter: typeof MapCenter;
+  createCustomMarkerIcon: typeof createCustomMarkerIcon;
+}
+
+// Attach utilities to the component with correct typing
+(MapComponentsWrapper as MapComponentsWrapperType).MapContainer = MapContainer;
+(MapComponentsWrapper as MapComponentsWrapperType).TileLayer = TileLayer;
+(MapComponentsWrapper as MapComponentsWrapperType).Marker = Marker;
+(MapComponentsWrapper as MapComponentsWrapperType).Popup = Popup;
+(MapComponentsWrapper as MapComponentsWrapperType).MapBounds = MapBounds;
+(MapComponentsWrapper as MapComponentsWrapperType).MapCenter = MapCenter;
+(MapComponentsWrapper as MapComponentsWrapperType).createCustomMarkerIcon = createCustomMarkerIcon;
+
+export default MapComponentsWrapper as MapComponentsWrapperType;
