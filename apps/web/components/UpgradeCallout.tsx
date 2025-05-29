@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import { Clinic } from '@/types';
-import { getTierDisplayName, getNextUpgradeTier } from '@/utils/tierUtils';
+import { Clinic } from '../types';
+import { getTierDisplayName, getNextUpgradeTier } from '../utils/tierUtils';
 
 interface UpgradeCalloutProps {
   clinic: Clinic;

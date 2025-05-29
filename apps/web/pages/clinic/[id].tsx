@@ -273,7 +273,7 @@ const ClinicProfile = () => {
           {/* Upgrade Callout for Free Tier */}
           {tier === 'free' && (
             <div className="mb-8">
-              <UpgradeCallout clinicName={enhancedClinic.name} />
+              <UpgradeCallout clinic={enhancedClinic} />
             </div>
           )}
           
