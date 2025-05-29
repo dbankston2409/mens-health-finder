@@ -99,10 +99,45 @@ const Map: React.FC<MapProps> = ({
     addCssLink('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
     addCssLink('https://unpkg.com/leaflet-defaulticon-compatibility@0.1.2/dist/leaflet-defaulticon-compatibility.css');
     
-    // Also load our custom CSS
-    import('../styles/leaflet-custom.css').catch(err => {
-      console.warn('Custom CSS loading had an issue:', err);
-    });
+    // Add our custom CSS styles directly to the document
+    const style = document.createElement('style');
+    style.textContent = `
+      /* Custom map styles */
+      .leaflet-container {
+        width: 100%;
+        height: 100%;
+      }
+      
+      .leaflet-div-icon {
+        background: transparent;
+        border: none;
+      }
+      
+      /* Marker styling */
+      .marker-free-fallback,
+      .marker-low-fallback,
+      .marker-high-fallback {
+        background: transparent;
+        border: none;
+      }
+      
+      /* Popup styling */
+      .leaflet-popup-content-wrapper {
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        padding: 0;
+      }
+      
+      .leaflet-popup-content {
+        margin: 12px;
+        line-height: 1.5;
+      }
+      
+      .leaflet-popup-tip {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+      }
+    `;
+    document.head.appendChild(style);
     
     // Import the map components directly
     import('./MapComponentsWrapper')
