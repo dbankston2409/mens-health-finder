@@ -13,6 +13,7 @@ import type { Clinic } from '../../types';
 import { mockClinics } from '../../lib/mockData';
 import { generateSeoMeta } from '../../utils/seo/metadataGenerator';
 import { generateSeoContent } from '../../utils/seo/contentGenerator';
+import { convertTierToEnum } from '../../lib/utils';
 
 // Import either the real service or the mock service based on environment
 import * as realClinicService from '../../lib/api/clinicService';
@@ -277,7 +278,7 @@ const ClinicProfile = () => {
                 <div>
                   <div className="flex items-center gap-3 flex-wrap">
                     <h1 className="text-3xl font-bold">{enhancedClinic.name}</h1>
-                    <TierBadge tier={tier} size="md" />
+                    <TierBadge tier={convertTierToEnum(tier)} size="md" />
                   </div>
                   <p className="text-textSecondary mt-1">{enhancedClinic.address}</p>
                   

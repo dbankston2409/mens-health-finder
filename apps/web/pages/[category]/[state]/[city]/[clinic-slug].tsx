@@ -18,7 +18,8 @@ import {
   groupClinicsByCity,
   getCategoryById, 
   getStateFullName,
-  formatClinicName
+  formatClinicName,
+  convertTierToEnum
 } from '../../../../lib/utils';
 import { generateSeoContent } from '../../../../utils/seo/contentGenerator';
 
@@ -149,7 +150,7 @@ export default function ClinicDetailPage({
               <div>
                 <div className="flex items-center gap-3 flex-wrap">
                   <h1 className="text-3xl font-bold">{clinicDisplayName}</h1>
-                  <TierBadge tier={clinic.tier} size="md" />
+                  <TierBadge tier={convertTierToEnum(clinic.tier)} size="md" />
                 </div>
                 <p className="text-textSecondary mt-1">{clinic.address}</p>
                 

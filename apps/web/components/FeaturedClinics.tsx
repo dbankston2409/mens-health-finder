@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { collection, query, where, getDocs, limit, orderBy } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import TierBadge from './TierBadge';
+import { convertTierToEnum } from '../lib/utils';
 
 interface FeaturedClinic {
   id: string;
@@ -196,7 +197,7 @@ const FeaturedClinics: React.FC = () => {
             )}
             {/* Show tier badge */}
             <div className="absolute top-2 right-2">
-              <TierBadge tier={clinic.tier} />
+              <TierBadge tier={convertTierToEnum(clinic.tier)} />
             </div>
           </div>
           

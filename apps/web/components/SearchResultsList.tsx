@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import TierBadge from './TierBadge';
+import { convertTierToEnum } from '../lib/utils';
 import { Clinic, ClinicFilter } from '../types';
 import { queryClinics } from '../lib/api/clinicService';
 import TrackedPhoneLink from './TrackedPhoneLink';
@@ -317,7 +318,7 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({ initialFilters, u
                     </div>
                     
                     <div className="flex items-center space-x-2">
-                      <TierBadge tier={tier} />
+                      <TierBadge tier={convertTierToEnum(tier)} />
                       
                       {clinic.validationStatus?.verified && (
                         <span className="bg-green-900 text-green-300 text-xs px-2 py-1 rounded flex items-center">

@@ -3,6 +3,17 @@
  */
 
 /**
+ * Convert a tier string to the enum type expected by TierBadge
+ * @param tier The tier string to convert (e.g. 'premium', 'advanced', 'basic', 'free')
+ * @returns One of the acceptable tier enum values: 'free', 'low', or 'high'
+ */
+export function convertTierToEnum(tier: string): 'free' | 'low' | 'high' {
+  if (tier === 'premium' || tier === 'advanced' || tier === 'featured') return 'high';
+  if (tier === 'basic' || tier === 'standard') return 'low';
+  return 'free';
+}
+
+/**
  * Convert a string to a URL-friendly slug
  * @param text The string to convert to a slug
  * @returns A lowercase string with spaces converted to hyphens and special characters removed
