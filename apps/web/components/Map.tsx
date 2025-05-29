@@ -1,11 +1,16 @@
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-// Import CSS statically - Next.js will handle this at build time
-import '../styles/leaflet.css';
 // Import and initialize libraries on the client side only
 // Simplified approach to avoid race conditions
 let nominatim: any = null;
 let L: any = null;
+
+// Import CSS only on the client side
+if (typeof window !== 'undefined') {
+  // Import our custom CSS for maps
+  import('../styles/leaflet-custom.css')
+    .catch(err => console.error('Failed to load custom CSS:', err));
+}
 
 // This will run in the browser, but not during server-side rendering
 if (typeof window !== 'undefined') {
@@ -83,9 +88,20 @@ const Map: React.FC<MapProps> = ({
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapImports, setMapImports] = useState<any>(null);
   
-  // Load map components on client side only
+  // Load map components and CSS on client side only
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    
+    // Load required CSS first
+    Promise.all([
+      // These are dynamically imported to avoid Next.js CSS loader issues
+      import('leaflet/dist/leaflet.css'),
+      import('leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css'),
+      import('../styles/leaflet-custom.css')
+    ]).catch(err => {
+      console.warn('CSS loading had an issue:', err);
+      // Non-critical error, we can continue
+    });
     
     // Import the map components directly
     import('./MapComponentsWrapper')
