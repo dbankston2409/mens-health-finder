@@ -16,6 +16,7 @@ export interface Clinic {
   website?: string;
   email?: string;
   services?: string[];
+  imageUrl?: string;
   
   // Package/Tier (support both naming conventions)
   package?: 'Free' | 'Basic' | 'Premium' | string;
