@@ -1,6 +1,9 @@
 import React from 'react';
 import { logCallClick } from '../utils/callTracking';
 import { PhoneIcon } from '@heroicons/react/24/solid';
+import { trackClickToCall } from '../../../lib/analytics';
+import leadTracker from '../../../lib/leadTracker';
+import { trackClinicCallConversion } from '../../../utils/affiliateTracking';
 
 interface TrackedPhoneLinkProps {
   phone: string;
@@ -10,6 +13,7 @@ interface TrackedPhoneLinkProps {
   buttonStyle?: boolean;
   className?: string;
   children?: React.ReactNode;
+  clinicTier?: 'free' | 'standard' | 'advanced';
 }
 
 const TrackedPhoneLink: React.FC<TrackedPhoneLinkProps> = ({
@@ -19,7 +23,8 @@ const TrackedPhoneLink: React.FC<TrackedPhoneLinkProps> = ({
   sourcePage,
   buttonStyle = false,
   className = '',
-  children
+  children,
+  clinicTier = 'free'
 }) => {
   // Format phone number for display
   const formatPhoneForDisplay = (phone: string): string => {
@@ -41,16 +46,21 @@ const TrackedPhoneLink: React.FC<TrackedPhoneLinkProps> = ({
   };
   
   // Handle click event
-  const handleClick = (e: React.MouseEvent) => {
-    // Log the call click
+  const handleClick = async (e: React.MouseEvent) => {
+    // Log the call click via legacy system
     logCallClick(clinicId, searchQuery, sourcePage);
     
-    // Track event in analytics if available
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'phone_click', {
-        clinic_id: clinicId,
-        search_query: searchQuery || 'direct'
-      });
+    // Track in GA4
+    trackClickToCall(clinicId, clinicId, phone);
+    
+    // Track as a lead
+    leadTracker.trackLead(clinicId, 'call');
+    
+    // Track as affiliate conversion if applicable
+    try {
+      await trackClinicCallConversion(clinicId, clinicTier);
+    } catch (error) {
+      console.error('Error tracking affiliate call conversion:', error);
     }
   };
   
