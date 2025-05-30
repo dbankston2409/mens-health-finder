@@ -1,7 +1,7 @@
 import { doc, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import FirestoreClient from '../lib/firestoreClient';
-import { getAttributionParams } from '../../../lib/analytics';
+import { getAttributionParams } from '../../../lib/analytics'; // Import from root analytics
 
 // Define lead source types
 export type LeadSource = 'organic' | 'paid' | 'social' | 'referral' | 'direct' | 'email' | 'unknown';
