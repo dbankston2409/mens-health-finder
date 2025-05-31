@@ -148,10 +148,6 @@ export const determineLeadSource = (): LeadSource => {
     }
   }
   
-  // Check for affiliate ref code
-  if (attributionParams.ref_code) {
-    return 'referral';
-  }
   
   // Check referrer domain
   if (referrer) {

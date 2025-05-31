@@ -48,6 +48,9 @@
     "typescript": "^5.8.3"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.17",
+    "eslint": "^9.28.0",
+    "eslint-config-next": "^15.3.3",
     "ignore-loader": "^0.1.2",
     "null-loader": "^4.0.1"
   }
