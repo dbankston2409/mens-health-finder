@@ -105,17 +105,24 @@ class FirestoreClient {
     try {
       const clinicsRef = collection(db, 'clinics');
       
-      // Add pagination
-      const constraints = [
-        ...queryConstraints,
-        limit(maxResults + 1) // +1 to check if there are more results
-      ];
+      // Create the query based on whether we have a startAfterDoc
+      let q;
       
       if (startAfterDoc) {
-        constraints.push(startAfter(startAfterDoc));
+        q = query(
+          clinicsRef,
+          ...queryConstraints,
+          startAfter(startAfterDoc),
+          limit(maxResults + 1) // +1 to check if there are more results
+        );
+      } else {
+        q = query(
+          clinicsRef,
+          ...queryConstraints,
+          limit(maxResults + 1) // +1 to check if there are more results
+        );
       }
       
-      const q = query(clinicsRef, ...constraints);
       const querySnapshot = await getDocs(q);
       
       // Process results
@@ -400,16 +407,23 @@ class FirestoreClient {
     try {
       const logsRef = collection(db, 'import_logs');
       
-      const constraints = [
-        orderBy('timestamp', 'desc'),
-        limit(maxResults + 1)
-      ];
+      // Create the query
+      let q;
       
       if (startAfterDoc) {
-        constraints.push(startAfter(startAfterDoc));
+        q = query(
+          logsRef,
+          orderBy('timestamp', 'desc'),
+          startAfter(startAfterDoc),
+          limit(maxResults + 1)
+        );
+      } else {
+        q = query(
+          logsRef,
+          orderBy('timestamp', 'desc'),
+          limit(maxResults + 1)
+        );
       }
-      
-      const q = query(logsRef, ...constraints);
       const querySnapshot = await getDocs(q);
       
       // Process results

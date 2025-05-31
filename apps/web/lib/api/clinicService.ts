@@ -150,16 +150,23 @@ export async function queryClinics(
     // For now, we'll sort in memory after fetching the results
     queryConstraints.push(orderBy('trafficMeta.totalClicks', 'desc'));
     
-    // Add limit for pagination
-    queryConstraints.push(limit(pageSize + 1)); // +1 to check if there are more results
+    // Create and execute the query with proper constraints
+    let q;
     
-    // If we have a startAfter document for pagination, add it
     if (startAfterDoc) {
-      queryConstraints.push(startAfter(startAfterDoc));
+      q = query(
+        clinicsRef,
+        ...queryConstraints,
+        limit(pageSize + 1), // +1 to check if there are more results
+        startAfter(startAfterDoc)
+      );
+    } else {
+      q = query(
+        clinicsRef,
+        ...queryConstraints,
+        limit(pageSize + 1) // +1 to check if there are more results
+      );
     }
-    
-    // Create and execute the query
-    const q = query(clinicsRef, ...queryConstraints);
     const querySnapshot = await getDocs(q);
     
     // Process results

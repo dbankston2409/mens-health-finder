@@ -209,6 +209,7 @@ export interface ClinicFilter {
   lat?: number;
   lng?: number;
   radius?: number;
+  verified?: boolean;
 }
 
 // Safe object access helper

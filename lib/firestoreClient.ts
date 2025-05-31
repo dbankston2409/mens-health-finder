@@ -263,21 +263,23 @@ class FirestoreClient {
   /**
    * Get import logs with pagination
    */
-  static async getImportLogs(pageSize = 10, startAfter: DocumentData | null = null) {
+  static async getImportLogs(pageSize = 10, startAfterDoc: DocumentData | null = null) {
     try {
       const logsRef = collection(db, 'import_logs');
       
-      let q = query(
-        logsRef,
-        orderBy('timestamp', 'desc'),
-        limit(pageSize)
-      );
+      let q;
       
-      if (startAfter) {
+      if (startAfterDoc) {
         q = query(
           logsRef,
           orderBy('timestamp', 'desc'),
-          startAfter(startAfter),
+          startAfter(startAfterDoc),
+          limit(pageSize)
+        );
+      } else {
+        q = query(
+          logsRef,
+          orderBy('timestamp', 'desc'),
           limit(pageSize)
         );
       }
