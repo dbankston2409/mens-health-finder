@@ -2,7 +2,7 @@ import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import { DevAdminBypass } from './DevAdminBypass';
-import AffiliateTracker from '../../../components/AffiliateTracker';
+import AffiliateTracker from './AffiliateTracker';
 
 interface LayoutProps {
   children: React.ReactNode;
