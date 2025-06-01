@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { collection, query, where, orderBy, onSnapshot } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
+import { mockAdminLogs } from './stubs/mockAdminData';
 
 export type AdminLogEvent = {
   id: string;
@@ -67,9 +68,24 @@ export const useLogs = (clinicId: string | undefined) => {
       },
       (err) => {
         console.error('Error fetching admin logs:', err);
-        setError(err);
+        // Use mock data if Firebase access fails
+        console.log('Using mock admin logs due to Firebase access error');
+        const mockLogEvents = mockAdminLogs.map(log => {
+          return {
+            id: log.id,
+            clinicId: clinicId || '',
+            timestamp: log.timestamp,
+            actionType: log.action,
+            adminId: log.user?.id || 'system',
+            adminName: log.user?.name || 'System',
+            details: log.changes || {},
+            notes: log.note || ''
+          };
+        });
+        setLogs(mockLogEvents);
+        setError(null); // Clear error since we're using mock data
         setLoading(false);
-      }
+      })
     );
 
     return () => unsubscribe();

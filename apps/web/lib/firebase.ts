@@ -13,6 +13,15 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
+// Log config for debugging (will be removed in production)
+if (process.env.NODE_ENV === 'development') {
+  console.log('Firebase config:', {
+    apiKeySet: !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomainSet: !!process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectIdSet: !!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
+  });
+}
+
 // Initialize Firebase
 let firebaseApp;
 
