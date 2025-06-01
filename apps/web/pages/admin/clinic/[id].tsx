@@ -17,9 +17,9 @@ import BillingHistory from './components/BillingHistory';
 import TrafficEngagementMetrics from './components/TrafficEngagementMetrics';
 import CommunicationLog from './components/CommunicationLog';
 import AdminNotes from './components/AdminNotes';
-import SnapshotEditor from '../../../../../components/admin/clinic/SnapshotEditor';
-import AnalyticsPanel from '../../../../../components/admin/AnalyticsPanel';
-import ExternalReviewsManager from '../../../../../components/admin/clinic/ExternalReviewsManager';
+import SnapshotEditor from '../../../components/admin/clinic/SnapshotEditor';
+import AnalyticsPanel from '../../../components/admin/AnalyticsPanel';
+import ExternalReviewsManager from '../../../components/admin/clinic/ExternalReviewsManager';
 
 const ClinicDetailPage: React.FC = () => {
   const router = useRouter();
