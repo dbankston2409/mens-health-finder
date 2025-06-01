@@ -85,7 +85,7 @@ export const useLogs = (clinicId: string | undefined) => {
         setLogs(mockLogEvents);
         setError(null); // Clear error since we're using mock data
         setLoading(false);
-      })
+      }
     );
 
     return () => unsubscribe();
