@@ -56,14 +56,16 @@ const TagsEditor: React.FC<TagsEditorProps> = ({
     setLoading(true);
     try {
       // Update Firestore
-      await updateDoc(doc(db, 'clinics', clinic.id), {
-        tags: arrayUnion(formattedTag)
-      });
+      if (clinic.id) {
+        await updateDoc(doc(db, 'clinics', clinic.id), {
+          tags: arrayUnion(formattedTag)
+        });
+      }
       
       // Log the action
       try {
         await addDoc(collection(db, 'admin_logs'), {
-          clinicId: clinic.id,
+          clinicId: clinic.id || '',
           timestamp: new Date(),
           actionType: 'tag_add',
           adminId: 'current_admin', // Replace with actual admin ID
@@ -88,14 +90,16 @@ const TagsEditor: React.FC<TagsEditorProps> = ({
     setLoading(true);
     try {
       // Update Firestore
-      await updateDoc(doc(db, 'clinics', clinic.id), {
-        tags: arrayRemove(tagToRemove)
-      });
+      if (clinic.id) {
+        await updateDoc(doc(db, 'clinics', clinic.id), {
+          tags: arrayRemove(tagToRemove)
+        });
+      }
       
       // Log the action
       try {
         await addDoc(collection(db, 'admin_logs'), {
-          clinicId: clinic.id,
+          clinicId: clinic.id || '',
           timestamp: new Date(),
           actionType: 'tag_remove',
           adminId: 'current_admin', // Replace with actual admin ID

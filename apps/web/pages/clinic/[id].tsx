@@ -9,11 +9,18 @@ import RecommendedProviders from '../../components/RecommendedProviders';
 import ReviewsSection from '../../components/ReviewsSection';
 import TrackedPhoneLink from '../../components/TrackedPhoneLink';
 import SeoContentSection from '../../components/SeoContentSection';
+// import ClinicSnapshot from '../../../components/ClinicSnapshot';
+// Temporarily disabled until component is created
+// import ExternalReviewsSection from '../../../components/ExternalReviewsSection';
+// Temporarily disabled until component is created
 import type { Clinic } from '../../types';
 import { mockClinics } from '../../lib/mockData';
 import { generateSeoMeta } from '../../utils/seo/metadataGenerator';
 import { generateSeoContent } from '../../utils/seo/contentGenerator';
 import { convertTierToEnum } from '../../lib/utils';
+import FirestoreClient from '../../lib/firestoreClient';
+// import { trackClinicView, trackClickToCall, trackClickToWebsite, trackClickToDirections } from '../../../lib/analytics';
+// Temporarily comment out tracking functions
 
 // Import either the real service or the mock service based on environment
 import * as realClinicService from '../../lib/api/clinicService';
@@ -125,7 +132,25 @@ const ClinicProfile = () => {
             setSeoContent(clinicData.seoContent?.content || null);
           }
           
-          // Log the clinic view
+          // Generate snapshot if not present - temporarily disabled
+          // if (!clinicData.snapshot) {
+          //   try {
+          //     await FirestoreClient.generateAndSaveSnapshot(clinicData.id!);
+          //   } catch (snapshotErr) {
+          //     console.error('Error generating clinic snapshot:', snapshotErr);
+          //     // Non-blocking error - we'll show the page without the snapshot
+          //   }
+          // }
+          
+          // Track the page view in GA4 - temporarily disabled
+          // trackClinicView(clinicData.id!, clinicData.slug || clinicData.name, clinicData.name);
+          
+          // Track the clinic view in Firestore
+          // Temporarily disabled lead tracking
+          // const leadSource = leadTracker.determineLeadSource();
+          // await leadTracker.trackClinicView(clinicData.id!, leadSource);
+          
+          // Log the clinic view in traffic logs
           // In a real app, we'd capture the search query from localStorage or URL params
           const searchQuery = localStorage.getItem('lastSearchQuery') || '';
           await logClinicTraffic(searchQuery, clinicData.slug || '');
@@ -377,7 +402,17 @@ const ClinicProfile = () => {
                   
                   {/* Website link for all tiers */}
                   {enhancedClinic.website && (
-                    <a href={enhancedClinic.website} target="_blank" rel="noopener noreferrer" className="btn flex items-center justify-center gap-2">
+                    <a 
+                      href={enhancedClinic.website} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="btn flex items-center justify-center gap-2"
+                      onClick={() => {
+                        // Temporarily disabled tracking
+                        // trackClickToWebsite(enhancedClinic.id, enhancedClinic.name, enhancedClinic.website || '');
+                        // leadTracker.trackLead(enhancedClinic.id, 'website');
+                      }}
+                    >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
@@ -446,6 +481,8 @@ const ClinicProfile = () => {
             {/* About Section */}
             <div ref={aboutRef} id="about" className="scroll-mt-24">
               <h2 className="text-2xl font-bold mb-4">About {enhancedClinic.name}</h2>
+              
+              {/* Display the AI-generated snapshot if available */}
               <p className="mb-6 text-lg">{enhancedClinic.description}</p>
               
               <h3 className="text-xl font-bold mb-3">Services</h3>
@@ -505,6 +542,7 @@ const ClinicProfile = () => {
             
             {/* Reviews Section */}
             <div ref={reviewsRef} id="reviews" className="scroll-mt-24">
+              {/* Reviews Section */}
               <ReviewsSection 
                 clinicId={parseInt(enhancedClinic.id || '0', 10)} 
                 clinicName={enhancedClinic.name} 
@@ -527,7 +565,17 @@ const ClinicProfile = () => {
                         clinicId={enhancedClinic.id}
                       />
                     </p>
-                    <a href={`https://maps.google.com/?q=${encodeURIComponent(enhancedClinic.address)}`} target="_blank" rel="noopener noreferrer" className="btn inline-flex items-center">
+                    <a 
+                      href={`https://maps.google.com/?q=${encodeURIComponent(enhancedClinic.address)}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="btn inline-flex items-center"
+                      onClick={() => {
+                        // Temporarily disabled tracking
+                        // trackClickToDirections(enhancedClinic.id, enhancedClinic.name, enhancedClinic.address);
+                        // leadTracker.trackLead(enhancedClinic.id, 'directions');
+                      }}
+                    >
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />

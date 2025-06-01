@@ -84,7 +84,7 @@ const BillingHistory: React.FC<BillingHistoryProps> = ({
 
       // Add to billing collection
       await addDoc(collection(db, 'billing'), {
-        clinicId: clinic.id,
+        clinicId: clinic.id || '',
         date: Timestamp.fromDate(now),
         amount: packageOption.amount,
         plan: packageOption.name,
@@ -95,15 +95,17 @@ const BillingHistory: React.FC<BillingHistoryProps> = ({
       });
       
       // Update clinic package tier
-      await updateDoc(doc(db, 'clinics', clinic.id), {
-        packageTier: packageOption.name,
-        status: 'active', // Ensure it's active when upgrading
-        updatedAt: Timestamp.fromDate(now)
-      });
+      if (clinic.id) {
+        await updateDoc(doc(db, 'clinics', clinic.id), {
+          packageTier: packageOption.name,
+          status: 'active', // Ensure it's active when upgrading
+          updatedAt: Timestamp.fromDate(now)
+        });
+      }
       
       // Log admin action
       await addDoc(collection(db, 'admin_logs'), {
-        clinicId: clinic.id,
+        clinicId: clinic.id || '',
         timestamp: Timestamp.fromDate(now),
         actionType: 'plan_change',
         adminId: 'current_admin', // Replace with actual admin ID
@@ -134,7 +136,7 @@ const BillingHistory: React.FC<BillingHistoryProps> = ({
       
       // Add cancellation event to billing
       await addDoc(collection(db, 'billing'), {
-        clinicId: clinic.id,
+        clinicId: clinic.id || '',
         date: Timestamp.fromDate(now),
         amount: 0,
         plan: billingData.currentPlan.name,
@@ -144,14 +146,16 @@ const BillingHistory: React.FC<BillingHistoryProps> = ({
       });
       
       // Update clinic status
-      await updateDoc(doc(db, 'clinics', clinic.id), {
-        status: 'canceled',
-        updatedAt: Timestamp.fromDate(now)
-      });
+      if (clinic.id) {
+        await updateDoc(doc(db, 'clinics', clinic.id), {
+          status: 'canceled',
+          updatedAt: Timestamp.fromDate(now)
+        });
+      }
       
       // Log admin action
       await addDoc(collection(db, 'admin_logs'), {
-        clinicId: clinic.id,
+        clinicId: clinic.id || '',
         timestamp: Timestamp.fromDate(now),
         actionType: 'plan_cancel',
         adminId: 'current_admin', // Replace with actual admin ID
@@ -178,14 +182,16 @@ const BillingHistory: React.FC<BillingHistoryProps> = ({
       const now = new Date();
       
       // Update clinic status
-      await updateDoc(doc(db, 'clinics', clinic.id), {
-        status: 'active',
-        updatedAt: Timestamp.fromDate(now)
-      });
+      if (clinic.id) {
+        await updateDoc(doc(db, 'clinics', clinic.id), {
+          status: 'active',
+          updatedAt: Timestamp.fromDate(now)
+        });
+      }
       
       // Log admin action
       await addDoc(collection(db, 'admin_logs'), {
-        clinicId: clinic.id,
+        clinicId: clinic.id || '',
         timestamp: Timestamp.fromDate(now),
         actionType: 'plan_reactivate',
         adminId: 'current_admin', // Replace with actual admin ID

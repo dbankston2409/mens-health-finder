@@ -2,8 +2,7 @@ import React from 'react';
 import { logCallClick } from '../utils/callTracking';
 import { PhoneIcon } from '@heroicons/react/24/solid';
 import { trackClickToCall } from '../../../lib/analytics';
-import leadTracker from '../../../lib/leadTracker';
-import { trackClinicCallConversion } from '../../../utils/affiliateTracking';
+import leadTracker from '../utils/leadTracker';
 
 interface TrackedPhoneLinkProps {
   phone: string;
@@ -55,13 +54,6 @@ const TrackedPhoneLink: React.FC<TrackedPhoneLinkProps> = ({
     
     // Track as a lead
     leadTracker.trackLead(clinicId, 'call');
-    
-    // Track as affiliate conversion if applicable
-    try {
-      await trackClinicCallConversion(clinicId, clinicTier);
-    } catch (error) {
-      console.error('Error tracking affiliate call conversion:', error);
-    }
   };
   
   // Formatted phone numbers

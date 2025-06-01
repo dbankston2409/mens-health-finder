@@ -3,6 +3,17 @@
  * Supports GA4 and Google Search Console
  */
 
+// Add gtag type declaration
+declare global {
+  interface Window {
+    dataLayer: any[];
+    gtag: (...args: any[]) => void;
+    MHF?: {
+      analytics?: Record<string, any>;
+    };
+  }
+}
+
 // GA4 tracking
 export const trackPageView = (path: string, title?: string) => {
   try {
@@ -39,13 +50,6 @@ export const trackClinicView = (clinicId: string, clinicSlug: string, clinicName
     // Also fire a virtual pageview for this clinic
     trackPageView(`/clinics/${clinicSlug}`, `${clinicName} | Men's Health Finder`);
     
-    // If there's an affiliate code, track the conversion
-    if (attributionParams['ref_code']) {
-      // Track conversion in the affiliate system
-      // This would normally be handled by a server-side process
-      // or imported from the trackClinicConversion function
-      console.debug(`[Affiliate] Attributed clinic view to: ${attributionParams['ref_code']}`);
-    }
     
     console.debug(`[Analytics] Tracked clinic view: ${clinicName} (${clinicId})`);
   } catch (error) {
@@ -70,12 +74,6 @@ export const trackClickToCall = (clinicId: string, clinicName: string, phoneNumb
       ...attributionParams
     });
     
-    // If there's an affiliate code, track the conversion
-    if (attributionParams['ref_code']) {
-      // This would be implemented to use the trackAffiliateConversion function
-      // Actual implementation would use server-side tracking via Function or API
-      console.debug(`[Affiliate] Attributed call lead to: ${attributionParams['ref_code']}`);
-    }
     
     console.debug(`[Analytics] Tracked click to call: ${phoneNumber} for ${clinicName}`);
   } catch (error) {
@@ -140,7 +138,7 @@ export const trackSearch = (query: string, resultCount: number, filters?: Record
   }
 };
 
-// Extract UTM parameters and affiliate data from URL
+// Extract UTM parameters from URL
 export const getAttributionParams = (): Record<string, string> => {
   if (typeof window === 'undefined') return {};
   
@@ -154,18 +152,6 @@ export const getAttributionParams = (): Record<string, string> => {
       attributionParams[param] = value;
     }
   });
-  
-  // Extract affiliate referral parameters
-  const refCode = urlParams.get('ref') || urlParams.get('affiliate');
-  if (refCode) {
-    attributionParams['ref_code'] = refCode;
-  }
-  
-  // Check cookies for existing attribution
-  const affiliateCookie = getCookie('mhf_affiliate');
-  if (!refCode && affiliateCookie) {
-    attributionParams['ref_code'] = affiliateCookie;
-  }
   
   return attributionParams;
 };
@@ -194,13 +180,6 @@ export const initAnalytics = () => {
       send_page_view: false // We'll handle page views manually
     });
     
-    // Add affiliate code if present to all events
-    const attributionParams = getAttributionParams();
-    if (attributionParams['ref_code']) {
-      window.gtag('set', {
-        'affiliate_code': attributionParams['ref_code']
-      });
-    }
     
     console.debug('[Analytics] Initialized analytics');
   }

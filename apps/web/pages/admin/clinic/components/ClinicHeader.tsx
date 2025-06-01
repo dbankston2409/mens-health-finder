@@ -29,7 +29,8 @@ const ClinicHeader: React.FC<ClinicHeaderProps> = ({
   const [loading, setLoading] = useState(false);
   const [showTagsEditor, setShowTagsEditor] = useState(false);
 
-  const getStatusBadgeClass = (status: string) => {
+  const getStatusBadgeClass = (status: string | undefined) => {
+    if (!status) return 'bg-gray-100 text-gray-800 border-gray-200';
     switch (status) {
       case 'active':
         return 'bg-green-100 text-green-800 border-green-200';
@@ -44,7 +45,8 @@ const ClinicHeader: React.FC<ClinicHeaderProps> = ({
     }
   };
 
-  const getPackageBadgeClass = (packageTier: string) => {
+  const getPackageBadgeClass = (packageTier: string | undefined) => {
+    if (!packageTier) return 'bg-gray-100 text-gray-800 border-gray-200';
     switch (packageTier.toLowerCase()) {
       case 'premium':
       case 'pro':
@@ -63,14 +65,16 @@ const ClinicHeader: React.FC<ClinicHeaderProps> = ({
     
     setLoading(true);
     try {
-      const newStatus = clinic.status === 'active' ? 'paused' : 'active';
-      await updateDoc(doc(db, 'clinics', clinic.id), { status: newStatus });
+      const newStatus = (clinic.status === 'active' || !clinic.status) ? 'paused' : 'active';
+      if (clinic.id) {
+        await updateDoc(doc(db, 'clinics', clinic.id), { status: newStatus });
+      }
       
       // Also log this action
       try {
         const logRef = collection(db, 'admin_logs');
         await addDoc(logRef, {
-          clinicId: clinic.id,
+          clinicId: clinic.id || '',
           timestamp: new Date(),
           actionType: 'status_change',
           adminId: 'current_admin', // This should be replaced with the actual admin ID
@@ -107,7 +111,7 @@ const ClinicHeader: React.FC<ClinicHeaderProps> = ({
                 {clinic.packageTier}
               </span>
               <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusBadgeClass(clinic.status)}`}>
-                {clinic.status.charAt(0).toUpperCase() + clinic.status.slice(1)}
+                {clinic.status ? clinic.status.charAt(0).toUpperCase() + clinic.status.slice(1) : 'Unknown'}
               </span>
             </div>
             

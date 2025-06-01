@@ -2,30 +2,9 @@ import { useState, useEffect } from 'react';
 import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 
-export type Clinic = {
-  id: string;
-  name: string;
-  address: string;
-  city: string;
-  state: string;
-  zip: string;
-  phone: string;
-  email: string;
-  website: string;
-  status: 'active' | 'paused' | 'trial' | 'canceled';
-  packageTier: string;
-  services: string[];
-  tags: string[];
-  lat?: number;
-  lng?: number;
-  importSource?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  websiteStatus?: 'up' | 'down' | 'unknown';
-  verificationStatus?: 'verified' | 'pending' | 'failed';
-  verificationMethod?: string;
-  [key: string]: any;
-};
+import { Clinic as ClinicType } from '../../types';
+
+export type Clinic = ClinicType;
 
 export const useClinic = (clinicId: string | undefined) => {
   const [clinic, setClinic] = useState<Clinic | null>(null);

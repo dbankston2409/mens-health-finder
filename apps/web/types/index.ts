@@ -36,6 +36,9 @@ export interface Clinic {
   tags?: string[];
   notes?: string[];
   importSource?: string;
+  websiteStatus?: 'up' | 'down' | 'unknown';
+  verificationStatus?: 'verified' | 'pending' | 'failed';
+  verificationMethod?: string;
   
   // Reviews and ratings
   rating?: number;
@@ -44,6 +47,8 @@ export interface Clinic {
   googleReviewCount?: number;
   yelpRating?: number;
   yelpReviewCount?: number;
+  healthgradesRating?: number;
+  healthgradesReviewCount?: number;
   verified?: boolean;
   reviewStats?: {
     averageRating: number;
@@ -54,6 +59,7 @@ export interface Clinic {
   // Timestamps
   createdAt?: Timestamp | Date;
   lastUpdated?: Timestamp | Date;
+  updatedAt?: Timestamp | Date;
   
   // SEO and content
   seo?: {

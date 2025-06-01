@@ -17,6 +17,9 @@ import BillingHistory from './components/BillingHistory';
 import TrafficEngagementMetrics from './components/TrafficEngagementMetrics';
 import CommunicationLog from './components/CommunicationLog';
 import AdminNotes from './components/AdminNotes';
+import SnapshotEditor from '../../../../../components/admin/clinic/SnapshotEditor';
+import AnalyticsPanel from '../../../../../components/admin/AnalyticsPanel';
+import ExternalReviewsManager from '../../../../../components/admin/clinic/ExternalReviewsManager';
 
 const ClinicDetailPage: React.FC = () => {
   const router = useRouter();
@@ -71,7 +74,12 @@ const ClinicDetailPage: React.FC = () => {
     
     switch (activeTab) {
       case 'overview':
-        return <ClinicInfoSection clinic={clinic} />;
+        return (
+          <div className="space-y-6">
+            <ClinicInfoSection clinic={clinic} />
+            <AnalyticsPanel clinic={clinic} />
+          </div>
+        );
       case 'billing':
         return (
           <BillingHistory 
@@ -87,6 +95,22 @@ const ClinicDetailPage: React.FC = () => {
             trafficData={trafficData} 
             loading={trafficLoading} 
           />
+        );
+      case 'reviews':
+        return (
+          <ExternalReviewsManager 
+            clinic={clinic} 
+            onRefresh={refreshData}
+          />
+        );
+      case 'content':
+        return (
+          <div className="space-y-6">
+            <SnapshotEditor 
+              clinic={clinic} 
+              onUpdate={refreshData} 
+            />
+          </div>
         );
       case 'comms':
         return (

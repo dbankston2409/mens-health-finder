@@ -1,0 +1,23 @@
+# Enhanced robots.txt for Men's Health Finder
+
+User-agent: *
+Allow: /
+
+# Core pages - allow all crawlers
+Allow: /about
+Allow: /contact
+Allow: /blog
+Allow: /search
+Allow: /clinic/
+
+# Disallow admin, login, and personal pages
+Disallow: /admin/
+Disallow: /login
+Disallow: /signup
+Disallow: /profile
+Disallow: /dashboard
+Disallow: /complete-profile
+Disallow: /forgot-password
+
+# Sitemap declaration
+Sitemap: https://menshealthfinder.com/sitemap.xml

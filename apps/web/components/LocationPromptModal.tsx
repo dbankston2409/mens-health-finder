@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getUserLocation, reverseGeocode, saveUserLocation } from '../utils/geoUtils';
 
 interface LocationPromptModalProps {
   isOpen: boolean;
@@ -35,53 +36,39 @@ const LocationPromptModal: React.FC<LocationPromptModalProps> = ({
     setIsRequesting(true);
     setError(null);
 
-    if (!navigator.geolocation) {
-      setError('Geolocation is not supported by your browser');
-      setIsRequesting(false);
-      setShowManualInput(true);
-      return;
-    }
-
     try {
-      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(
-          resolve,
-          reject,
-          {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 300000
-          }
-        );
-      });
-
-      const { latitude, longitude } = position.coords;
+      // Get user location using our utility function
+      const coords = await getUserLocation();
+      
+      if (!coords) {
+        setError('Geolocation is not supported or was denied by your browser');
+        setIsRequesting(false);
+        setShowManualInput(true);
+        return;
+      }
 
       // Store coordinates in session storage
       sessionStorage.setItem('userLocation', JSON.stringify({
-        lat: latitude,
-        lng: longitude,
+        ...coords,
         timestamp: Date.now()
       }));
 
       // Try to reverse geocode to get city and state
-      let locationData: { lat: number; lng: number; city?: string; state?: string } = { lat: latitude, lng: longitude };
+      let locationData: { lat: number; lng: number; city?: string; state?: string } = coords;
 
       try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1`,
-          { headers: { 'User-Agent': 'MensHealthFinder/1.0' } }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          const address = data.address;
-          const city = address.city || address.town || address.village;
-          const state = address.state_code || address.state;
-
-          if (city && state) {
-            locationData = { ...locationData, city, state };
-          }
+        // Use our utility function for reverse geocoding
+        const locationInfo = await reverseGeocode(coords.lat, coords.lng);
+        
+        if (locationInfo) {
+          locationData = { 
+            ...coords, 
+            city: locationInfo.city, 
+            state: locationInfo.state 
+          };
+          
+          // Save the full location data
+          saveUserLocation(locationData);
         }
       } catch (geocodeError) {
         console.warn('Reverse geocoding failed:', geocodeError);

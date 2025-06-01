@@ -18,9 +18,21 @@ interface ClinicInfoSectionProps {
 const ClinicInfoSection: React.FC<ClinicInfoSectionProps> = ({ clinic }) => {
   if (!clinic) return null;
 
-  const formatDate = (date: Date | string | undefined) => {
+  const formatDate = (date: any) => {
     if (!date) return 'Unknown';
-    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    let dateObj;
+    
+    if (typeof date === 'string') {
+      dateObj = new Date(date);
+    } else if (date instanceof Date) {
+      dateObj = date;
+    } else if (typeof date === 'object' && date.seconds !== undefined) {
+      // Handle Firestore Timestamp
+      dateObj = new Date(date.seconds * 1000);
+    } else {
+      return 'Unknown date format';
+    }
+    
     return dateObj.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',

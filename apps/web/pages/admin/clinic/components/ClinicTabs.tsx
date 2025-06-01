@@ -5,7 +5,9 @@ import {
   CreditCardIcon, 
   ChartBarIcon, 
   ChatBubbleLeftRightIcon, 
-  ClipboardDocumentListIcon 
+  ClipboardDocumentListIcon,
+  ChatBubbleBottomCenterTextIcon,
+  DocumentTextIcon 
 } from '@heroicons/react/24/outline';
 
 interface ClinicTabsProps {
@@ -25,6 +27,8 @@ const ClinicTabs: React.FC<ClinicTabsProps> = ({
     { id: 'overview', label: 'Overview', icon: <HomeIcon className="w-5 h-5" /> },
     { id: 'billing', label: 'Billing', icon: <CreditCardIcon className="w-5 h-5" /> },
     { id: 'traffic', label: 'Traffic', icon: <ChartBarIcon className="w-5 h-5" /> },
+    { id: 'reviews', label: 'Reviews', icon: <ChatBubbleBottomCenterTextIcon className="w-5 h-5" /> },
+    { id: 'content', label: 'Content', icon: <DocumentTextIcon className="w-5 h-5" /> },
     { id: 'comms', label: 'Communication', icon: <ChatBubbleLeftRightIcon className="w-5 h-5" /> },
     { id: 'logs', label: 'Logs', icon: <ClipboardDocumentListIcon className="w-5 h-5" /> },
   ];
