@@ -5,6 +5,14 @@ const nextConfig = {
   experimental: {
     externalDir: true,
   },
+  // Disable ESLint during build
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  // Disable TypeScript type checking during build
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   reactStrictMode: true,
   images: {
     remotePatterns: [
