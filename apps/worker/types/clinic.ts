@@ -71,3 +71,6 @@ export interface ImportError {
   data?: any;
   count: number;
 }
+
+// Export Clinic as alias for ClinicDocument for compatibility
+export type Clinic = ClinicDocument;
