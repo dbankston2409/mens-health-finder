@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "prebuild": "node fix-imports.js",
     "build": "tsc",
+    "postbuild": "echo 'Build complete'",
     "start": "node dist/index.js",
     "dev": "ts-node index.ts",
     "worker:import": "ts-node cli.ts import",
@@ -16,7 +18,8 @@
     "firebase-admin": "^13.3.0",
     "csv-parse": "^5.5.2",
     "dotenv": "^16.5.0",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "glob": "^8.0.3"
   },
   "devDependencies": {
     "@types/node": "^22.14.1",

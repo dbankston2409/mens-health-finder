@@ -45,6 +45,7 @@ export interface SeoMeta {
   keywords: string[];
   indexed: boolean;
   lastIndexed?: Date;
+  lastGenerated?: Date;
 }
 
 export interface ClinicDocument extends ClinicInput {

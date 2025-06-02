@@ -13,7 +13,10 @@ RUN npm install
 # Copy source code
 COPY . ./
 
-# Build TypeScript
+# Ensure glob is available for fix-imports
+RUN npm install glob --no-save
+
+# Build TypeScript (will run prebuild script automatically)
 RUN npm run build
 
 # Runtime stage
