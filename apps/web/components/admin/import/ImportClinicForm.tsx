@@ -94,7 +94,6 @@ const ImportClinicForm: React.FC<ImportClinicFormProps> = ({ onImportComplete })
     } finally {
       setIsUploading(false);
     }
-  }
   };
 
   return (

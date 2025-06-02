@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { collection, addDoc, serverTimestamp, getDocs, query, where, DocumentReference, DocumentData } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, getDocs, query, where, DocumentReference, DocumentData, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { Clinic } from '../../types';
-import { processClinicForImport } from '../../../../lib/importEnhancer';
+import { processClinicForImport } from '../processClinicForImport';
 
 export interface ImportOptions {
   mergeWithExisting: boolean;
@@ -226,7 +226,8 @@ export const useClinicImport = (): UseClinicImportResult => {
       
       // Update import log with error
       if (importProgress.importId) {
-        await updateImportLog(collection(db, 'import_logs').doc(importProgress.importId), {
+        const logRef = doc(db, 'import_logs', importProgress.importId);
+        await updateImportLog(logRef, {
           status: 'failed',
           error: error instanceof Error ? error.message : 'Unknown error during import',
           progress: 'error'
@@ -265,7 +266,8 @@ export const useClinicImport = (): UseClinicImportResult => {
       
       // Update import log
       if (importProgress.importId) {
-        await updateImportLog(collection(db, 'import_logs').doc(importProgress.importId), {
+        const logRef = doc(db, 'import_logs', importProgress.importId);
+        await updateImportLog(logRef, {
           status: 'success',
           successCount: mergeCount + createCount,
           failureCount: skipCount,
@@ -354,7 +356,7 @@ async function parseImportFile(file: File): Promise<Partial<Clinic>[]> {
 // Helper to update import log
 async function updateImportLog(logRef: DocumentReference<DocumentData>, data: Record<string, any>): Promise<void> {
   try {
-    await logRef.update({
+    await updateDoc(logRef, {
       ...data,
       lastUpdated: serverTimestamp()
     });
