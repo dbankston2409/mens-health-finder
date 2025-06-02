@@ -16,7 +16,7 @@ class MockEmailProvider implements EmailProvider {
   }
 }
 
-interface SendGridProvider implements EmailProvider {
+class SendGridProvider implements EmailProvider {
   private apiKey: string;
 
   constructor(apiKey: string) {
