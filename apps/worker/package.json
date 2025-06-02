@@ -7,7 +7,10 @@
     "start": "node dist/index.js",
     "dev": "ts-node index.ts",
     "worker:import": "ts-node cli.ts import",
-    "worker:help": "ts-node cli.ts help"
+    "worker:help": "ts-node cli.ts help",
+    "deploy:render": "DEPLOY_PLATFORM=render ./deploy.sh",
+    "deploy:railway": "DEPLOY_PLATFORM=railway ./deploy.sh",
+    "deploy:docker": "DEPLOY_PLATFORM=docker ./deploy.sh"
   },
   "dependencies": {
     "firebase-admin": "^13.3.0",

@@ -1,0 +1,71 @@
+services:
+  # Main worker service
+  - type: worker
+    name: mhf-worker
+    runtime: docker
+    dockerfilePath: ./apps/worker/Dockerfile
+    dockerContext: ../..
+    plan: starter
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: FIREBASE_PROJECT_ID
+        sync: false
+      - key: FIREBASE_CLIENT_EMAIL
+        sync: false
+      - key: FIREBASE_PRIVATE_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: CLAUDE_API_KEY
+        sync: false
+      - key: GEOCODE_API_KEY
+        sync: false
+
+  # Cron job for daily imports
+  - type: cron
+    name: mhf-daily-import
+    runtime: docker
+    dockerfilePath: ./apps/worker/Dockerfile
+    dockerContext: ../..
+    schedule: "0 2 * * *"  # Daily at 2 AM
+    command: node dist/index.js import
+    plan: starter
+    envVars:
+      - fromGroup: mhf-worker
+
+  # Cron job for analytics processing
+  - type: cron
+    name: mhf-analytics
+    runtime: docker
+    dockerfilePath: ./apps/worker/Dockerfile
+    dockerContext: ../..
+    schedule: "0 */6 * * *"  # Every 6 hours
+    command: node dist/index.js analytics
+    plan: starter
+    envVars:
+      - fromGroup: mhf-worker
+
+  # Cron job for SEO updates
+  - type: cron
+    name: mhf-seo-refresh
+    runtime: docker
+    dockerfilePath: ./apps/worker/Dockerfile
+    dockerContext: ../..
+    schedule: "0 4 * * *"  # Daily at 4 AM
+    command: node dist/index.js seo
+    plan: starter
+    envVars:
+      - fromGroup: mhf-worker
+
+  # Cron job for weekly reports
+  - type: cron
+    name: mhf-weekly-reports
+    runtime: docker
+    dockerfilePath: ./apps/worker/Dockerfile
+    dockerContext: ../..
+    schedule: "0 9 * * 1"  # Weekly on Monday at 9 AM
+    command: node dist/index.js reports
+    plan: starter
+    envVars:
+      - fromGroup: mhf-worker
