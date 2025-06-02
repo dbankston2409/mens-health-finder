@@ -1,5 +1,5 @@
-import { db } from '../../../lib/firebase';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { doc, getDoc, updateDoc } from '../lib/firebase-compat';
 
 export interface SeoScoreComponents {
   metaCompleteness: number; // 0-30 points

@@ -1,6 +1,6 @@
 import { TAG_RULES, TagRule, ClinicMetrics, calculateSeverityScore } from './tagRuleLibrary';
-import { doc, getDoc, collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
+import { doc, getDoc, collection, query, where, getDocs, orderBy, limit } from '../lib/firebase-compat';
+import { db } from '../lib/firebase';
 
 export interface ClinicSuggestion {
   id: string;

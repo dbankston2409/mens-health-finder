@@ -1,4 +1,4 @@
-import admin from '../../../packages/firebase/init';
+import admin from '../lib/firebase';
 import { ImportResult, ImportError } from '../types/clinic';
 
 export async function logImportResults(results: ImportResult): Promise<void> {

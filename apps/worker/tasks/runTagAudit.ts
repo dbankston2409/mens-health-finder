@@ -1,5 +1,5 @@
-import { collection, getDocs, doc, updateDoc, serverTimestamp, writeBatch } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
+import { collection, getDocs, doc, updateDoc, serverTimestamp, writeBatch } from '../lib/firebase-compat';
+import { db } from '../lib/firebase';
 import { analyzeClinicTags, getTagAnalysisSummary, ClinicAnalysisResult } from '../utils/analyzeClinicTags';
 
 export interface TagAuditResult {

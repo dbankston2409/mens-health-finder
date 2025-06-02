@@ -15,7 +15,7 @@ export async function validateWebsiteIsReachable(url: string): Promise<boolean> 
     // Make request with timeout and proper headers
     const response = await fetch(normalizedUrl, {
       method: 'HEAD', // Use HEAD to minimize data transfer
-      timeout: 10000, // 10 second timeout
+       // 10 second timeout
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; MensHealthFinder/1.0; +https://menshealthfinder.com)',
         'Accept': '*/*'
@@ -36,7 +36,7 @@ export async function validateWebsiteIsReachable(url: string): Promise<boolean> 
       
       const response = await fetch(normalizedUrl, {
         method: 'GET',
-        timeout: 10000,
+        
         headers: {
           'User-Agent': 'Mozilla/5.0 (compatible; MensHealthFinder/1.0; +https://menshealthfinder.com)',
           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'

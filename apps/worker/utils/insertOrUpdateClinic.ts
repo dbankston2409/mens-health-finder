@@ -1,4 +1,4 @@
-import admin from '../../../packages/firebase/init';
+import admin from '../lib/firebase';
 import { ClinicDocument, SeoMeta } from '../types/clinic';
 
 export async function insertOrUpdateClinic(

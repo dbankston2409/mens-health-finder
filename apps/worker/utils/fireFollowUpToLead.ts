@@ -1,5 +1,5 @@
-import { db } from '../../../lib/firebase';
-import { collection, query, where, getDocs, addDoc, updateDoc, doc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { collection, query, where, getDocs, addDoc, updateDoc, doc, serverTimestamp } from '../lib/firebase-compat';
 
 export interface FollowUpTrigger {
   leadId: string;

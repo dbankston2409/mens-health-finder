@@ -1,4 +1,4 @@
-import admin from '../../../packages/firebase/init';
+import admin from '../lib/firebase';
 import { generateClinicReportData } from './generateClinicReportData';
 import { renderClinicReportPDF } from './renderClinicReportPDF';
 
@@ -131,7 +131,15 @@ async function getEligibleClinics(): Promise<any[]> {
   const eligibleClinics = [];
   
   for (const doc of clinicsSnapshot.docs) {
-    const clinic = { id: doc.id, slug: doc.id, ...doc.data() };
+    const clinicData = doc.data() as any;
+    const clinic = { 
+      id: doc.id, 
+      slug: doc.id,
+      name: clinicData.name || 'Unknown Clinic',
+      adminEmails: clinicData.adminEmails || [],
+      lastReportMonth: clinicData.lastReportMonth,
+      ...clinicData
+    };
     
     // Check if clinic has admin emails
     if (!clinic.adminEmails || clinic.adminEmails.length === 0) {

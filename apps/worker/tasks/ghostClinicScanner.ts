@@ -1,5 +1,5 @@
-import { collection, getDocs, doc, updateDoc, query, where, serverTimestamp, writeBatch } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
+import { collection, getDocs, doc, updateDoc, query, where, serverTimestamp, writeBatch } from '../lib/firebase-compat';
+import { db } from '../lib/firebase';
 import { detectClinicEngagement } from '../utils/detectClinicEngagement';
 
 export interface GhostClinicScanResult {

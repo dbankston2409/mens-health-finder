@@ -1,4 +1,4 @@
-import { doc, getDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, serverTimestamp } from '../lib/firebase-compat';
 import { db } from '../lib/firebase';
 
 interface IndexingMetrics {

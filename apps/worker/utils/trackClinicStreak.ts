@@ -1,4 +1,4 @@
-import admin from '../../../packages/firebase/init';
+import admin from '../lib/firebase';
 
 export interface ClinicStreak {
   type: string;

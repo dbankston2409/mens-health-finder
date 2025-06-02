@@ -1,5 +1,5 @@
-import { db } from '../../../lib/firebase';
-import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { doc, getDoc, updateDoc, arrayUnion } from '../lib/firebase-compat';
 
 export interface UpgradeEmailData {
   clinicName: string;

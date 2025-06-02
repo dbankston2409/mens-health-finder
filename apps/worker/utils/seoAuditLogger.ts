@@ -1,4 +1,4 @@
-import { doc, updateDoc, arrayUnion, getDoc } from 'firebase/firestore';
+import { doc, updateDoc, arrayUnion, getDoc } from '../lib/firebase-compat';
 import { db } from '../lib/firebase';
 
 interface AuditEntry {

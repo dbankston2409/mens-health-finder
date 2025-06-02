@@ -1,5 +1,5 @@
-import { db } from '../../../lib/firebase';
-import { collection, query, where, getDocs, doc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { collection, query, where, getDocs, doc, updateDoc, arrayUnion } from '../lib/firebase-compat';
 import { defineRevenueLeakage } from '../utils/defineRevenueLeakage';
 import { alertEngine } from '../utils/alertEngine';
 import { calculateSeoScore } from '../utils/calculateSeoScore';
@@ -141,15 +141,14 @@ export async function missedOpportunityScanner(
 
 async function getTargetClinics(states: string[], maxClinics: number) {
   const clinicsRef = collection(db, 'clinics');
-  let clinicsQuery = query(
-    clinicsRef,
-    where('status', '==', 'active')
-  );
   
+  // Build query constraints
+  const constraints: any[] = [where('status', '==', 'active')];
   if (states.length > 0) {
-    clinicsQuery = query(clinicsQuery, where('state', 'in', states));
+    constraints.push(where('state', 'in', states));
   }
   
+  const clinicsQuery = query(clinicsRef, ...constraints);
   const snapshot = await getDocs(clinicsQuery);
   const clinics = snapshot.docs
     .map(doc => ({ id: doc.id, ...doc.data() }))

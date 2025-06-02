@@ -1,4 +1,4 @@
-import admin from '../../../packages/firebase/init';
+import admin from '../lib/firebase';
 import { generateSeoMeta } from './generateSeoMeta';
 import { generateSeoContent } from './generateSeoContent';
 import { ClinicInput, ClinicDocument, SeoMeta } from '../types/clinic';

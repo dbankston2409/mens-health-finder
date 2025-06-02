@@ -1,5 +1,5 @@
-import { db } from '../../../lib/firebase';
-import { doc, getDoc, updateDoc, arrayUnion, collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { doc, getDoc, updateDoc, arrayUnion, collection, query, where, getDocs } from '../lib/firebase-compat';
 
 export interface SystemAlert {
   id: string;

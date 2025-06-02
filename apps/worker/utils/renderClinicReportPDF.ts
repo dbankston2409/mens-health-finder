@@ -70,7 +70,7 @@ export async function renderClinicReportPDF(
     console.log(`✅ PDF generated successfully: ${filename} (${pdfBuffer.length} bytes)`);
     
     return {
-      buffer: pdfBuffer,
+      buffer: Buffer.from(pdfBuffer),
       filename,
       size: pdfBuffer.length
     };

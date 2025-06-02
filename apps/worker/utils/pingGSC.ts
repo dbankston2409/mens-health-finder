@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, updateDoc, serverTimestamp } from '../lib/firebase-compat';
 import { db } from '../lib/firebase';
 
 interface PingResult {
@@ -37,7 +37,7 @@ export async function pingGSC(sitemapUrl: string, isDev = false): Promise<PingRe
     const pingUrl = `https://www.google.com/ping?sitemap=${encodeURIComponent(sitemapUrl)}`;
     
     const response = await axios.get(pingUrl, {
-      timeout: 10000, // 10 second timeout
+       // 10 second timeout
       headers: {
         'User-Agent': 'MensHealthFinder-SitemapBot/1.0'
       }

@@ -1,5 +1,5 @@
-import { doc, getDoc, updateDoc, Timestamp } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
+import { doc, getDoc, updateDoc, Timestamp } from '../lib/firebase-compat';
+import { db } from '../lib/firebase';
 import { getClinicEngagement, ClinicEngagement } from './detectClinicEngagement';
 
 export interface UpgradePrompt {

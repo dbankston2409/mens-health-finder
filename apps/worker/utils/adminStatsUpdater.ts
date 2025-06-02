@@ -1,4 +1,4 @@
-import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, setDoc, getDoc, serverTimestamp } from '../lib/firebase-compat';
 import { db } from '../lib/firebase';
 
 interface AdminStats {

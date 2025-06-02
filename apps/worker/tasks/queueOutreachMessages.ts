@@ -1,5 +1,5 @@
-import { db } from '../../../lib/firebase';
-import { collection, query, where, getDocs, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { collection, query, where, getDocs, addDoc, serverTimestamp, doc, getDoc } from '../lib/firebase-compat';
 import { generateSalesCopy, SalesCopyInput } from '../utils/generateSalesCopy';
 
 export interface OutreachCriteria {

@@ -1,5 +1,5 @@
-import { doc, getDoc, updateDoc, serverTimestamp, writeBatch, getDocs, collection, query, where } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
+import { doc, getDoc, updateDoc, serverTimestamp, writeBatch, getDocs, collection, query, where } from '../lib/firebase-compat';
+import { db } from '../lib/firebase';
 
 export interface ClinicVerificationResult {
   clinicId: string;

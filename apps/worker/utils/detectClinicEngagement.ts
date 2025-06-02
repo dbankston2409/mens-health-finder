@@ -1,5 +1,5 @@
-import { doc, getDoc, updateDoc, collection, query, where, orderBy, limit, getDocs, Timestamp } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
+import { doc, getDoc, updateDoc, collection, query, where, orderBy, limit, getDocs, Timestamp } from '../lib/firebase-compat';
+import { db } from '../lib/firebase';
 
 export interface ClinicEngagement {
   status: 'engaged' | 'low' | 'none';

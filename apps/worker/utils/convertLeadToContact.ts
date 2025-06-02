@@ -1,5 +1,5 @@
-import { db } from '../../../lib/firebase';
-import { collection, query, where, getDocs, doc, setDoc, updateDoc, serverTimestamp, getDoc } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { collection, query, where, getDocs, doc, setDoc, updateDoc, serverTimestamp, getDoc } from '../lib/firebase-compat';
 
 export interface LeadEvent {
   type: 'form_submission' | 'call_click' | 'review_submit' | 'email_open' | 'page_visit' | 'direction_click';

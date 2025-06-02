@@ -1,4 +1,4 @@
-import admin from '../../../packages/firebase/init';
+import admin from '../lib/firebase';
 
 export async function generateSlug(clinicName: string, city: string, state: string): Promise<string> {
   // Create base slug from clinic name, city, and state

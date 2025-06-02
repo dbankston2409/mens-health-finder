@@ -1,5 +1,5 @@
-import { db } from '../../../lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { doc, getDoc } from '../lib/firebase-compat';
 
 export interface SalesCopyInput {
   clinicName: string;

@@ -1,5 +1,5 @@
-import { db } from '../../../lib/firebase';
-import { doc, getDoc, updateDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { doc, getDoc, updateDoc, addDoc, collection, serverTimestamp } from '../lib/firebase-compat';
 
 export interface AutoReplyConfig {
   enabled: boolean;

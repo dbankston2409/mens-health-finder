@@ -1,4 +1,4 @@
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs } from '../lib/firebase-compat';
 import { db } from '../lib/firebase';
 import { batchCheckIndexStatus } from '../utils/trackSeoIndexStatus';
 import { updateAdminStats } from '../utils/adminStatsUpdater';

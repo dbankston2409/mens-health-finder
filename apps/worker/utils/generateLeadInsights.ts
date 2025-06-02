@@ -1,5 +1,5 @@
-import { db } from '../../../lib/firebase';
-import { collection, query, where, getDocs, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { collection, query, where, getDocs, doc, updateDoc, serverTimestamp } from '../lib/firebase-compat';
 
 export interface LeadInsights {
   totalLeads: number;
