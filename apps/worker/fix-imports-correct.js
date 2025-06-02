@@ -45,7 +45,7 @@ function fixImports(filePath) {
 
 // Find all TypeScript files
 const files = glob.sync('**/*.ts', { 
-  ignore: ['node_modules/**', 'dist/**', 'lib/**'] 
+  ignore: ['node_modules/**', 'dist/**', 'lib/**', 'index.ts'] 
 });
 
 console.log(`Fixing imports in ${files.length} files...`);

@@ -12,6 +12,7 @@ import TrafficAnalyticsPanel from './components/TrafficAnalyticsPanel';
 import SearchVisibilityPanel from './components/SearchVisibilityPanel';
 import TopClinicsCard from './components/TopClinicsCard';
 import NotificationsFeed from './components/NotificationsFeed';
+import WorkerControl from '../../../components/admin/WorkerControl';
 
 const AdminOverviewPanel: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -86,6 +87,11 @@ const AdminOverviewPanel: React.FC = () => {
               <WebsiteHealthCard 
                 onRefresh={handleRefreshAll} 
               />
+            </div>
+            
+            {/* Worker Control */}
+            <div className="lg:col-span-3">
+              <WorkerControl />
             </div>
             
             {/* Lost Revenue Widget */}

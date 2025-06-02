@@ -150,5 +150,16 @@ export const Timestamp = admin.firestore.Timestamp;
 // FieldPath
 export const FieldPath = admin.firestore.FieldPath;
 
+// Real-time listener
+export function onSnapshot(
+  docRef: admin.firestore.DocumentReference, 
+  callback: (snapshot: CompatDocumentSnapshot) => void
+): () => void {
+  // Return unsubscribe function
+  return docRef.onSnapshot(snapshot => {
+    callback(wrapDocumentSnapshot(snapshot));
+  });
+}
+
 // Re-export admin for direct access if needed
 export { admin };
