@@ -1,8 +1,8 @@
 import admin from '../lib/firebase';
 
-export async function generateSlug(clinicName: string, city: string, state: string): Promise<string> {
+export async function generateSlug(clinicName: string, city: string, state: string, forceLocation: boolean = false): Promise<string> {
   // Create base slug from clinic name, city, and state
-  const baseSlug = createBaseSlug(clinicName, city, state);
+  const baseSlug = createBaseSlug(clinicName, city, state, forceLocation);
   
   // Check if slug already exists in Firestore
   const db = admin.firestore();
@@ -22,14 +22,28 @@ export async function generateSlug(clinicName: string, city: string, state: stri
   return finalSlug;
 }
 
-function createBaseSlug(name: string, city: string, state: string): string {
-  // Combine name, city, and state
-  const combined = `${name} ${city} ${state}`;
+function createBaseSlug(name: string, city: string, state: string, forceLocation: boolean = false): string {
+  // For branches, always include city in slug
+  let combined;
+  if (forceLocation) {
+    // Clean name first, then add location
+    const cleanName = name
+      .toLowerCase()
+      .trim()
+      .replace(/\b(llc|inc|corp|corporation|company|co|ltd|limited|clinic|medical|center|health|mens|men's)\b/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/[\s-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    
+    combined = `${cleanName}-${city.toLowerCase()}-${state.toLowerCase()}`;
+  } else {
+    combined = `${name} ${city} ${state}`;
+  }
   
   return combined
     .toLowerCase()
     .trim()
-    // Remove common business suffixes
+    // Remove common business suffixes (if not already done)
     .replace(/\b(llc|inc|corp|corporation|company|co|ltd|limited|clinic|medical|center|health|mens|men's)\b/g, '')
     // Replace special characters and spaces with hyphens
     .replace(/[^a-z0-9\s-]/g, '')

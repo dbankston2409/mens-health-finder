@@ -19,6 +19,7 @@ let intervalId: NodeJS.Timeout | null = null;
 
 // Define job schedules (in milliseconds)
 const SCHEDULES = {
+  importJobs: 30 * 1000,            // Every 30 seconds
   analytics: 60 * 60 * 1000,        // Every hour
   reports: 24 * 60 * 60 * 1000,     // Daily
   seoIndexAudit: 6 * 60 * 60 * 1000, // Every 6 hours
@@ -118,6 +119,11 @@ async function startWorker() {
         await runJob('import', importClinics);
         break;
         
+      case 'import-jobs':
+        const { processImportJobs } = await import('./tasks/importClinics');
+        await runJob('import-jobs', processImportJobs);
+        break;
+        
       case 'analytics':
         await runJob('analytics', processAnalytics);
         break;
@@ -143,7 +149,7 @@ async function startWorker() {
         break;
         
       default:
-        console.error('❌ Unknown job type. Available jobs: import, analytics, reports, seo-index, tag-audit, opportunities, ghost-clinics');
+        console.error('❌ Unknown job type. Available jobs: import, import-jobs, analytics, reports, seo-index, tag-audit, opportunities, ghost-clinics');
         process.exit(1);
     }
     
@@ -165,6 +171,12 @@ async function startWorker() {
   intervalId = setInterval(async () => {
     if (isPaused) {
       return; // Skip all jobs if paused
+    }
+    
+    // Check for import jobs frequently
+    if (shouldRun('import-jobs', SCHEDULES.importJobs)) {
+      const { processImportJobs } = await import('./tasks/importClinics');
+      await runJob('import-jobs', processImportJobs);
     }
     
     // Check each job schedule

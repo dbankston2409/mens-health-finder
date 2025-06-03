@@ -115,23 +115,26 @@ export function createImportResult(): ImportResult {
     totalImported: 0,
     totalUpdated: 0,
     totalFailed: 0,
+    totalSuccess: 0,
+    duplicates: 0,
     errors: [],
     successfulSlugs: [],
     duration: 0
   };
 }
 
-export function addError(results: ImportResult, type: string, message: string, data?: any): void {
+export function addError(results: ImportResult, code: string, message: string, data?: any): void {
   // Check if this error type already exists
   const existingError = results.errors.find(error => 
-    error.type === type && error.message === message
+    error.code === code && error.message === message
   );
   
   if (existingError) {
     existingError.count++;
   } else {
     results.errors.push({
-      type,
+      type: code, // Keep type for backward compatibility
+      code,
       message,
       data,
       count: 1

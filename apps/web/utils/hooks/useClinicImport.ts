@@ -37,7 +37,7 @@ interface ImportProgress {
 
 interface UseClinicImportResult {
   importProgress: ImportProgress;
-  startImport: (file: File, options: ImportOptions) => Promise<string>;
+  startImport: (file: File, options: ImportOptions) => Promise<{ success: boolean; importId?: string }>;
   processDuplicateDecisions: (decisions: { clinicId: string; action: 'merge' | 'create' | 'skip' }[]) => Promise<void>;
   reset: () => void;
 }
@@ -77,7 +77,7 @@ export const useClinicImport = (): UseClinicImportResult => {
   };
 
   // Start the import process
-  const startImport = async (file: File, options: ImportOptions): Promise<string> => {
+  const startImport = async (file: File, options: ImportOptions): Promise<{ success: boolean; importId?: string }> => {
     try {
       // Reset state
       reset();
@@ -89,150 +89,53 @@ export const useClinicImport = (): UseClinicImportResult => {
         progress: 10
       }));
       
-      // Create a new import log entry
-      const importLogsRef = collection(db, 'import_logs');
-      const importLogRef = await addDoc(importLogsRef, {
+      // Parse the file first to get clinic data
+      const clinics = await parseImportFile(file);
+      
+      // Create an import session in Firestore
+      const importSessionsRef = collection(db, 'import_sessions');
+      const sessionRef = await addDoc(importSessionsRef, {
+        status: 'pending',
         fileName: file.name,
         fileSize: file.size,
-        fileType: file.type,
-        timestamp: serverTimestamp(),
-        status: 'processing',
+        totalClinics: clinics.length,
+        processed: 0,
+        successful: 0,
+        failed: 0,
+        errors: [],
+        createdAt: serverTimestamp(),
         options: options,
         adminId: 'current-admin-id', // TODO: Get from auth context
-        adminName: 'Admin User', // TODO: Get from auth context
-        totalRecords: 0,
-        successCount: 0,
-        failureCount: 0,
-        errors: []
+        adminName: 'Admin User' // TODO: Get from auth context
       });
       
-      const importId = importLogRef.id;
+      const importId = sessionRef.id;
+      
+      // Create a job for the worker
+      const jobsRef = collection(db, 'import_jobs');
+      await addDoc(jobsRef, {
+        sessionId: importId,
+        status: 'pending',
+        data: clinics,
+        options: options,
+        createdAt: serverTimestamp()
+      });
       
       // Update progress
       setImportProgress(prev => ({
         ...prev,
         status: 'processing',
         progress: 20,
-        importId
-      }));
-      
-      // Parse the file (CSV or JSON)
-      const clinics = await parseImportFile(file);
-      
-      // Update progress with total count
-      setImportProgress(prev => ({
-        ...prev,
-        progress: 30,
+        importId,
         stats: {
           ...prev.stats,
           total: clinics.length
         }
       }));
       
-      // Process clinics and check for duplicates
-      setImportProgress(prev => ({
-        ...prev,
-        status: 'checking_duplicates',
-        progress: 40
-      }));
-      
-      // In a real implementation, this would be done server-side or with a batch operation
-      // For the demo, we'll simulate processing and collecting duplicates
-      const duplicates: DuplicateClinic[] = [];
-      
-      // Check first few clinics for duplicates as a simulation
-      for (let i = 0; i < Math.min(5, clinics.length); i++) {
-        const clinic = clinics[i];
-        
-        // Process the clinic for import
-        const result = await processClinicForImport(clinic, options);
-        
-        // If it's a duplicate, add to duplicates list
-        if (result.duplicateCheck?.isDuplicate && result.duplicateCheck.matchedClinic) {
-          duplicates.push({
-            existingClinic: result.duplicateCheck.matchedClinic,
-            newClinicData: clinic,
-            matchReason: result.duplicateCheck.matchReason || 'Similar record found',
-            matchConfidence: result.duplicateCheck.matchConfidence || 0.7
-          });
-        }
-        
-        // Update progress
-        setImportProgress(prev => ({
-          ...prev,
-          progress: Math.min(40 + Math.floor((i / clinics.length) * 40), 80),
-          stats: {
-            ...prev.stats,
-            processed: i + 1,
-            duplicates: duplicates.length
-          }
-        }));
-      }
-      
-      // Update import log with progress
-      await updateImportLog(importLogRef, {
-        totalRecords: clinics.length,
-        duplicatesFound: duplicates.length,
-        progress: 'duplicates_identified'
-      });
-      
-      // If there are duplicates, we need user input
-      if (duplicates.length > 0) {
-        setImportProgress(prev => ({
-          ...prev,
-          status: 'checking_duplicates',
-          progress: 80,
-          duplicates,
-          importId
-        }));
-        
-        return importId;
-      }
-      
-      // Otherwise, proceed with import
-      setImportProgress(prev => ({
-        ...prev,
-        status: 'importing',
-        progress: 90
-      }));
-      
-      // Simulate successful import
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Update import log with success
-      await updateImportLog(importLogRef, {
-        status: 'success',
-        successCount: clinics.length,
-        failureCount: 0,
-        progress: 'complete'
-      });
-      
-      // Complete the import
-      setImportProgress(prev => ({
-        ...prev,
-        status: 'complete',
-        progress: 100,
-        stats: {
-          ...prev.stats,
-          created: clinics.length,
-          processed: clinics.length
-        },
-        importId
-      }));
-      
-      return importId;
+      return { success: true, importId };
     } catch (error) {
       console.error('Error during import:', error);
-      
-      // Update import log with error
-      if (importProgress.importId) {
-        const logRef = doc(db, 'import_logs', importProgress.importId);
-        await updateImportLog(logRef, {
-          status: 'failed',
-          error: error instanceof Error ? error.message : 'Unknown error during import',
-          progress: 'error'
-        });
-      }
       
       // Update state with error
       setImportProgress(prev => ({
@@ -242,7 +145,7 @@ export const useClinicImport = (): UseClinicImportResult => {
         error: error instanceof Error ? error.message : 'Unknown error during import'
       }));
       
-      return importProgress.importId || '';
+      return { success: false };
     }
   };
 
@@ -328,9 +231,70 @@ async function parseImportFile(file: File): Promise<Partial<Clinic>[]> {
           const clinics = Array.isArray(data) ? data : data.clinics || [];
           resolve(clinics);
         } else if (file.name.toLowerCase().endsWith('.csv')) {
-          // For CSV, we would use a CSV parser
-          // For the demo, return mock data
-          resolve(generateMockClinicData(20));
+          // Parse CSV
+          const lines = content.trim().split('\n');
+          if (lines.length < 2) {
+            reject(new Error('CSV file is empty or has no data rows'));
+            return;
+          }
+          
+          // Parse headers
+          const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g, ''));
+          
+          // Parse data rows
+          const clinics: Partial<Clinic>[] = [];
+          for (let i = 1; i < lines.length; i++) {
+            const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+            const clinic: any = {};
+            
+            headers.forEach((header, index) => {
+              if (values[index]) {
+                // Map CSV headers to clinic fields
+                switch(header) {
+                  case 'name':
+                  case 'clinic_name':
+                    clinic.name = values[index];
+                    break;
+                  case 'address':
+                  case 'street_address':
+                    clinic.address = values[index];
+                    break;
+                  case 'city':
+                    clinic.city = values[index];
+                    break;
+                  case 'state':
+                    clinic.state = values[index];
+                    break;
+                  case 'zip':
+                  case 'zipcode':
+                  case 'postal_code':
+                    clinic.zip = values[index];
+                    break;
+                  case 'phone':
+                  case 'phone_number':
+                    clinic.phone = values[index];
+                    break;
+                  case 'website':
+                  case 'url':
+                    clinic.website = values[index];
+                    break;
+                  case 'services':
+                    clinic.services = values[index].split(';').map(s => s.trim());
+                    break;
+                  case 'tier':
+                  case 'package':
+                    clinic.tier = values[index] as 'free' | 'standard' | 'advanced';
+                    break;
+                }
+              }
+            });
+            
+            if (clinic.name) {
+              clinics.push(clinic);
+            }
+          }
+          
+          resolve(clinics);
         } else {
           reject(new Error('Unsupported file format. Please upload a CSV or JSON file.'));
         }

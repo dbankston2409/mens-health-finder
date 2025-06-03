@@ -7,32 +7,67 @@ export async function generateSeoContent(clinic: ClinicInput): Promise<string> {
     try {
       return await generateSeoContentWithClaude(clinic);
     } catch (error) {
-      console.warn('Claude SEO content generation failed, using template-based approach:', error);
+      console.error('Claude SEO content generation failed:', error);
+      // Mark clinic for manual review instead of using fallback
+      throw new Error(`SEO_CONTENT_GENERATION_FAILED: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
   
-  // Fallback to template-based generation
-  return generateSeoContentTemplate(clinic);
+  // No API key available - mark for manual review
+  throw new Error('SEO_CONTENT_GENERATION_FAILED: Claude API key not configured');
 }
 
 async function generateSeoContentWithClaude(clinic: ClinicInput): Promise<string> {
-  const prompt = `Write SEO-optimized content for a men's health clinic landing page. Include the following details naturally:
+  const prompt = `You are a highly skilled professional copywriter specializing in local SEO for healthcare clinics. Your task is to generate a 500–700 word clinic profile page for MHF (Men's Health Finder), a national men's health directory.
 
-Clinic: ${clinic.name}
-Location: ${clinic.city}, ${clinic.state}
-Services: ${clinic.services.join(', ')}
-${clinic.website ? `Website: ${clinic.website}` : ''}
+Write the content as if it's going live on a public-facing SEO page — the kind of content Google rewards and real people trust.
 
-Requirements:
-- 300-500 words
-- Professional, human-sounding tone
-- SEO-rich but natural language
-- Mentions services, city, men's health relevance
-- Encourages action (call, visit, explore services)
-- Include local relevance
-- Focus on patient benefits and outcomes
+You will receive the following inputs:
+- Clinic Name: ${clinic.name}
+- City, State: ${clinic.city}, ${clinic.state}
+- List of Services: ${clinic.services.join(', ')}
 
-Write in HTML format with proper heading structure (h2, h3) and paragraphs.`;
+**Output Requirements (VERY IMPORTANT):**
+- Word Count: 500–700 words (MUST be at least 500 words — verify before finalizing)
+- Tone: Professional, local, and natural — not corporate or robotic
+- SEO: Use local and service-related keywords naturally, without stuffing
+- Perspective: Third-person (e.g. "At ${clinic.name} in ${clinic.city}, men receive…")
+- Structure: Use short paragraphs, subheadings, and logical flow
+- No emoji, fluff, or "AI-sounding" content
+- Output Format: HTML with proper tags (h2, h3, p, ul/li)
+
+**Structure Guidelines:**
+
+1. **Intro (1 paragraph)**  
+   - Mention the clinic name, city/state, and core focus on men's health  
+   - Emphasize trusted care, discreet service, and life-improving results
+
+2. **Service Overview Section (2–4 paragraphs)**  
+   - Provide detail on each major service offered  
+   - Include what the service helps with, how it works, and typical outcomes  
+   - Localize descriptions where possible (e.g. "Serving men across the ${clinic.city} area…")
+
+3. **Why Men Choose This Clinic (1–2 paragraphs)**  
+   - Highlight competitive differentiators (personalized care, experienced staff, walk-in availability, etc.)  
+   - Focus on what men appreciate — clarity, trust, results, privacy
+
+4. **Local Tie-In (1 paragraph)**  
+   - Mention community relevance, central location, ease of access, or local reputation  
+   - Reference city/state to strengthen local SEO and trust
+
+5. **Call to Action (1 strong closing paragraph)**  
+   - Encourage the reader to call, schedule a consult, or explore available services  
+   - Keep tone confident and benefit-focused (e.g. "Feel better, perform better — discreetly and professionally.")
+
+**DO NOT:**
+- Use hype phrases like "Unlock your potential," "Reclaim your life," "Discover the secret to..."
+- Use generic AI filler phrases (e.g. "This clinic offers comprehensive care…" or "They understand your unique needs.")
+- Use passive voice excessively
+- Repeat phrases unnecessarily
+- Include quotes, statistics, or links unless provided
+- Use emojis, icons, or listicles
+
+Return the content in HTML format with appropriate heading tags and paragraphs. Do not include any explanations or metadata.`;
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -43,7 +78,7 @@ Write in HTML format with proper heading structure (h2, h3) and paragraphs.`;
     },
     body: JSON.stringify({
       model: 'claude-3-sonnet-20240229',
-      max_tokens: 1000,
+      max_tokens: 2000,
       messages: [
         {
           role: 'user',
@@ -61,63 +96,4 @@ Write in HTML format with proper heading structure (h2, h3) and paragraphs.`;
   return data.content[0].text;
 }
 
-function generateSeoContentTemplate(clinic: ClinicInput): string {
-  const servicesText = clinic.services.join(', ');
-  const primaryService = clinic.services[0] || 'comprehensive men\'s health services';
-  
-  return `
-<div class="seo-content">
-  <h2>Premier Men's Health Care in ${clinic.city}, ${clinic.state}</h2>
-  
-  <p>Welcome to ${clinic.name}, your trusted partner for comprehensive men's health solutions in ${clinic.city}, ${clinic.state}. Our state-of-the-art facility specializes in ${servicesText}, providing personalized care tailored to your unique health needs.</p>
-  
-  <h3>Expert ${primaryService} Services</h3>
-  
-  <p>At ${clinic.name}, we understand that men's health requires specialized attention and expertise. Our experienced medical professionals are dedicated to helping men in ${clinic.city} and throughout ${clinic.state} achieve optimal health and wellness through evidence-based treatments and compassionate care.</p>
-  
-  ${generateServicesSection(clinic.services)}
-  
-  <h3>Why Choose ${clinic.name}?</h3>
-  
-  <p>Our commitment to excellence in men's health care sets us apart in ${clinic.city}. We offer:</p>
-  
-  <ul>
-    <li>Personalized treatment plans tailored to your specific needs</li>
-    <li>State-of-the-art medical technology and facilities</li>
-    <li>Experienced healthcare professionals specializing in men's health</li>
-    <li>Convenient location in ${clinic.city}, ${clinic.state}</li>
-    <li>Comprehensive approach to wellness and preventive care</li>
-  </ul>
-  
-  <h3>Schedule Your Consultation Today</h3>
-  
-  <p>Take the first step toward better health and renewed vitality. Contact ${clinic.name} today to schedule your consultation. Our team is ready to help you achieve your health goals and improve your quality of life.</p>
-  
-  <p><strong>Ready to get started?</strong> Call us now or visit our clinic in ${clinic.city} to learn more about our comprehensive men's health services.</p>
-</div>
-  `.trim();
-}
-
-function generateServicesSection(services: string[]): string {
-  if (services.length === 0) return '';
-  
-  const serviceDescriptions: { [key: string]: string } = {
-    'TRT': 'testosterone replacement therapy to address low testosterone levels and improve energy, mood, and overall well-being',
-    'ED Treatment': 'effective erectile dysfunction treatments to restore confidence and intimate relationships',
-    'Weight Loss': 'medically supervised weight management programs designed specifically for men',
-    'Hair Restoration': 'advanced hair restoration solutions to combat male pattern baldness',
-    'Hormone Therapy': 'comprehensive hormone optimization to balance your body\'s natural systems',
-    'Wellness': 'holistic wellness programs focusing on preventive care and lifestyle optimization'
-  };
-  
-  let section = '<h3>Our Specialized Services</h3>\n<p>We offer a comprehensive range of men\'s health services, including:</p>\n<ul>\n';
-  
-  services.forEach(service => {
-    const description = serviceDescriptions[service] || `specialized ${service.toLowerCase()} treatments`;
-    section += `  <li><strong>${service}:</strong> ${description}</li>\n`;
-  });
-  
-  section += '</ul>\n';
-  
-  return section;
-}
+// Template functions removed - we require AI generation or manual review

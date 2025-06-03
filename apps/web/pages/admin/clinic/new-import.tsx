@@ -15,9 +15,9 @@ const NewImportPage: React.FC = () => {
       // Start the import process
       const result = await startImport(file, options);
       
-      if (result.success) {
-        // Redirect to import logs to see the progress
-        router.push('/admin/import-logs');
+      if (result.success && result.importId) {
+        // Redirect to the import progress page
+        router.push(`/admin/imports/${result.importId}`);
       }
     } catch (error) {
       console.error('Import error:', error);

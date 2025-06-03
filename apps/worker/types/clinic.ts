@@ -61,6 +61,8 @@ export interface ImportResult {
   totalImported: number;
   totalUpdated: number;
   totalFailed: number;
+  totalSuccess: number;
+  duplicates: number;
   errors: ImportError[];
   successfulSlugs: string[];
   duration: number;
@@ -68,6 +70,7 @@ export interface ImportResult {
 
 export interface ImportError {
   type: string;
+  code?: string;
   message: string;
   data?: any;
   count: number;
