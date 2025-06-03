@@ -11,6 +11,9 @@ import { initAnalytics, trackPageView, exposeAnalytics } from '../../../lib/anal
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   
+  // Check if the current route is an admin page
+  const isAdminPage = router.pathname.startsWith('/admin');
+  
   // Initialize and track GA4 page views
   useEffect(() => {
     // Initialize analytics
@@ -44,9 +47,14 @@ export default function App({ Component, pageProps }: AppProps) {
         src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`}
       />
       
-      <Layout>
+      {/* Conditionally render Layout only for non-admin pages */}
+      {isAdminPage ? (
         <Component {...pageProps} />
-      </Layout>
+      ) : (
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      )}
     </AuthProvider>
   );
 }
