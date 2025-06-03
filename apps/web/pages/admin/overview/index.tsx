@@ -61,7 +61,11 @@ const AdminOverviewPanel: React.FC = () => {
               
               <div className="hidden md:flex space-x-2">
                 <Link href="/admin/crm" className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
-                  Clinic Manager
+                  CRM
+                </Link>
+                
+                <Link href="/admin/clients" className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
+                  Client Management
                 </Link>
                 
                 <Link href="/admin/settings" className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
