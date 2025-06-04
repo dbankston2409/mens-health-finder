@@ -174,8 +174,8 @@ const args = process.argv.slice(3);
     try {
       log.info('Loading review update engine...');
       
-      const { executeReviewUpdateCommand } = await import('./tasks/updateClinicReviews');
-      await executeReviewUpdateCommand(args);
+      const { runReviewUpdateCLI } = await import('./tasks/updateClinicReviews');
+      await runReviewUpdateCLI(args);
       
       log.success('Review update completed successfully!');
       process.exit(0);

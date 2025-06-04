@@ -15,7 +15,9 @@
     "deploy:docker": "DEPLOY_PLATFORM=docker ./deploy.sh"
   },
   "dependencies": {
+    "@types/cheerio": "^0.22.35",
     "axios": "^1.9.0",
+    "cheerio": "^1.0.0",
     "csv-parse": "^5.5.2",
     "dotenv": "^16.5.0",
     "firebase-admin": "^13.3.0",

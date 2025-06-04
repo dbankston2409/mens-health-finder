@@ -151,11 +151,11 @@ function calculateStats(results: any[], clinics: any[]) {
   
   // Find most common query
   const mostCommonQuery = Object.entries(queryCount)
-    .sort(([a], [b]) => b - a)[0]?.[0] || '';
+    .sort(([, a], [, b]) => b - a)[0]?.[0] || '';
   
   // Find most indexed state
   const mostIndexedState = Object.entries(stateCount)
-    .sort(([a], [b]) => b - a)[0]?.[0] || '';
+    .sort(([, a], [, b]) => b - a)[0]?.[0] || '';
   
   return {
     mostCommonQuery,

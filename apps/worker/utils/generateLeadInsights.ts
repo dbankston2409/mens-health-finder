@@ -408,7 +408,7 @@ function generateRecommendations(insights: LeadInsights, trends: any): string[] 
   
   // Source recommendations
   const topSource = Object.entries(insights.leadsBySource)
-    .sort(([a], [b]) => b - a)[0];
+    .sort(([, a], [, b]) => (b as number) - (a as number))[0];
   
   if (topSource && topSource[1] > insights.totalLeads * 0.6) {
     recommendations.push(`Diversify lead sources - currently too dependent on ${topSource[0]}`);

@@ -10,6 +10,7 @@ interface StructuredDataProps {
   clinic: Clinic;
   url: string;
   breadcrumbs?: { name: string; url: string }[];
+  includeFaq?: boolean;
 }
 
 /**
@@ -20,7 +21,7 @@ interface StructuredDataProps {
  * @param breadcrumbs Optional breadcrumbs data
  * @returns Structured data script tags
  */
-const StructuredData: React.FC<StructuredDataProps> = ({ clinic, url, breadcrumbs }) => {
+const StructuredData: React.FC<StructuredDataProps> = ({ clinic, url, breadcrumbs, includeFaq = true }) => {
   // Get structured data for the clinic
   const clinicJsonLd = generateClinicStructuredData(clinic, url);
   
@@ -33,6 +34,20 @@ const StructuredData: React.FC<StructuredDataProps> = ({ clinic, url, breadcrumb
   // Generate breadcrumbs data if provided
   const breadcrumbsJsonLd = breadcrumbs ? 
     generateBreadcrumbsStructuredData(breadcrumbs) : null;
+  
+  // Generate FAQ schema if FAQs exist and includeFaq is true
+  const faqJsonLd = includeFaq && clinic.faqs && clinic.faqs.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": clinic.faqs.map(faq => ({
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer
+      }
+    }))
+  } : null;
   
   return (
     <>
@@ -48,6 +63,12 @@ const StructuredData: React.FC<StructuredDataProps> = ({ clinic, url, breadcrumb
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: breadcrumbsJsonLd as string }}
+        />
+      )}
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
         />
       )}
     </>

@@ -1,5 +1,5 @@
 import { ClinicInput } from '../types/clinic';
-import { WebsiteScrapingResult, ScrapedService } from './websiteScraper';
+import { WebsiteScrapingResult, ScrapedService } from './enhancedWebsiteScraper';
 import fetch from 'node-fetch';
 
 /**

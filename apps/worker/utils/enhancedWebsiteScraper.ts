@@ -192,7 +192,7 @@ export class EnhancedClinicWebsiteScraper {
     try {
       const response = await fetch(pageUrl, { 
         headers: this.headers,
-        timeout: 10000 
+        signal: AbortSignal.timeout(10000)
       });
       
       if (!response.ok) {

@@ -1,7 +1,15 @@
 import { EnhancedClinicWebsiteScraper } from './enhancedWebsiteScraper';
 import { generateEnhancedSeoContent, generateServiceBasedFAQs } from './enhancedSeoGenerator';
+import { generateStructuredFAQs, convertToFAQSchema, FAQItem } from './schemaFaqGenerator';
 import { ClinicInput } from '../types/clinic';
-import FirebaseAdmin from '../lib/firebase-admin';
+import * as admin from 'firebase-admin';
+
+// Initialize Firebase Admin if not already done
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
+
+const FirebaseAdmin = admin;
 
 /**
  * Automated pipeline for enriching clinic data with website information
@@ -27,6 +35,7 @@ export interface EnrichmentResult {
     specializations?: string[];
     seoContent?: string;
     faqs?: Array<{question: string; answer: string}>;
+    faqSchema?: any;  // Schema.org FAQPage structure
     scrapingDetails?: {
       pagesScraped: number;
       confidence: number;
@@ -82,9 +91,17 @@ export class ClinicEnrichmentPipeline {
       const seoContent = await generateEnhancedSeoContent(enhancedClinic, scrapingResult);
       result.seoContentGenerated = true;
 
-      // Step 3: Generate service-based FAQs
-      console.log('❓ Generating FAQs...');
-      const faqs = generateServiceBasedFAQs(enhancedClinic, scrapingResult.services);
+      // Step 3: Generate structured FAQs for schema markup
+      console.log('❓ Generating structured FAQs...');
+      const structuredFaqs = generateStructuredFAQs(
+        clinic, 
+        scrapingResult.services,
+        scrapingResult.treatments?.treatments
+      );
+      
+      // Also generate legacy FAQs for backward compatibility
+      const legacyFaqs = generateServiceBasedFAQs(enhancedClinic, scrapingResult.services);
+      
       result.faqsGenerated = true;
 
       // Step 4: Prepare enriched data
@@ -102,7 +119,8 @@ export class ClinicEnrichmentPipeline {
         })),
         specializations: scrapingResult.treatments?.specialties || [],
         seoContent,
-        faqs,
+        faqs: structuredFaqs.map(faq => ({ question: faq.question, answer: faq.answer })),
+        faqSchema: convertToFAQSchema(structuredFaqs),
         scrapingDetails: {
           pagesScraped: scrapingResult.scrapedPages.length,
           confidence: scrapingResult.services.reduce((acc, s) => acc + s.confidence, 0) / scrapingResult.services.length,
@@ -194,8 +212,9 @@ export class ClinicEnrichmentPipeline {
       'seoMeta.contentGeneratedAt': FirebaseAdmin.firestore.FieldValue.serverTimestamp(),
       'seoMeta.contentSource': 'enhanced_scraping',
       
-      // Add FAQs
+      // Add FAQs with schema markup
       faqs: enrichedData.faqs,
+      faqSchema: enrichedData.faqSchema,
       
       // Add enrichment metadata
       enrichmentData: {
@@ -244,10 +263,28 @@ export class ClinicEnrichmentPipeline {
       .limit(limit)
       .get();
 
-    return snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    } as ClinicInput));
+    return snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        name: data.name || '',
+        address: data.address || '',
+        city: data.city || '',
+        state: data.state || '',
+        zip: data.zip || '',
+        phone: data.phone || '',
+        website: data.website || '',
+        services: data.services || [],
+        package: data.package || 'free',
+        status: data.status || 'active',
+        tags: data.tags || [],
+        lat: data.lat,
+        lng: data.lng,
+        slug: data.slug,
+        createdAt: data.createdAt?.toDate() || new Date(),
+        updatedAt: data.updatedAt?.toDate() || new Date()
+      } as ClinicInput;
+    });
   }
 
   /**
@@ -265,10 +302,28 @@ export class ClinicEnrichmentPipeline {
       .limit(limit)
       .get();
 
-    return snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    } as ClinicInput));
+    return snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        name: data.name || '',
+        address: data.address || '',
+        city: data.city || '',
+        state: data.state || '',
+        zip: data.zip || '',
+        phone: data.phone || '',
+        website: data.website || '',
+        services: data.services || [],
+        package: data.package || 'free',
+        status: data.status || 'active',
+        tags: data.tags || [],
+        lat: data.lat,
+        lng: data.lng,
+        slug: data.slug,
+        createdAt: data.createdAt?.toDate() || new Date(),
+        updatedAt: data.updatedAt?.toDate() || new Date()
+      } as ClinicInput;
+    });
   }
 }
 

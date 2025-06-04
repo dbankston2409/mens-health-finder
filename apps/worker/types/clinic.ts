@@ -15,6 +15,7 @@ export interface RawClinic {
 }
 
 export interface ClinicInput {
+  id?: string;
   name: string;
   address: string;
   city: string;
