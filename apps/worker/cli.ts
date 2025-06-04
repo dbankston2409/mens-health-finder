@@ -26,15 +26,36 @@ const log = {
 
 function showUsage() {
   console.log(`
-${colors.bright}${colors.cyan}Men's Health Finder - Clinic Import Engine${colors.reset}
+${colors.bright}${colors.cyan}Men's Health Finder - Worker Engine${colors.reset}
 
 ${colors.bright}USAGE:${colors.reset}
-  npm run worker:import [file-path]
+  npm run worker [command] [options]
 
-${colors.bright}EXAMPLES:${colors.reset}
-  npm run worker:import sample-clinics.csv
-  npm run worker:import ./data/clinics.json
-  npm run worker:import /path/to/clinic-data.csv
+${colors.bright}COMMANDS:${colors.reset}
+
+  ${colors.bright}import${colors.reset} [file-path]       Import clinics from CSV/JSON files
+  ${colors.bright}discovery${colors.reset} [options]     Run automated business discovery
+
+${colors.bright}IMPORT EXAMPLES:${colors.reset}
+  npm run worker import sample-clinics.csv
+  npm run worker import ./data/clinics.json
+  npm run worker import /path/to/clinic-data.csv
+
+${colors.bright}DISCOVERY EXAMPLES:${colors.reset}
+  npm run worker discovery --target 5000 --strategy metro_first
+  npm run worker discovery --target 10000 --niche mensHealth --no-reviews
+  npm run worker discovery --resume session_123456789
+  npm run worker discovery --target 2000 --concurrent 5 --pause-after 120
+
+${colors.bright}DISCOVERY OPTIONS:${colors.reset}
+  --target N          Target number of clinics to find (default: 5000)
+  --strategy S        Search strategy: metro_first, nationwide, state_by_state
+  --niche N           Search niche: mensHealth, urgentCare, wellness
+  --concurrent N      Max concurrent searches (default: 3)
+  --pause-after N     Auto-pause after N minutes (optional)
+  --resume ID         Resume existing session by ID
+  --no-reviews        Skip review import (faster, lower cost)
+  --no-social         Skip social media enhancement
 
 ${colors.bright}SUPPORTED FORMATS:${colors.reset}
   • CSV files (.csv)
@@ -56,6 +77,13 @@ ${colors.bright}OPTIONAL CSV COLUMNS:${colors.reset}
   • status (active, paused, inactive)
 
 ${colors.bright}FEATURES:${colors.reset}
+  ✅ Automated business discovery across entire US
+  ✅ Google Places & Yelp API integration
+  ✅ Visual grid-based search with progress tracking
+  ✅ Pause/resume functionality for long-running searches
+  ✅ Social media and review data enhancement
+  ✅ Address-based deduplication
+  ✅ Priority-based metro-first search strategy
   ✅ Automatic data normalization and cleaning
   ✅ Address geocoding with Google Maps API
   ✅ SEO metadata generation (AI-powered when available)
@@ -65,14 +93,16 @@ ${colors.bright}FEATURES:${colors.reset}
   ✅ Firestore integration with batch operations
 
 ${colors.bright}ENVIRONMENT VARIABLES:${colors.reset}
-  • GOOGLE_MAPS_API_KEY (for geocoding)
+  • GOOGLE_MAPS_API_KEY (for geocoding & Places API)
+  • YELP_API_KEY (for Yelp business data)
   • OPENAI_API_KEY (for AI-powered SEO generation)
   • CLAUDE_API_KEY (for AI-powered content generation)
   • FIREBASE_PROJECT_ID (Firebase project)
   • GOOGLE_APPLICATION_CREDENTIALS (Firebase auth)
 
 ${colors.bright}MORE INFO:${colors.reset}
-  Run ${colors.green}npm run worker:import${colors.reset} without arguments to use the default sample file.
+  Run ${colors.green}npm run worker import${colors.reset} without arguments to use the default sample file.
+  Run ${colors.green}npm run worker discovery${colors.reset} without arguments to start with default settings.
 `);
 }
 
@@ -80,11 +110,11 @@ ${colors.bright}MORE INFO:${colors.reset}
 dotenv.config({ path: '../../.env.worker' });
 
 const command = process.argv[2];
-const filePath = process.argv[3];
+const args = process.argv.slice(3);
 
 (async () => {
   // Show header
-  log.header('Men\'s Health Finder Clinic Import Engine');
+  log.header('Men\'s Health Finder Worker Engine');
   
   if (command === 'help' || command === '--help' || command === '-h') {
     showUsage();
@@ -95,6 +125,7 @@ const filePath = process.argv[3];
     try {
       log.info('Loading import engine...');
       
+      const filePath = args[0];
       const { importClinics } = await import('./tasks/importClinics');
       await importClinics(filePath);
       
@@ -107,8 +138,24 @@ const filePath = process.argv[3];
     }
   }
   
+  if (command === 'discovery') {
+    try {
+      log.info('Loading business discovery engine...');
+      
+      const { executeDiscoveryCommand } = await import('./tasks/runBusinessDiscovery');
+      await executeDiscoveryCommand(args);
+      
+      log.success('Discovery completed successfully!');
+      process.exit(0);
+      
+    } catch (error) {
+      log.error(`Discovery failed: ${error}`);
+      process.exit(1);
+    }
+  }
+  
   // Default behavior - show usage if no valid command
-  if (!command || command !== 'import') {
+  if (!command || !['import', 'discovery'].includes(command)) {
     log.warning('Invalid or missing command');
     showUsage();
     process.exit(1);

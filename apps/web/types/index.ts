@@ -40,6 +40,15 @@ export interface Clinic {
   verificationStatus?: 'verified' | 'pending' | 'failed';
   verificationMethod?: string;
   
+  // External IDs for data fetching
+  googlePlacesId?: string;
+  yelpBusinessId?: string;
+  externalIds?: {
+    google?: string;
+    yelp?: string;
+    healthgrades?: string;
+  };
+
   // Reviews and ratings
   rating?: number;
   reviewCount?: number;
@@ -55,6 +64,74 @@ export interface Clinic {
     count: number;
     distribution?: Record<string, number>;
   };
+
+  // Business Intelligence
+  priceLevel?: 1 | 2 | 3 | 4;
+  priceBracket?: '$' | '$$' | '$$$' | '$$$$';
+  businessStatus?: 'operational' | 'closed_temporarily' | 'closed_permanently';
+
+  // Accessibility & Services
+  accessibility?: {
+    wheelchairAccessible?: boolean;
+    hasParking?: boolean;
+    parkingType?: 'street' | 'lot' | 'garage' | 'valet';
+    acceptsInsurance?: boolean;
+    languagesSpoken?: string[];
+  };
+
+  // Payment Methods
+  paymentMethods?: {
+    cash?: boolean;
+    creditCards?: boolean;
+    debitCards?: boolean;
+    nfc?: boolean;
+    bitcoin?: boolean;
+    financing?: boolean;
+  };
+
+  // Rich Media
+  photos?: {
+    google?: GooglePhoto[];
+    yelp?: YelpPhoto[];
+    hero?: string;
+    gallery?: string[];
+  };
+
+  // Social Presence
+  socialMedia?: {
+    instagram?: string;
+    facebook?: string;
+    twitter?: string;
+    linkedin?: string;
+    youtube?: string;
+    tiktok?: string;
+  };
+
+  // Contact Methods
+  contactMethods?: {
+    phone: string;
+    alternatePhone?: string;
+    email?: string;
+    contactForm?: string;
+    messaging?: any;
+    bookingUrl?: string;
+  };
+
+  // Specialized Services (Men's Health)
+  specializedServices?: {
+    trt?: boolean;
+    ed?: boolean;
+    weightLoss?: boolean;
+    peptides?: boolean;
+    hrt?: boolean;
+    wellness?: boolean;
+    telehealth?: boolean;
+  };
+
+  // Discovery metadata
+  discoverySession?: string;
+  discoveryGrid?: string;
+  enhancementStatus?: 'basic' | 'enhanced' | 'complete';
   
   // Timestamps
   createdAt?: Timestamp | Date;
@@ -216,6 +293,71 @@ export interface ClinicFilter {
   lng?: number;
   radius?: number;
   verified?: boolean;
+}
+
+// Discovery and Enhancement Types
+export interface GooglePhoto {
+  photo_reference: string;
+  height: number;
+  width: number;
+  html_attributions: string[];
+}
+
+export interface YelpPhoto {
+  url: string;
+  width: number;
+  height: number;
+}
+
+export interface DiscoveryGrid {
+  id: string;
+  lat: number;
+  lng: number;
+  radius: number;
+  priority: 1 | 2 | 3;
+  status: 'pending' | 'in_progress' | 'completed' | 'failed';
+  searchTermsUsed: string[];
+  clinicsFound: number;
+  lastSearched?: Date;
+  area?: string;
+}
+
+export interface DiscoverySession {
+  id: string;
+  name: string;
+  targetCount: number;
+  niche: string;
+  status: 'pending' | 'running' | 'paused' | 'completed' | 'failed';
+  currentGrid?: string;
+  gridsCompleted: string[];
+  gridsRemaining: string[];
+  stats: {
+    totalGrids: number;
+    searchedGrids: number;
+    clinicsFound: number;
+    apiCalls: number;
+    apiCost: number;
+    duplicatesFound: number;
+  };
+  config: {
+    strategy: 'metro_first' | 'nationwide' | 'state_by_state';
+    gridSpacing: number;
+    searchTerms: string[];
+    enhancementLevel: 'basic' | 'enhanced' | 'complete';
+  };
+  createdAt: Date;
+  lastUpdated: Date;
+  lastResumed?: Date;
+}
+
+export interface SearchNiche {
+  id: string;
+  name: string;
+  searchTerms: string[];
+  yelpCategories: string[];
+  googleTypes: string[];
+  excludeTerms?: string[];
+  description: string;
 }
 
 // Safe object access helper
