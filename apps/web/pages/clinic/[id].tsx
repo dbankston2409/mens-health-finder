@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { useState, useRef, useEffect } from 'react';
 import StructuredData from '../../components/StructuredData';
 import TierBadge from '../../components/TierBadge';
 import UpgradeCallout from '../../components/UpgradeCallout';

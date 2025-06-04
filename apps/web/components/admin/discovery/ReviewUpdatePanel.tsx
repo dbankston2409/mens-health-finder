@@ -72,7 +72,10 @@ const ReviewUpdatePanel: React.FC<ReviewUpdatePanelProps> = ({
     const successful = results.filter(r => r.success).length;
     const totalReviews = results.reduce((sum, r) => sum + r.reviewsImported, 0);
     const googleReviews = results.reduce((sum, r) => sum + (r.sources.google?.imported || 0), 0);
-    const yelpReviews = results.reduce((sum, r) => sum + (r.sources.,
+    const yelpReviews = 0; // Yelp integration removed
+    const errors = results.filter(r => !r.success).map(r => r.error);
+
+    return {
       successful,
       totalReviews,
       googleReviews,

@@ -48,13 +48,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         }
 
-        // Fetch Yelp reviews if enabled
-        : ${yelpResult.error}`);
-            }
-          } catch (error) {
-            results.errors.push(`Yelp reviews error for ${clinicId}: ${error.message}`);
-          }
-        }
+        // Fetch Yelp reviews if enabled (currently disabled)
+        // Yelp integration has been removed from the system
 
         results.totalReviewsImported += clinicReviewsImported;
         results.successful++;

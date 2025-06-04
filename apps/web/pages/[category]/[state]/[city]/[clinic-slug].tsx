@@ -1,3 +1,4 @@
+import React from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -89,7 +90,7 @@ export default function ClinicDetailPage({
   const clinicDisplayName = formatClinicName(clinic.name);
 
   return (
-    <>
+    <React.Fragment>
       <Head>
         <title>{
           clinic.seoMeta?.title || 
@@ -537,7 +538,7 @@ export default function ClinicDetailPage({
           </div>
         </div>
       </main>
-    </>
+    </React.Fragment>
   );
 }
 

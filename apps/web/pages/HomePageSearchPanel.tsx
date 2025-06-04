@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import MapSearchBar from '../components/MapSearchBar';
-import LocationPromptModal from '../components/LocationPromptModal';
+import ChangeLocationModal from '../components/ChangeLocationModal';
 
 interface CityStats {
   slug: string;
@@ -310,12 +310,11 @@ const HomePageSearchPanel: React.FC<HomePageSearchPanelProps> = ({
         </div>
       </div>
 
-      {/* Location Prompt Modal */}
-      <LocationPromptModal
-        isOpen={showLocationModal}
+      {/* Location Change Modal */}
+      <ChangeLocationModal
+        currentLocation=""
+        onLocationChange={handleLocationAccepted}
         onClose={() => setShowLocationModal(false)}
-        onLocationAccepted={handleLocationAccepted}
-        onLocationDenied={() => {}}
       />
     </div>
   );
