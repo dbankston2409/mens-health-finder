@@ -73,7 +73,7 @@ const ClientQuickActions: React.FC<ClientQuickActionsProps> = ({
       {/* Action Buttons */}
       <button
         onClick={() => onEdit(clinic)}
-        className="p-1 text-gray-500 hover:text-blue-600 rounded-full hover:bg-blue-50"
+        className="p-1 text-gray-400 hover:text-blue-400 rounded-full hover:bg-blue-900/30 transition-colors"
         title="Edit Clinic"
       >
         <PencilSquareIcon className="h-5 w-5" />
@@ -82,7 +82,7 @@ const ClientQuickActions: React.FC<ClientQuickActionsProps> = ({
       <button
         onClick={toggleStatus}
         disabled={loading}
-        className={`p-1 rounded-full ${loading ? 'opacity-50 cursor-not-allowed' : clinic.status === 'active' ? 'text-green-500 hover:text-red-600 hover:bg-red-50' : 'text-red-500 hover:text-green-600 hover:bg-green-50'}`}
+        className={`p-1 rounded-full transition-colors ${loading ? 'opacity-50 cursor-not-allowed' : clinic.status === 'active' ? 'text-green-400 hover:text-red-400 hover:bg-red-900/30' : 'text-red-400 hover:text-green-400 hover:bg-green-900/30'}`}
         title={clinic.status === 'active' ? 'Pause Clinic' : 'Activate Clinic'}
       >
         {clinic.status === 'active' ? (
@@ -94,7 +94,7 @@ const ClientQuickActions: React.FC<ClientQuickActionsProps> = ({
       
       <button
         onClick={() => onMessage(clinic)}
-        className="p-1 text-gray-500 hover:text-blue-600 rounded-full hover:bg-blue-50"
+        className="p-1 text-gray-400 hover:text-blue-400 rounded-full hover:bg-blue-900/30 transition-colors"
         title="Message Clinic"
       >
         <ChatBubbleLeftRightIcon className="h-5 w-5" />
@@ -103,15 +103,15 @@ const ClientQuickActions: React.FC<ClientQuickActionsProps> = ({
       <div className="relative">
         <button
           onClick={() => setShowTagMenu(!showTagMenu)}
-          className="p-1 text-gray-500 hover:text-blue-600 rounded-full hover:bg-blue-50"
+          className="p-1 text-gray-400 hover:text-blue-400 rounded-full hover:bg-blue-900/30 transition-colors"
           title="Manage Tags"
         >
           <TagIcon className="h-5 w-5" />
         </button>
         
         {showTagMenu && (
-          <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg z-50 py-1 border">
-            <div className="p-2 border-b text-xs font-medium text-gray-500">
+          <div className="absolute right-0 mt-2 w-56 bg-[#111111] rounded-md shadow-lg z-50 py-1 border border-[#222222]">
+            <div className="p-2 border-b border-[#222222] text-xs font-medium text-gray-400">
               Manage Tags
             </div>
             <div className="max-h-48 overflow-y-auto p-2">
@@ -124,7 +124,7 @@ const ClientQuickActions: React.FC<ClientQuickActionsProps> = ({
                     onChange={() => handleTagToggle(tag)}
                     className="mr-2"
                   />
-                  <label htmlFor={`tag-${tag}`} className="text-sm text-gray-700 select-none">
+                  <label htmlFor={`tag-${tag}`} className="text-sm text-gray-300 select-none">
                     {tag}
                   </label>
                 </div>
@@ -132,7 +132,7 @@ const ClientQuickActions: React.FC<ClientQuickActionsProps> = ({
             </div>
             <button 
               onClick={() => setShowTagMenu(false)}
-              className="w-full text-center p-2 text-sm text-gray-700 hover:bg-gray-100 border-t"
+              className="w-full text-center p-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white border-t border-[#222222] transition-colors"
             >
               Close
             </button>
@@ -144,20 +144,20 @@ const ClientQuickActions: React.FC<ClientQuickActionsProps> = ({
       <div className="relative">
         <button
           onClick={() => setShowMenu(!showMenu)}
-          className="p-1 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
+          className="p-1 text-gray-400 hover:text-gray-300 rounded-full hover:bg-gray-800 transition-colors"
         >
           <EllipsisHorizontalIcon className="h-5 w-5" />
         </button>
         
         {showMenu && (
-          <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
+          <div className="absolute right-0 mt-2 w-48 bg-[#111111] rounded-md shadow-lg z-50 border border-[#222222]">
             <div className="py-1">
               <button 
                 onClick={() => {
                   window.open(`/clinic/${clinic.id}`, '_blank');
                   setShowMenu(false);
                 }}
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
               >
                 View Public Profile
               </button>
@@ -166,7 +166,7 @@ const ClientQuickActions: React.FC<ClientQuickActionsProps> = ({
                   window.location.href = `/admin/clinic/${clinic.id}`;
                   setShowMenu(false);
                 }}
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
               >
                 View Full Details
               </button>
@@ -175,7 +175,7 @@ const ClientQuickActions: React.FC<ClientQuickActionsProps> = ({
                   // Implement logic to download clinic data
                   setShowMenu(false);
                 }}
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
               >
                 Export Data
               </button>

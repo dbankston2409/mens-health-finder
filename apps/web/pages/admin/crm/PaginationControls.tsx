@@ -83,8 +83,8 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
   };
 
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-center py-4 bg-white">
-      <div className="mb-4 sm:mb-0 text-sm text-gray-700">
+    <div className="flex flex-col sm:flex-row justify-between items-center py-4">
+      <div className="mb-4 sm:mb-0 text-sm text-gray-400">
         Showing <span className="font-medium">{startItem}</span> to{' '}
         <span className="font-medium">{endItem}</span> of{' '}
         <span className="font-medium">{totalItems}</span> clinics
@@ -92,14 +92,14 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
 
       <div className="flex items-center space-x-2">
         <div className="flex items-center mr-4">
-          <label htmlFor="itemsPerPage" className="mr-2 text-sm text-gray-600">
+          <label htmlFor="itemsPerPage" className="mr-2 text-sm text-gray-400">
             Show:
           </label>
           <select
             id="itemsPerPage"
             value={itemsPerPage}
             onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
-            className="p-1 border rounded text-sm"
+            className="p-1 border border-[#222222] rounded text-sm bg-gray-800 text-white"
           >
             <option value={10}>10</option>
             <option value={25}>25</option>
@@ -114,8 +114,8 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
             disabled={currentPage === 1}
             className={`p-2 rounded-md text-sm flex items-center ${
               currentPage === 1
-                ? 'text-gray-300 cursor-not-allowed'
-                : 'text-gray-700 hover:bg-gray-100'
+                ? 'text-gray-600 cursor-not-allowed'
+                : 'text-gray-300 hover:bg-gray-800 hover:text-white'
             }`}
           >
             <ChevronLeftIcon className="h-4 w-4" />
@@ -125,7 +125,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
           <div className="hidden sm:flex space-x-1">
             {getPageNumbers().map((page, index) => (
               page === '...' ? (
-                <span key={`ellipsis-${index}`} className="px-3 py-2 text-sm text-gray-500">
+                <span key={`ellipsis-${index}`} className="px-3 py-2 text-sm text-gray-600">
                   ...
                 </span>
               ) : (
@@ -135,7 +135,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
                   className={`px-3 py-1 rounded-md text-sm ${
                     currentPage === page
                       ? 'bg-blue-600 text-white'
-                      : 'text-gray-700 hover:bg-gray-100'
+                      : 'text-gray-300 hover:bg-gray-800 hover:text-white'
                   }`}
                 >
                   {page}
@@ -149,8 +149,8 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
             disabled={currentPage === totalPages}
             className={`p-2 rounded-md text-sm flex items-center ${
               currentPage === totalPages
-                ? 'text-gray-300 cursor-not-allowed'
-                : 'text-gray-700 hover:bg-gray-100'
+                ? 'text-gray-600 cursor-not-allowed'
+                : 'text-gray-300 hover:bg-gray-800 hover:text-white'
             }`}
           >
             <span>Next</span>

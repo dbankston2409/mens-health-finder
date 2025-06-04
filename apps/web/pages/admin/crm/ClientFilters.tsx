@@ -120,9 +120,9 @@ const ClientFilters: React.FC<ClientFiltersProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-start justify-end">
-      <div className="h-full bg-white w-80 shadow-xl overflow-y-auto animate-slide-in-right">
-        <div className="p-4 border-b flex justify-between items-center bg-neutral-50">
-          <h3 className="text-lg font-medium">Filter Clinics</h3>
+      <div className="h-full bg-[#111111] w-80 shadow-xl overflow-y-auto animate-slide-in-right border-l border-[#222222]">
+        <div className="p-4 border-b border-[#222222] flex justify-between items-center bg-gray-800">
+          <h3 className="text-lg font-medium text-white">Filter Clinics</h3>
           <button 
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600"
@@ -134,16 +134,16 @@ const ClientFilters: React.FC<ClientFiltersProps> = ({
         <div className="p-4 space-y-6">
           {/* Package Tier Filters */}
           <div>
-            <h4 className="font-medium mb-2">Package Tier</h4>
+            <h4 className="font-medium mb-2 text-white">Package Tier</h4>
             <div className="flex flex-wrap gap-2">
               {filterOptions.packageTiers.map(tier => (
                 <button
                   key={tier}
                   onClick={() => handleTogglePackageTier(tier)}
-                  className={`px-3 py-1 rounded-full text-sm ${
+                  className={`px-3 py-1 rounded-full text-sm transition-colors ${
                     filters.packageTier.includes(tier)
-                      ? 'bg-blue-100 text-blue-800 border border-blue-300'
-                      : 'bg-gray-100 text-gray-700 border border-gray-200'
+                      ? 'bg-blue-900/30 text-blue-400 border border-blue-800'
+                      : 'bg-gray-800 text-gray-400 border border-gray-700 hover:bg-gray-700'
                   }`}
                 >
                   {tier}
@@ -154,16 +154,16 @@ const ClientFilters: React.FC<ClientFiltersProps> = ({
 
           {/* Status Filters */}
           <div>
-            <h4 className="font-medium mb-2">Status</h4>
+            <h4 className="font-medium mb-2 text-white">Status</h4>
             <div className="flex flex-wrap gap-2">
               {filterOptions.statuses.map(status => (
                 <button
                   key={status}
                   onClick={() => handleToggleStatus(status)}
-                  className={`px-3 py-1 rounded-full text-sm ${
+                  className={`px-3 py-1 rounded-full text-sm transition-colors ${
                     filters.status.includes(status)
-                      ? 'bg-blue-100 text-blue-800 border border-blue-300'
-                      : 'bg-gray-100 text-gray-700 border border-gray-200'
+                      ? 'bg-blue-900/30 text-blue-400 border border-blue-800'
+                      : 'bg-gray-800 text-gray-400 border border-gray-700 hover:bg-gray-700'
                   }`}
                 >
                   {status}
@@ -174,12 +174,12 @@ const ClientFilters: React.FC<ClientFiltersProps> = ({
 
           {/* Location Filters */}
           <div>
-            <h4 className="font-medium mb-2">Location</h4>
+            <h4 className="font-medium mb-2 text-white">Location</h4>
             <div className="space-y-2">
               <select
                 value={filters.state}
                 onChange={handleStateChange}
-                className="w-full p-2 border rounded-md bg-white"
+                className="w-full p-2 border border-[#222222] rounded-md bg-gray-800 text-white"
               >
                 <option value="">Select State</option>
                 {filterOptions.states.map(state => (
@@ -193,7 +193,7 @@ const ClientFilters: React.FC<ClientFiltersProps> = ({
                 <select
                   value={filters.city}
                   onChange={handleCityChange}
-                  className="w-full p-2 border rounded-md bg-white"
+                  className="w-full p-2 border border-[#222222] rounded-md bg-gray-800 text-white"
                 >
                   <option value="">All Cities</option>
                   {filterOptions.cities[filters.state]?.map(city => (
@@ -208,16 +208,16 @@ const ClientFilters: React.FC<ClientFiltersProps> = ({
 
           {/* Tags */}
           <div>
-            <h4 className="font-medium mb-2">Tags</h4>
+            <h4 className="font-medium mb-2 text-white">Tags</h4>
             <div className="flex flex-wrap gap-2">
               {filterOptions.tags.map(tag => (
                 <button
                   key={tag}
                   onClick={() => handleToggleTag(tag)}
-                  className={`px-3 py-1 rounded-full text-sm ${
+                  className={`px-3 py-1 rounded-full text-sm transition-colors ${
                     filters.tags.includes(tag)
-                      ? 'bg-blue-100 text-blue-800 border border-blue-300'
-                      : 'bg-gray-100 text-gray-700 border border-gray-200'
+                      ? 'bg-blue-900/30 text-blue-400 border border-blue-800'
+                      : 'bg-gray-800 text-gray-400 border border-gray-700 hover:bg-gray-700'
                   }`}
                 >
                   {tag}
@@ -228,10 +228,10 @@ const ClientFilters: React.FC<ClientFiltersProps> = ({
 
           {/* Traffic Metrics */}
           <div>
-            <h4 className="font-medium mb-2">Traffic Metrics</h4>
+            <h4 className="font-medium mb-2 text-white">Traffic Metrics</h4>
             <div className="space-y-2">
               <div>
-                <label className="block text-sm text-gray-600 mb-1">
+                <label className="block text-sm text-gray-400 mb-1">
                   Minimum Clicks (Last 30 Days)
                 </label>
                 <input
@@ -239,7 +239,7 @@ const ClientFilters: React.FC<ClientFiltersProps> = ({
                   value={filters.minClicks || ''}
                   onChange={handleMinClicksChange}
                   min="0"
-                  className="w-full p-2 border rounded-md"
+                  className="w-full p-2 border border-[#222222] rounded-md bg-gray-800 text-white"
                   placeholder="e.g. 10"
                 />
               </div>
@@ -248,34 +248,34 @@ const ClientFilters: React.FC<ClientFiltersProps> = ({
 
           {/* Date Range */}
           <div>
-            <h4 className="font-medium mb-2">Date Added</h4>
+            <h4 className="font-medium mb-2 text-white">Date Added</h4>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="block text-sm text-gray-600 mb-1">From</label>
+                <label className="block text-sm text-gray-400 mb-1">From</label>
                 <input
                   type="date"
                   value={filters.dateRange.start ? filters.dateRange.start.toISOString().split('T')[0] : ''}
                   onChange={(e) => handleDateChange('start', e.target.value)}
-                  className="w-full p-2 border rounded-md"
+                  className="w-full p-2 border border-[#222222] rounded-md bg-gray-800 text-white"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-600 mb-1">To</label>
+                <label className="block text-sm text-gray-400 mb-1">To</label>
                 <input
                   type="date"
                   value={filters.dateRange.end ? filters.dateRange.end.toISOString().split('T')[0] : ''}
                   onChange={(e) => handleDateChange('end', e.target.value)}
-                  className="w-full p-2 border rounded-md"
+                  className="w-full p-2 border border-[#222222] rounded-md bg-gray-800 text-white"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="p-4 border-t bg-neutral-50 space-x-2 flex">
+        <div className="p-4 border-t border-[#222222] bg-gray-800 space-x-2 flex">
           <button
             onClick={handleClearFilters}
-            className="flex-1 py-2 px-4 bg-white text-gray-700 rounded-md border hover:bg-gray-50"
+            className="flex-1 py-2 px-4 bg-gray-700 text-gray-300 rounded-md border border-gray-600 hover:bg-gray-600 hover:text-white transition-colors"
           >
             Clear All
           </button>

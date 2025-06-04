@@ -371,32 +371,32 @@ const ClientManagerPanel: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-[#111111]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header and Breadcrumbs */}
         <div className="mb-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Clinic Manager</h1>
-              <div className="flex items-center text-sm text-gray-500 mt-1">
+              <h1 className="text-2xl font-bold text-white">Clinic Manager</h1>
+              <div className="flex items-center text-sm text-gray-400 mt-1">
                 <Link href="/admin/dashboard">
-                  <span className="hover:text-blue-600 cursor-pointer">Dashboard</span>
+                  <span className="hover:text-blue-400 cursor-pointer">Dashboard</span>
                 </Link>
                 <span className="mx-2">/</span>
-                <span className="text-gray-700">Clinic Manager</span>
+                <span className="text-gray-300">Clinic Manager</span>
               </div>
             </div>
             <div className="flex space-x-4">
               <button
                 onClick={handleExportData}
-                className="flex items-center px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
+                className="flex items-center px-4 py-2 bg-gray-800 text-gray-300 border border-[#222222] rounded-md shadow-sm hover:bg-gray-700 hover:text-white transition-colors"
               >
                 <DocumentTextIcon className="h-5 w-5 mr-2" />
                 Export CSV
               </button>
               <button
                 onClick={fetchClinics}
-                className="flex items-center px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
+                className="flex items-center px-4 py-2 bg-gray-800 text-gray-300 border border-[#222222] rounded-md shadow-sm hover:bg-gray-700 hover:text-white transition-colors"
               >
                 <ArrowPathIcon className="h-5 w-5 mr-2" />
                 Refresh
@@ -411,14 +411,14 @@ const ClientManagerPanel: React.FC = () => {
           <div className="relative">
             <button
               onClick={() => setShowViewsDropdown(!showViewsDropdown)}
-              className="flex items-center justify-between w-full px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
+              className="flex items-center justify-between w-full px-4 py-2 bg-gray-800 text-gray-300 border border-[#222222] rounded-md shadow-sm hover:bg-gray-700 hover:text-white transition-colors"
             >
               <span className="font-medium">{activeView.name}</span>
               <ChevronDownIcon className="h-5 w-5 text-gray-400" />
             </button>
             
             {showViewsDropdown && (
-              <div className="absolute left-0 mt-2 w-56 bg-white rounded-md shadow-lg z-20 border border-gray-200">
+              <div className="absolute left-0 mt-2 w-56 bg-[#111111] rounded-md shadow-lg z-20 border border-[#222222]">
                 <div className="py-1">
                   {savedViews.map(view => (
                     <button
@@ -426,8 +426,8 @@ const ClientManagerPanel: React.FC = () => {
                       onClick={() => handleSavedViewSelect(view)}
                       className={`block w-full text-left px-4 py-2 text-sm ${
                         activeView.id === view.id
-                          ? 'bg-blue-50 text-blue-700'
-                          : 'text-gray-700 hover:bg-gray-100'
+                          ? 'bg-blue-900/30 text-blue-400'
+                          : 'text-gray-300 hover:bg-gray-800'
                       }`}
                     >
                       {view.name}
@@ -448,7 +448,7 @@ const ClientManagerPanel: React.FC = () => {
               value={searchTerm}
               onChange={handleSearchChange}
               placeholder="Search clinics by name, city, state, or phone..."
-              className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="block w-full pl-10 pr-10 py-2 bg-gray-800 text-white border border-[#222222] rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
             />
             {searchTerm && (
               <button
@@ -466,7 +466,7 @@ const ClientManagerPanel: React.FC = () => {
           <div className="flex items-center mb-2 sm:mb-0">
             <button
               onClick={() => setFiltersOpen(true)}
-              className="flex items-center px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
+              className="flex items-center px-4 py-2 bg-gray-800 text-gray-300 border border-[#222222] rounded-md shadow-sm hover:bg-gray-700 hover:text-white transition-colors"
             >
               <FunnelIcon className="h-5 w-5 mr-2" />
               Filters
@@ -632,7 +632,7 @@ const ClientManagerPanel: React.FC = () => {
           </div>
           
           {/* Results Count */}
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-gray-400">
             {filteredClinics.length} {filteredClinics.length === 1 ? 'clinic' : 'clinics'} found
           </div>
         </div>

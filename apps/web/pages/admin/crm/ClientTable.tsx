@@ -92,15 +92,15 @@ const ClientTable: React.FC<ClientTableProps> = ({
   const getStatusBadgeClass = (status: string) => {
     switch (status) {
       case 'active':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return 'bg-green-900/30 text-green-400 border-green-800';
       case 'paused':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        return 'bg-yellow-900/30 text-yellow-400 border-yellow-800';
       case 'trial':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+        return 'bg-blue-900/30 text-blue-400 border-blue-800';
       case 'canceled':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return 'bg-red-900/30 text-red-400 border-red-800';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-gray-800 text-gray-400 border-gray-700';
     }
   };
 
@@ -115,9 +115,9 @@ const ClientTable: React.FC<ClientTableProps> = ({
   };
 
   const getEngagementScoreColor = (score: number) => {
-    if (score >= 70) return 'text-green-600';
-    if (score >= 40) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score >= 70) return 'text-green-400';
+    if (score >= 40) return 'text-yellow-400';
+    return 'text-red-400';
   };
 
   if (loading) {
@@ -126,14 +126,14 @@ const ClientTable: React.FC<ClientTableProps> = ({
 
   if (clinics.length === 0) {
     return (
-      <div className="py-12 text-center bg-white rounded-lg shadow-sm">
-        <h3 className="text-lg font-medium text-gray-700 mb-2">No Clinics Found</h3>
-        <p className="text-gray-500 mb-4">
+      <div className="py-12 text-center bg-[#111111] border border-[#222222] rounded-lg shadow-lg">
+        <h3 className="text-lg font-medium text-white mb-2">No Clinics Found</h3>
+        <p className="text-gray-400 mb-4">
           No clinics match your current filters. Try adjusting your search criteria.
         </p>
         <button
           onClick={refreshData}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
         >
           Refresh Data
         </button>
@@ -142,13 +142,13 @@ const ClientTable: React.FC<ClientTableProps> = ({
   }
 
   return (
-    <div className="overflow-x-auto bg-white rounded-xl shadow-sm">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+    <div className="overflow-x-auto bg-[#111111] border border-[#222222] rounded-xl shadow-lg">
+      <table className="min-w-full divide-y divide-[#222222]">
+        <thead className="bg-gray-800">
           <tr>
             <th 
               scope="col" 
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider cursor-pointer"
               onClick={() => handleSort('name')}
             >
               <div className="flex items-center space-x-1">
@@ -160,7 +160,7 @@ const ClientTable: React.FC<ClientTableProps> = ({
             </th>
             <th 
               scope="col" 
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider cursor-pointer"
               onClick={() => handleSort('location')}
             >
               <div className="flex items-center space-x-1">
@@ -172,7 +172,7 @@ const ClientTable: React.FC<ClientTableProps> = ({
             </th>
             <th 
               scope="col" 
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider cursor-pointer"
               onClick={() => handleSort('packageTier')}
             >
               <div className="flex items-center space-x-1">
@@ -184,7 +184,7 @@ const ClientTable: React.FC<ClientTableProps> = ({
             </th>
             <th 
               scope="col" 
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider cursor-pointer"
               onClick={() => handleSort('status')}
             >
               <div className="flex items-center space-x-1">
@@ -196,7 +196,7 @@ const ClientTable: React.FC<ClientTableProps> = ({
             </th>
             <th 
               scope="col" 
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider cursor-pointer"
               onClick={() => handleSort('engagementScore')}
             >
               <div className="flex items-center space-x-1">
@@ -225,7 +225,7 @@ const ClientTable: React.FC<ClientTableProps> = ({
             </th>
             <th 
               scope="col" 
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider cursor-pointer"
               onClick={() => handleSort('signUpDate')}
             >
               <div className="flex items-center space-x-1">
@@ -237,7 +237,7 @@ const ClientTable: React.FC<ClientTableProps> = ({
             </th>
             <th 
               scope="col" 
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider cursor-pointer"
               onClick={() => handleSort('lastContacted')}
             >
               <div className="flex items-center space-x-1">
@@ -247,19 +247,19 @@ const ClientTable: React.FC<ClientTableProps> = ({
                 )}
               </div>
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
               Actions
             </th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="bg-[#111111] divide-y divide-[#222222]">
           {sortedClinics.map((clinic) => (
             <tr 
               key={clinic.id} 
-              className={`hover:bg-gray-50 ${clinic.engagementScore === 0 ? 'bg-red-50' : ''}`}
+              className={`hover:bg-gray-800 ${clinic.engagementScore === 0 ? 'bg-red-900/20' : ''}`}
             >
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm font-medium text-gray-900 hover:text-blue-600 cursor-pointer" onClick={() => onEditClinic(clinic)}>
+                <div className="text-sm font-medium text-white hover:text-blue-400 cursor-pointer" onClick={() => onEditClinic(clinic)}>
                   {clinic.name}
                 </div>
                 {clinic.tags && clinic.tags.length > 0 && (
@@ -267,13 +267,13 @@ const ClientTable: React.FC<ClientTableProps> = ({
                     {clinic.tags.slice(0, 2).map(tag => (
                       <span 
                         key={tag} 
-                        className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800"
+                        className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-800 text-gray-300"
                       >
                         {tag}
                       </span>
                     ))}
                     {clinic.tags.length > 2 && (
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-800 text-gray-300">
                         +{clinic.tags.length - 2}
                       </span>
                     )}
@@ -281,10 +281,10 @@ const ClientTable: React.FC<ClientTableProps> = ({
                 )}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-500">{clinic.city}, {clinic.state}</div>
+                <div className="text-sm text-gray-400">{clinic.city}, {clinic.state}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-900">{clinic.packageTier}</div>
+                <div className="text-sm text-white">{clinic.packageTier}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full border ${getStatusBadgeClass(clinic.status || '')}`}>
@@ -297,10 +297,10 @@ const ClientTable: React.FC<ClientTableProps> = ({
                 </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-500">{formatDate(clinic.signUpDate || null)}</div>
+                <div className="text-sm text-gray-400">{formatDate(clinic.signUpDate || null)}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-500">{formatDate(clinic.lastContacted || null)}</div>
+                <div className="text-sm text-gray-400">{formatDate(clinic.lastContacted || null)}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <ClientQuickActions
