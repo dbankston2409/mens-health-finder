@@ -35,6 +35,7 @@ ${colors.bright}COMMANDS:${colors.reset}
 
   ${colors.bright}import${colors.reset} [file-path]       Import clinics from CSV/JSON files
   ${colors.bright}discovery${colors.reset} [options]     Run automated business discovery
+  ${colors.bright}review-update${colors.reset} [options] Update reviews for existing clinics
 
 ${colors.bright}IMPORT EXAMPLES:${colors.reset}
   npm run worker import sample-clinics.csv
@@ -47,6 +48,12 @@ ${colors.bright}DISCOVERY EXAMPLES:${colors.reset}
   npm run worker discovery --resume session_123456789
   npm run worker discovery --target 2000 --concurrent 5 --pause-after 120
 
+${colors.bright}REVIEW UPDATE EXAMPLES:${colors.reset}
+  npm run worker review-update --discovery-session session_123456789
+  npm run worker review-update --clinic-ids clinic1,clinic2,clinic3
+  npm run worker review-update --discovery-session session_123 --no-yelp
+  npm run worker review-update --clinic-ids clinic1 --max-reviews 20 --rate-limit 2000
+
 ${colors.bright}DISCOVERY OPTIONS:${colors.reset}
   --target N          Target number of clinics to find (default: 5000)
   --strategy S        Search strategy: metro_first, nationwide, state_by_state
@@ -56,6 +63,15 @@ ${colors.bright}DISCOVERY OPTIONS:${colors.reset}
   --resume ID         Resume existing session by ID
   --no-reviews        Skip review import (faster, lower cost)
   --no-social         Skip social media enhancement
+
+${colors.bright}REVIEW UPDATE OPTIONS:${colors.reset}
+  --discovery-session ID  Update reviews for clinics from discovery session
+  --clinic-ids IDs        Comma-separated list of clinic IDs to update
+  --max-reviews N         Max reviews per source (default: 10)
+  --rate-limit N          Rate limit in milliseconds (default: 1000)
+  --no-google             Skip Google reviews
+  --no-yelp               Skip Yelp reviews
+  --quiet                 Disable progress logging
 
 ${colors.bright}SUPPORTED FORMATS:${colors.reset}
   • CSV files (.csv)
@@ -154,8 +170,24 @@ const args = process.argv.slice(3);
     }
   }
   
+  if (command === 'review-update') {
+    try {
+      log.info('Loading review update engine...');
+      
+      const { executeReviewUpdateCommand } = await import('./tasks/updateClinicReviews');
+      await executeReviewUpdateCommand(args);
+      
+      log.success('Review update completed successfully!');
+      process.exit(0);
+      
+    } catch (error) {
+      log.error(`Review update failed: ${error}`);
+      process.exit(1);
+    }
+  }
+  
   // Default behavior - show usage if no valid command
-  if (!command || !['import', 'discovery'].includes(command)) {
+  if (!command || !['import', 'discovery', 'review-update'].includes(command)) {
     log.warning('Invalid or missing command');
     showUsage();
     process.exit(1);

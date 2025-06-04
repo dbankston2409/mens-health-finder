@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DiscoveryOrchestrator, DiscoveryConfig, DiscoveryProgress } from '../../../utils/discovery/discoveryOrchestrator';
 import { DiscoverySession, SearchNiche } from '../../../types';
 import DiscoveryMap from './DiscoveryMap';
+import ReviewUpdatePanel from './ReviewUpdatePanel';
 
 const DiscoveryControlPanel: React.FC = () => {
   const [orchestrator, setOrchestrator] = useState<DiscoveryOrchestrator | null>(null);
@@ -339,6 +340,17 @@ const DiscoveryControlPanel: React.FC = () => {
         <h3 className="text-lg font-semibold mb-4 text-white">Discovery Map</h3>
         <DiscoveryMap session={currentSession} />
       </div>
+
+      {/* Review Update Panel */}
+      {(currentSession || progress) && (
+        <ReviewUpdatePanel 
+          discoverySessionId={currentSession?.id || progress?.sessionId}
+          onUpdateComplete={(results) => {
+            console.log('Review update completed:', results);
+            // Optionally reload session data here
+          }}
+        />
+      )}
 
       {/* Saved Sessions */}
       <div className="bg-[#0A0A0A] p-6 rounded-lg border border-[#222222]">
