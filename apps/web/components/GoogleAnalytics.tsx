@@ -17,8 +17,7 @@ const GoogleAnalytics: React.FC<GoogleAnalyticsProps> = ({ measurementId }) => {
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', '${measurementId}', {
-            page_path: window.location.pathname,
-          });
+            page_path: window.location.pathname});
         `}
       </Script>
     </>

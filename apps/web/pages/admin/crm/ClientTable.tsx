@@ -110,8 +110,7 @@ const ClientTable: React.FC<ClientTableProps> = ({
     return dateObj.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric',
-    });
+      day: 'numeric'});
   };
 
   const getEngagementScoreColor = (score: number) => {

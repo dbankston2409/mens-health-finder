@@ -29,7 +29,6 @@ const SmartSearchBar: React.FC<SmartSearchBarProps> = ({
   const [service, setService] = useState(initialService);
   const [location, setLocation] = useState(initialLocation);
   const [isFocused, setIsFocused] = useState(false);
-  const [isLocating, setIsLocating] = useState(false);
   const [suggestions, setSuggestions] = useState<{
     clinics: { id: string; name: string; city: string; state: string }[];
     services: string[];
@@ -130,42 +129,6 @@ const SmartSearchBar: React.FC<SmartSearchBarProps> = ({
     }
   }, [autoFocus]);
   
-  // Get user's location
-  const handleGetLocation = async () => {
-    setIsLocating(true);
-    
-    try {
-      // Get coordinates
-      const coords = await getUserLocation();
-      
-      if (!coords) {
-        console.error('Failed to get user location');
-        return;
-      }
-      
-      // Set coordinates for search
-      setCoordinates(coords);
-      
-      // Get city and state from coordinates
-      const locationInfo = await reverseGeocode(coords.lat, coords.lng);
-      
-      if (locationInfo) {
-        const locationString = `${locationInfo.city}, ${locationInfo.state}`;
-        setLocation(locationString);
-        
-        // Save to browser storage
-        saveUserLocation({
-          ...coords,
-          city: locationInfo.city,
-          state: locationInfo.state
-        });
-      }
-    } catch (err) {
-      console.error('Error getting location:', err);
-    } finally {
-      setIsLocating(false);
-    }
-  };
   
   // Handle selection of a clinic from suggestions
   const handleSelectClinic = (clinic: { id: string; name: string; city: string; state: string }) => {
@@ -264,23 +227,6 @@ const SmartSearchBar: React.FC<SmartSearchBarProps> = ({
           </div>
         )}
         
-        {/* Location Button */}
-        <button
-          type="button"
-          onClick={handleGetLocation}
-          disabled={isLocating}
-          className="p-3 text-gray-400 hover:text-white transition-colors"
-          title="Use my location"
-        >
-          {isLocating ? (
-            <div className="h-5 w-5 animate-spin rounded-full border-t-2 border-b-2 border-primary"></div>
-          ) : (
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          )}
-        </button>
         
         {/* Search Button */}
         <button

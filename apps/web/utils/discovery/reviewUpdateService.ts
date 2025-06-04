@@ -10,13 +10,11 @@ export interface ReviewUpdateResult {
   error?: string;
   sources: {
     google?: { found: number; imported: number; error?: string };
-    yelp?: { found: number; imported: number; error?: string };
   };
 }
 
 export interface ReviewUpdateConfig {
   enableGoogleReviews: boolean;
-  enableYelpReviews: boolean;
   maxReviewsPerSource: number;
   rateLimitMs: number;
 }
@@ -41,9 +39,7 @@ export class ReviewUpdateService {
       clinicId,
       success: false,
       reviewsFound: 0,
-      reviewsImported: 0,
-      sources: {}
-    };
+      reviewsImported: 0};
 
     try {
       // Get clinic data
@@ -74,21 +70,7 @@ export class ReviewUpdateService {
       }
 
       // Update Yelp reviews if enabled and Yelp Business ID exists
-      if (this.config.enableYelpReviews && clinic.yelpBusinessId) {
-        try {
-          const yelpResult = await this.fetchYelpReviews(clinic.yelpBusinessId);
-          result.sources.yelp = yelpResult;
-          result.reviewsFound += yelpResult.found;
-          result.reviewsImported += yelpResult.imported;
-          
-          // Rate limiting
-          await this.sleep(this.config.rateLimitMs);
-        } catch (error) {
-          result.sources.yelp = {
-            found: 0,
-            imported: 0,
-            error: error instanceof Error ? error.message : 'Unknown error'
-          };
+      ;
         }
       }
 
@@ -116,8 +98,7 @@ export class ReviewUpdateService {
       const response = await fetch('/api/admin/update-reviews', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'},
         body: JSON.stringify({
           clinicIds,
           enableGoogle: this.config.enableGoogleReviews,
@@ -164,9 +145,7 @@ export class ReviewUpdateService {
         success: false,
         reviewsFound: 0,
         reviewsImported: 0,
-        error: error instanceof Error ? error.message : 'Unknown error',
-        sources: {}
-      }));
+        error: error instanceof Error ? error.message : 'Unknown error'}));
     }
   }
 
@@ -236,12 +215,7 @@ export class ReviewUpdateService {
         stats.googleStats.imported += result.sources.google.imported;
         if (result.sources.google.error) stats.googleStats.errors++;
       }
-      
-      if (result.sources.yelp) {
-        stats.yelpStats.found += result.sources.yelp.found;
-        stats.yelpStats.imported += result.sources.yelp.imported;
-        if (result.sources.yelp.error) stats.yelpStats.errors++;
-      }
+
     });
 
     return stats;
@@ -265,7 +239,7 @@ export class ReviewUpdateService {
   /**
    * Fetch Yelp reviews using existing review aggregator
    */
-  private async fetchYelpReviews(businessId: string): Promise<{ found: number; imported: number }> {
+  private async > {
     // Note: In a real implementation, this would call the existing reviewAggregator.js
     // via an API endpoint or shared service
     console.log(`Would fetch Yelp reviews for business ID: ${businessId}`);

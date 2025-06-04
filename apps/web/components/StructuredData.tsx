@@ -89,6 +89,5 @@ export function generateClinicBreadcrumbs(
     { 
       name: clinicName,
       url: `${baseUrl}/${category}/${state.toLowerCase()}/${city.toLowerCase().replace(/ /g, '-')}/${clinicName.toLowerCase().replace(/ /g, '-')}` 
-    },
-  ];
+    }];
 }

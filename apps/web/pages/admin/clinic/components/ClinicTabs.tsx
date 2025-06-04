@@ -30,8 +30,7 @@ const ClinicTabs: React.FC<ClinicTabsProps> = ({
     { id: 'reviews', label: 'Reviews', icon: <ChatBubbleBottomCenterTextIcon className="w-5 h-5" /> },
     { id: 'content', label: 'Content', icon: <DocumentTextIcon className="w-5 h-5" /> },
     { id: 'comms', label: 'Communication', icon: <ChatBubbleLeftRightIcon className="w-5 h-5" /> },
-    { id: 'logs', label: 'Logs', icon: <ClipboardDocumentListIcon className="w-5 h-5" /> },
-  ];
+    { id: 'logs', label: 'Logs', icon: <ClipboardDocumentListIcon className="w-5 h-5" /> }];
 
   const getActiveTabLabel = () => {
     const tab = tabs.find(tab => tab.id === activeTab);

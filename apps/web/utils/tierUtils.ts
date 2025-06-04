@@ -64,8 +64,7 @@ export function generateTierFeatures(tier: 'free' | 'standard' | 'advanced'): Ti
     enhancedContactUX: tier === 'advanced',
     customTracking: tier === 'advanced',
     snapshotReport: tier === 'advanced',
-    priorityListing: tier === 'advanced',
-  };
+    priorityListing: tier === 'advanced'};
 }
 
 /**

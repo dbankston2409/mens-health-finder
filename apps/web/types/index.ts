@@ -42,10 +42,8 @@ export interface Clinic {
   
   // External IDs for data fetching
   googlePlacesId?: string;
-  yelpBusinessId?: string;
   externalIds?: {
     google?: string;
-    yelp?: string;
     healthgrades?: string;
   };
 
@@ -54,8 +52,6 @@ export interface Clinic {
   reviewCount?: number;
   googleRating?: number;
   googleReviewCount?: number;
-  yelpRating?: number;
-  yelpReviewCount?: number;
   healthgradesRating?: number;
   healthgradesReviewCount?: number;
   verified?: boolean;
@@ -89,10 +85,9 @@ export interface Clinic {
     financing?: boolean;
   };
 
-  // Rich Media
+  // Rich Media - URLs only for storage efficiency
   photos?: {
-    google?: GooglePhoto[];
-    yelp?: YelpPhoto[];
+    googlePhotoUrls?: string[];
     hero?: string;
     gallery?: string[];
   };
@@ -303,12 +298,6 @@ export interface GooglePhoto {
   html_attributions: string[];
 }
 
-export interface YelpPhoto {
-  url: string;
-  width: number;
-  height: number;
-}
-
 export interface DiscoveryGrid {
   id: string;
   lat: number;
@@ -354,7 +343,6 @@ export interface SearchNiche {
   id: string;
   name: string;
   searchTerms: string[];
-  yelpCategories: string[];
   googleTypes: string[];
   excludeTerms?: string[];
   description: string;

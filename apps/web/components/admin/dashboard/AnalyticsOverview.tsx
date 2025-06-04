@@ -62,10 +62,7 @@ const AnalyticsOverview: React.FC = () => {
         borderColor: '#ef4444',
         backgroundColor: 'rgba(239, 68, 68, 0.1)',
         tension: 0.3,
-        fill: true,
-      },
-    ],
-  };
+        fill: true}]};
 
   // Chart options
   const chartOptions = {
@@ -73,8 +70,7 @@ const AnalyticsOverview: React.FC = () => {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false,
-      },
+        display: false},
       tooltip: {
         mode: 'index' as const,
         intersect: false,
@@ -82,34 +78,24 @@ const AnalyticsOverview: React.FC = () => {
         titleColor: '#ffffff',
         bodyColor: '#cccccc',
         borderColor: '#333333',
-        borderWidth: 1,
-      },
-    },
+        borderWidth: 1}},
     scales: {
       x: {
         grid: {
           display: false,
-          color: '#222222',
-        },
+          color: '#222222'},
         ticks: {
           color: '#aaaaaa',
           maxRotation: 0,
           autoSkip: true,
-          maxTicksLimit: timeRange === 'week' ? 7 : timeRange === 'month' ? 10 : 12,
-        },
-      },
+          maxTicksLimit: timeRange === 'week' ? 7 : timeRange === 'month' ? 10 : 12}},
       y: {
         grid: {
-          color: '#222222',
-        },
+          color: '#222222'},
         ticks: {
           color: '#aaaaaa',
-          precision: 0,
-        },
-        beginAtZero: false,
-      },
-    },
-  };
+          precision: 0},
+        beginAtZero: false}}};
 
   if (loading) {
     return (

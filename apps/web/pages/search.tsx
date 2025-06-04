@@ -9,6 +9,8 @@ import { geocodeCityState, reverseGeocode } from '../components/Map';
 import { createClinicUrl } from '../components/Map';
 import { getServiceSlug } from '../lib/utils';
 import SearchResultsList from '../components/SearchResultsList';
+import { useAutoLocation } from '../hooks/useAutoLocation';
+import ChangeLocationModal from '../components/ChangeLocationModal';
 
 // Import the clinic service
 import * as clinicService from '../lib/api/clinicService';
@@ -52,9 +54,13 @@ const SearchPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   
   const [mapCenter, setMapCenter] = useState<{lat: number; lng: number; zoom: number} | null>(null);
-  const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [hasAttemptedAutoLocation, setHasAttemptedAutoLocation] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
+  const [showLocationModal, setShowLocationModal] = useState(false);
+  
+  // Use auto-location hook
+  const { location: autoLocation, loading: autoLocationLoading, error: autoLocationError } = useAutoLocation();
   
   // Initialize from URL query params
   useEffect(() => {
@@ -80,13 +86,24 @@ const SearchPage: React.FC = () => {
       if (city && state) {
         geocodeAndSetCenter(city, state);
       }
-    } 
-    // Auto-detect location if no location is specified and not attempted before
-    else if (!hasAttemptedAutoLocation && !selectedLocation) {
-      setHasAttemptedAutoLocation(true);
-      getUserLocation(false); // false indicates this is an automatic attempt, not manual
     }
-  }, [q, city, state, service, location, router.query.tier, hasAttemptedAutoLocation]);
+  }, [q, city, state, service, location, router.query.tier]);
+  
+  // Use auto-location when available and no location is specified
+  useEffect(() => {
+    if (autoLocation && !location && !selectedLocation && !hasAttemptedAutoLocation) {
+      setHasAttemptedAutoLocation(true);
+      const locationString = `${autoLocation.city}, ${autoLocation.region}`;
+      setSelectedLocation(locationString);
+      
+      // Geocode the auto-detected location
+      geocodeAndSetCenter(autoLocation.city, autoLocation.region);
+      
+      // Update URL with the detected location
+      const query = { ...router.query, location: locationString };
+      router.replace({ pathname: router.pathname, query }, undefined, { shallow: true });
+    }
+  }, [autoLocation, location, selectedLocation, hasAttemptedAutoLocation, router]);
   
   // When filters change, update URL and perform search
   useEffect(() => {
@@ -195,99 +212,20 @@ const SearchPage: React.FC = () => {
     }
   };
   
-  // Function to get user's current location
-  const getUserLocation = (manualTrigger = false) => {
-    setIsLocating(true);
-    setLocationError(null);
+  // Function to handle location changes
+  const handleLocationChange = (newLocation: string) => {
+    setSelectedLocation(newLocation);
+    setShowLocationModal(false);
     
-    // If this was triggered by a button click (not auto-detect), 
-    // reset the hasAttemptedAutoLocation flag to allow future auto-detection attempts
-    if (manualTrigger) {
-      setHasAttemptedAutoLocation(false);
+    // Parse and geocode the new location
+    const [city, state] = newLocation.split(', ');
+    if (city && state) {
+      geocodeAndSetCenter(city, state);
     }
     
-    // Check if geolocation is available in the browser
-    if (!navigator.geolocation) {
-      setLocationError("Geolocation is not supported by your browser");
-      setIsLocating(false);
-      return;
-    }
-    
-    // Create a timeout that will trigger if geolocation takes too long
-    const timeoutId = setTimeout(() => {
-      console.log("Geolocation request taking longer than expected, showing loading indicator...");
-      // We don't fail here, but inform the user it's taking longer
-      setLocationError("Determining your location... This may take a few moments.");
-    }, 3000);
-    
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        try {
-          // Clear the timeout since we got a position
-          clearTimeout(timeoutId);
-          
-          // Get latitude and longitude
-          const { latitude, longitude } = position.coords;
-          console.log("Got user coordinates:", latitude, longitude);
-          
-          // Use reverse geocoding to get city and state
-          const locationInfo = await reverseGeocode(latitude, longitude);
-          
-          if (locationInfo) {
-            // Format as "City, State"
-            const locationString = `${locationInfo.city}, ${locationInfo.state}`;
-            console.log("Successfully determined location:", locationString);
-            
-            // Update filters with the new location
-            setSelectedLocation(locationString);
-            
-            // Set map center
-            setMapCenter({
-              lat: latitude,
-              lng: longitude,
-              zoom: 12
-            });
-            
-            // Clear any error message since we succeeded
-            setLocationError(null);
-          } else {
-            console.error("Reverse geocoding returned null");
-            setLocationError("Could not determine your location. Please select from the list.");
-          }
-        } catch (error) {
-          console.error("Error processing location:", error);
-          setLocationError("Failed to get your location. Please select from the list.");
-        } finally {
-          setIsLocating(false);
-        }
-      },
-      (error) => {
-        // Clear the timeout since we got an error response
-        clearTimeout(timeoutId);
-        
-        console.error("Geolocation error:", error);
-        
-        let errorMessage = "Failed to get your location.";
-        if (error.code === 1) {
-          // Permission denied
-          errorMessage = "Location access denied. Please check your browser settings to enable location access, or select from the list.";
-        } else if (error.code === 2) {
-          // Position unavailable
-          errorMessage = "Your location is currently unavailable. Please select from the list.";
-        } else if (error.code === 3) {
-          // Timeout
-          errorMessage = "Location request timed out. Please try again or select from the list.";
-        }
-        
-        setLocationError(errorMessage);
-        setIsLocating(false);
-      },
-      { 
-        enableHighAccuracy: true, 
-        timeout: 15000,  // Increased to 15 seconds
-        maximumAge: 300000 // 5 minutes
-      }
-    );
+    // Update URL with the new location
+    const query = { ...router.query, location: newLocation };
+    router.replace({ pathname: router.pathname, query }, undefined, { shallow: true });
   };
   
   const handleSearch = (e: React.FormEvent) => {
@@ -354,73 +292,54 @@ const SearchPage: React.FC = () => {
                   <div className="space-y-5">
                     {/* Location filter */}
                     <div>
-                      <div className="flex justify-between items-center">
-                        <label className="block text-sm text-white font-medium mb-2 ml-1">Location</label>
-                        <button 
-                          type="button" 
-                          className="text-xs text-primary hover:text-red-400 transition-colors mb-2 flex items-center gap-1"
-                          onClick={() => getUserLocation(true)}
-                          disabled={isLocating}
+                      <label className="block text-sm text-white font-medium mb-2 ml-1">Location</label>
+                      {selectedLocation || autoLocation ? (
+                        <div className="bg-[#1a1a1a] border border-[#333333] rounded-lg p-3">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                              </svg>
+                              <span className="text-white">
+                                {selectedLocation || (autoLocation && `${autoLocation.city}, ${autoLocation.region}`)}
+                              </span>
+                              {autoLocation && !selectedLocation && (
+                                <span className="text-xs text-gray-400">(auto-detected)</span>
+                              )}
+                            </div>
+                            <button
+                              onClick={() => setShowLocationModal(true)}
+                              className="text-primary hover:text-primary-light text-sm font-medium transition-colors"
+                            >
+                              Change
+                            </button>
+                          </div>
+                        </div>
+                      ) : autoLocationLoading ? (
+                        <div className="bg-[#1a1a1a] border border-[#333333] rounded-lg p-3">
+                          <div className="flex items-center gap-2">
+                            <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-primary"></div>
+                            <span className="text-gray-400">Detecting your location...</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setShowLocationModal(true)}
+                          className="w-full bg-[#1a1a1a] border border-[#333333] rounded-lg p-3 text-left hover:border-primary transition-colors"
                         >
-                          {isLocating ? (
-                            <>
-                              <svg className="animate-spin h-3 w-3 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                              </svg>
-                              <span>Detecting...</span>
-                            </>
-                          ) : (
-                            <>
-                              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd"></path>
-                              </svg>
-                              <span>Use my location</span>
-                            </>
-                          )}
+                          <div className="flex items-center gap-2">
+                            <svg className="w-5 h-5 text-[#777777]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span className="text-gray-400">Select location</span>
+                          </div>
                         </button>
-                      </div>
-                      <div className="relative">
-                        <select 
-                          className="input pl-10 transition-all border-[#333333] focus:border-primary"
-                          value={selectedLocation}
-                          onChange={(e) => setSelectedLocation(e.target.value)}
-                        >
-                          <option value="">All Locations</option>
-                          <optgroup label="Popular Locations">
-                            <option value="Austin, TX">Austin, TX</option>
-                            <option value="Dallas, TX">Dallas, TX</option>
-                            <option value="Houston, TX">Houston, TX</option>
-                            <option value="San Antonio, TX">San Antonio, TX</option>
-                            <option value="Fort Worth, TX">Fort Worth, TX</option>
-                          </optgroup>
-                          <optgroup label="California">
-                            <option value="Los Angeles, CA">Los Angeles, CA</option>
-                            <option value="San Diego, CA">San Diego, CA</option>
-                            <option value="San Francisco, CA">San Francisco, CA</option>
-                            <option value="Temecula, CA">Temecula, CA</option>
-                          </optgroup>
-                          <optgroup label="Other Major Cities">
-                            <option value="New York, NY">New York, NY</option>
-                            <option value="Chicago, IL">Chicago, IL</option>
-                            <option value="Miami, FL">Miami, FL</option>
-                            <option value="Phoenix, AZ">Phoenix, AZ</option>
-                            <option value="Denver, CO">Denver, CO</option>
-                          </optgroup>
-                        </select>
-                        <svg className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-[#777777]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                      </div>
-                      {locationError && (
+                      )}
+                      {autoLocationError && (
                         <div className="mt-1 ml-1">
-                          <p className={`text-xs ${locationError.includes("Determining") ? "text-blue-400" : "text-red-400"}`}>{locationError}</p>
-                          {locationError.includes("Failed") && (
-                            <p className="text-xs text-gray-400 mt-1">
-                              Try selecting a popular location below:
-                            </p>
-                          )}
+                          <p className="text-xs text-yellow-400">{autoLocationError}</p>
                         </div>
                       )}
                     </div>
@@ -661,6 +580,15 @@ const SearchPage: React.FC = () => {
           </div>
         </div>
       </main>
+      
+      {/* Location Change Modal */}
+      {showLocationModal && (
+        <ChangeLocationModal
+          currentLocation={selectedLocation || (autoLocation && `${autoLocation.city}, ${autoLocation.region}`) || ''}
+          onLocationChange={handleLocationChange}
+          onClose={() => setShowLocationModal(false)}
+        />
+      )}
     </>
   );
 };

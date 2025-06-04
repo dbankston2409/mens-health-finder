@@ -249,47 +249,18 @@ export const useGeoSearch = ({
 };
 
 // Helper hook for getting user's current location
+// This hook has been deprecated in favor of useAutoLocation
+// which uses server-side IP geolocation instead of browser geolocation
 export const useUserLocation = () => {
+  console.warn('useUserLocation is deprecated. Use useAutoLocation instead.');
+  
   const [location, setLocation] = useState<{lat: number; lng: number} | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const getCurrentLocation = () => {
-    setLoading(true);
-    setError(null);
-
-    if (!navigator.geolocation) {
-      setError('Geolocation is not supported by your browser');
-      setLoading(false);
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLocation({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        });
-        setLoading(false);
-      },
-      (error) => {
-        let errorMessage = 'Failed to get your location';
-        if (error.code === 1) {
-          errorMessage = 'Location access denied';
-        } else if (error.code === 2) {
-          errorMessage = 'Location unavailable';
-        } else if (error.code === 3) {
-          errorMessage = 'Location request timeout';
-        }
-        setError(errorMessage);
-        setLoading(false);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 300000
-      }
-    );
+    setError('This feature has been replaced with automatic location detection');
+    setLoading(false);
   };
 
   return {

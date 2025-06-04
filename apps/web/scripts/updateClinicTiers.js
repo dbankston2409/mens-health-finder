@@ -61,8 +61,7 @@ function generateTierFeatures(tier) {
     enhancedContactUX: tier === 'advanced',
     customTracking: tier === 'advanced',
     snapshotReport: tier === 'advanced',
-    priorityListing: tier === 'advanced',
-  };
+    priorityListing: tier === 'advanced'};
 }
 
 /**

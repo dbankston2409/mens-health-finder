@@ -28,8 +28,7 @@ const SERVICES: ServiceSuggestion[] = [
   { id: 'peptide-therapy', name: 'Peptide Therapy', description: 'Peptide Injections & Treatment' },
   { id: 'iv-therapy', name: 'IV Therapy', description: 'IV Hydration & Nutrients' },
   { id: 'hormone-therapy', name: 'Hormone Therapy', description: 'Hormone Optimization' },
-  { id: 'wellness', name: 'Wellness', description: 'Preventive Men\'s Health' },
-];
+  { id: 'wellness', name: 'Wellness', description: 'Preventive Men\'s Health' }];
 
 const POPULAR_LOCATIONS: LocationSuggestion[] = [
   { id: 'austin-tx', name: 'Austin, TX', type: 'city' },
@@ -43,8 +42,7 @@ const POPULAR_LOCATIONS: LocationSuggestion[] = [
   { id: 'denver-co', name: 'Denver, CO', type: 'city' },
   { id: 'new-york-ny', name: 'New York, NY', type: 'city' },
   { id: 'chicago-il', name: 'Chicago, IL', type: 'city' },
-  { id: 'atlanta-ga', name: 'Atlanta, GA', type: 'city' },
-];
+  { id: 'atlanta-ga', name: 'Atlanta, GA', type: 'city' }];
 
 const MapSearchBar: React.FC<MapSearchBarProps> = ({
   onSearch,
@@ -57,7 +55,6 @@ const MapSearchBar: React.FC<MapSearchBarProps> = ({
   const [location, setLocation] = useState(defaultLocation);
   const [serviceFocused, setServiceFocused] = useState(false);
   const [locationFocused, setLocationFocused] = useState(false);
-  const [isLocating, setIsLocating] = useState(false);
   
   const serviceInputRef = useRef<HTMLInputElement>(null);
   const locationInputRef = useRef<HTMLInputElement>(null);
@@ -117,47 +114,6 @@ const MapSearchBar: React.FC<MapSearchBarProps> = ({
     setLocationFocused(false);
   };
 
-  const getUserLocation = async () => {
-    setIsLocating(true);
-    
-    if (!navigator.geolocation) {
-      setIsLocating(false);
-      return;
-    }
-
-    try {
-      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 300000
-        });
-      });
-
-      const { latitude, longitude } = position.coords;
-
-      // Reverse geocode to get city, state
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1`,
-        { headers: { 'User-Agent': 'MensHealthFinder/1.0' } }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        const address = data.address;
-        const city = address.city || address.town || address.village;
-        const state = address.state_code || address.state;
-        
-        if (city && state) {
-          setLocation(`${city}, ${state}`);
-        }
-      }
-    } catch (error) {
-      console.error('Location detection failed:', error);
-    } finally {
-      setIsLocating(false);
-    }
-  };
 
   return (
     <div className={`relative ${className}`}>
@@ -205,31 +161,8 @@ const MapSearchBar: React.FC<MapSearchBarProps> = ({
 
         {/* Location Input */}
         <div className="flex-1 relative">
-          <label className="flex items-center justify-between text-sm font-medium text-gray-300 mb-2">
-            <span>Location</span>
-            <button
-              type="button"
-              onClick={getUserLocation}
-              disabled={isLocating}
-              className="text-xs text-primary hover:text-red-400 transition-colors flex items-center gap-1"
-            >
-              {isLocating ? (
-                <>
-                  <svg className="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                  <span>Detecting...</span>
-                </>
-              ) : (
-                <>
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                  </svg>
-                  <span>Use my location</span>
-                </>
-              )}
-            </button>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Location
           </label>
           <div className="relative">
             <input

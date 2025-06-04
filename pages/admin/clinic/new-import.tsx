@@ -29,7 +29,6 @@ const NewImportPage: React.FC = () => {
     }
   };
 
-  
   return (
     <ProtectedRoute adminOnly>
       <Layout>

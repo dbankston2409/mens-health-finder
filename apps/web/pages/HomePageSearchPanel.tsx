@@ -26,8 +26,7 @@ const POPULAR_SERVICES = [
   { id: 'hair-loss', name: 'Hair Loss', emoji: '💇‍♂️', description: 'Hair Restoration' },
   { id: 'weight-loss', name: 'Weight Loss', emoji: '⚖️', description: 'Weight Management' },
   { id: 'peptide-therapy', name: 'Peptide Therapy', emoji: '🧬', description: 'Peptide Injections' },
-  { id: 'iv-therapy', name: 'IV Therapy', emoji: '💧', description: 'IV Hydration' },
-];
+  { id: 'iv-therapy', name: 'IV Therapy', emoji: '💧', description: 'IV Hydration' }];
 
 // Mock data - in production this would come from Firestore
 const MOCK_CITY_STATS: CityStats[] = [

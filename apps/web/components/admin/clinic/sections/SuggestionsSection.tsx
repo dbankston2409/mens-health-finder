@@ -58,30 +58,25 @@ const SuggestionsSection: React.FC<SuggestionsSectionProps> = ({ suggestions }) 
       type: 'info',
       message: 'Based on your profile views, adding before/after images could increase engagement by up to 40%.',
       actionText: 'Add Images',
-      actionUrl: '#',
-    },
+      actionUrl: '#'},
     {
       id: 'sug-auto-2',
       type: 'warning',
       message: 'Your clinic has not published any blog content in the last 90 days, which may be affecting search visibility.',
       actionText: 'Create Blog Post',
-      actionUrl: '#',
-    },
+      actionUrl: '#'},
     {
       id: 'sug-auto-3',
       type: 'info',
       message: 'Customers who view your TRT services also frequently search for "peptide therapy". Consider adding this service.',
       actionText: 'Update Services',
-      actionUrl: '#',
-    },
+      actionUrl: '#'},
     {
       id: 'sug-auto-4',
       type: 'success',
       message: 'Your clinic has a high response rate to reviews (92%). Keep up the good work!',
       actionText: 'View Reviews',
-      actionUrl: '#',
-    },
-  ];
+      actionUrl: '#'}];
 
   const allSuggestions = [...suggestions, ...additionalSuggestions];
 

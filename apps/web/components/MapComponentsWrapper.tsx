@@ -9,8 +9,6 @@ if (typeof window !== 'undefined') {
   
   // Also require compatibility for icons
   require('leaflet-defaulticon-compatibility');
-  
-  // CSS is handled in the Map component now - we're using CDN links
 }
 
 // Create MapBounds component
@@ -164,33 +162,114 @@ export const createCustomMarkerIcon = (tier: 'free' | 'standard' | 'advanced' | 
   }
 };
 
-// Export shared utility functions
-export const mapUtils = {
-  MapContainer,
-  TileLayer,
-  Marker, 
-  Popup,
-  MapBounds,
-  MapCenter,
-  createCustomMarkerIcon
-};
-
-// Create a simplified export object for Next.js dynamic imports
-// This approach is more compatible with Next.js dynamic import system
-const MapComponentsWrapper = {
-  // Export a default component for React
-  default: function MapWrapper({ children }: { children?: React.ReactNode }) {
-    return <div>{children || "Map components loaded"}</div>;
-  },
+// User location marker
+const UserLocationMarker = ({ position }: { position: { lat: number; lng: number } | null }) => {
+  const map = useMap();
   
-  // Export all the map components directly
-  MapContainer,
-  TileLayer,
-  Marker, 
-  Popup,
-  MapBounds,
-  MapCenter,
-  createCustomMarkerIcon
+  React.useEffect(() => {
+    if (!position || !L) return;
+    
+    // Create a blue circle marker for user location
+    const userMarker = L.circleMarker([position.lat, position.lng], {
+      radius: 8,
+      fillColor: '#3B82F6',
+      color: '#1E40AF',
+      weight: 2,
+      opacity: 1,
+      fillOpacity: 0.8
+    });
+    
+    userMarker.addTo(map);
+    
+    // Add pulsing effect
+    const pulsingIcon = L.divIcon({
+      className: 'user-location-pulse',
+      html: `
+        <div style="
+          background-color: #3B82F6;
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          opacity: 0.8;
+        "></div>
+      `,
+      iconSize: [12, 12]
+    });
+    
+    return () => {
+      map.removeLayer(userMarker);
+    };
+  }, [position, map]);
+  
+  return null;
 };
 
-export default MapComponentsWrapper;
+interface MapWrapperProps {
+  locations: any[];
+  mapCenter: { lat: number; lng: number; zoom: number };
+  height: string;
+  userLocation: { lat: number; lng: number } | null;
+}
+
+// Main map component that renders everything
+const MapWrapper: React.FC<MapWrapperProps> = ({ 
+  locations, 
+  mapCenter, 
+  height,
+  userLocation 
+}) => {
+  return (
+    <MapContainer
+      center={[mapCenter.lat, mapCenter.lng]}
+      zoom={mapCenter.zoom}
+      style={{ height, width: '100%' }}
+      className="rounded-lg shadow-lg"
+      zoomControl={true}
+    >
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      
+      {/* Add map center control */}
+      <MapCenter lat={mapCenter.lat} lng={mapCenter.lng} zoom={mapCenter.zoom} />
+      
+      {/* Add user location indicator if available */}
+      {userLocation && <UserLocationMarker position={userLocation} />}
+      
+      {/* Add clinic markers */}
+      {locations.map((location) => {
+        const icon = createCustomMarkerIcon(location.tier || 'free');
+        return (
+          <Marker
+            key={location.id}
+            position={[location.lat, location.lng]}
+            icon={icon}
+          >
+            <Popup>
+              <div className="p-2">
+                <h3 className="font-bold text-lg mb-1">{location.name}</h3>
+                <p className="text-sm text-gray-600 mb-1">{location.address}</p>
+                <p className="text-sm text-gray-600 mb-2">{location.city}, {location.state}</p>
+                {location.phone && (
+                  <p className="text-sm mb-1">
+                    <a href={`tel:${location.phone}`} className="text-blue-600 hover:underline">
+                      {location.phone}
+                    </a>
+                  </p>
+                )}
+                {location.rating && (
+                  <p className="text-sm">
+                    Rating: <span className="font-semibold">{location.rating}</span> ⭐
+                  </p>
+                )}
+              </div>
+            </Popup>
+          </Marker>
+        );
+      })}
+    </MapContainer>
+  );
+};
+
+export default MapWrapper;

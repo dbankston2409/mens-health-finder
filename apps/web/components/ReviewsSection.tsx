@@ -25,10 +25,7 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = ({
   // Separate native MHF reviews from external reviews
   const nativeReviews = reviews?.filter(review => review.source === 'MHF') || [];
   const googleReviews = reviews?.filter(review => review.source === 'Google') || [];
-  const yelpReviews = reviews?.filter(review => review.source === 'Yelp') || [];
-  
-  // Calculate average ratings
-  const calculateAvgRating = (reviews: Review[]) => {
+  const 
     if (reviews.length === 0) return 0;
     return reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
   };

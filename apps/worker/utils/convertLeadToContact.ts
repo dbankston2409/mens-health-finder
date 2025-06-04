@@ -287,8 +287,7 @@ async function createNewContact(
       events,
       leadQuality,
       tags: generateContactTags(leadData, events),
-      source: determinePrimarySource(leadData),
-    };
+      source: determinePrimarySource(leadData)};
     
     // Save to Firestore
     const contactRef = doc(db, 'contacts', contactId);

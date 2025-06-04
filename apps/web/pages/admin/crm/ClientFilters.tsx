@@ -35,8 +35,7 @@ const ClientFilters: React.FC<ClientFiltersProps> = ({
   onClose,
   onApplyFilters,
   filterOptions,
-  initialFilters,
-}) => {
+  initialFilters}) => {
   const [filters, setFilters] = useState<Filters>(initialFilters);
 
   const handleTogglePackageTier = (tier: string) => {

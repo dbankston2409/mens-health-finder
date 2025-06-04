@@ -7,8 +7,7 @@ interface LoadingSkeletonsProps {
 
 const LoadingSkeletons: React.FC<LoadingSkeletonsProps> = ({
   rowCount = 5,
-  columnCount = 7,
-}) => {
+  columnCount = 7}) => {
   // Generate an array of rows
   const rows = Array.from({ length: rowCount });
   

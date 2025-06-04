@@ -38,9 +38,7 @@ export default function SeoPerformancePage({
       const response = await fetch('/api/sitemap/generate', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+          'Content-Type': 'application/json'}});
       
       const data = await response.json();
       

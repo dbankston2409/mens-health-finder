@@ -47,13 +47,11 @@ function convertMockClinic(clinic: any): Clinic {
     trafficMeta: {
       totalClicks: Math.floor(Math.random() * 1000),
       topSearchTerms: [],
-      lastViewed: Timestamp.fromDate(new Date()),
-    },
+      lastViewed: Timestamp.fromDate(new Date())},
     validationStatus: {
       verified: true,
       method: 'manual',
-      websiteOK: true,
-    }
+      websiteOK: true}
   };
 }
 

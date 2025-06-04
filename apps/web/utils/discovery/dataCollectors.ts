@@ -208,10 +208,7 @@ export class EnhancedDataCollector {
         searchParams.append('categories', categories);
       }
 
-      const url = `https://api.yelp.com/v3/businesses/search?${searchParams}`;
-
-      const response = await fetch(url, {
-        headers: {
+      const url = `https://api.
           'Authorization': `Bearer ${this.yelpApiKey}`
         }
       });
@@ -219,18 +216,12 @@ export class EnhancedDataCollector {
       const data = await response.json();
 
       if (response.status !== 200) {
-        throw new Error(`Yelp API error: ${response.status} - ${data.error?.description}`);
-      }
-
-      const businesses: YelpBusinessDetails[] = [];
+        throw new Error(`
 
       // Get detailed information for each business
       for (const business of data.businesses || []) {
         try {
-          const details = await this.getYelpBusinessDetails(business.id);
-          if (details) {
-            businesses.push(details);
-          }
+          const details = await this.
 
           // Rate limiting
           await this.delay(200);
@@ -249,9 +240,7 @@ export class EnhancedDataCollector {
   /**
    * Get detailed information about a Yelp business
    */
-  async getYelpBusinessDetails(businessId: string): Promise<YelpBusinessDetails | null> {
-    try {
-      const url = `https://api.yelp.com/v3/businesses/${businessId}`;
+  async `;
 
       const response = await fetch(url, {
         headers: {
@@ -378,7 +367,7 @@ export class EnhancedDataCollector {
       const response = await fetch(websiteUrl);
       const html = await response.text();
 
-      const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g;
+      const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2}\b/g;
       const emails = html.match(emailRegex) || [];
 
       // Filter out common generic emails
@@ -401,7 +390,6 @@ export class EnhancedDataCollector {
    */
   mergeBusinessData(
     googleData?: GooglePlaceDetails,
-    yelpData?: YelpBusinessDetails,
     socialData?: Partial<Clinic['socialMedia']>,
     emails?: string[]
   ): Partial<Clinic> {
@@ -441,23 +429,6 @@ export class EnhancedDataCollector {
     }
 
     // Additional data from Yelp
-    if (yelpData) {
-      clinic.yelpBusinessId = yelpData.id;
-      clinic.priceBracket = yelpData.price as any;
-      clinic.yelpRating = yelpData.rating;
-      clinic.yelpReviewCount = yelpData.review_count;
-
-      // If no Google data, use Yelp for basic info
-      if (!googleData) {
-        clinic.name = yelpData.name;
-        clinic.address = yelpData.location.address1;
-        clinic.city = yelpData.location.city;
-        clinic.state = yelpData.location.state;
-        clinic.zip = yelpData.location.zip_code;
-        clinic.phone = yelpData.display_phone;
-        clinic.lat = yelpData.coordinates.latitude;
-        clinic.lng = yelpData.coordinates.longitude;
-      }
 
       // Yelp photos
       if (clinic.photos) {
@@ -473,11 +444,7 @@ export class EnhancedDataCollector {
       });
 
       // Messaging capability
-      if (yelpData.messaging) {
-        clinic.contactMethods = {
-          phone: clinic.phone || '',
-          messaging: yelpData.messaging
-        };
+      ;
       }
     }
 

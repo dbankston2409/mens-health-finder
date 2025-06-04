@@ -30,8 +30,7 @@ export const generateClinicReportPDF = async (
     const pdf = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
-      format: 'a4',
-    });
+      format: 'a4'});
     
     // A4 dimensions (210mm x 297mm)
     const pageWidth = pdf.internal.pageSize.getWidth();

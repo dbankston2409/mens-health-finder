@@ -6,21 +6,18 @@ const Contact = () => {
     name: '',
     email: '',
     subject: '',
-    message: '',
-  });
+    message: ''});
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState({
     success: false,
-    message: '',
-  });
+    message: ''});
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
-    }));
+      [name]: value}));
   };
   
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -32,14 +29,12 @@ const Contact = () => {
     setTimeout(() => {
       setSubmitStatus({
         success: true,
-        message: 'Your message has been sent. We\'ll get back to you shortly.',
-      });
+        message: 'Your message has been sent. We\'ll get back to you shortly.'});
       setFormData({
         name: '',
         email: '',
         subject: '',
-        message: '',
-      });
+        message: ''});
       setIsSubmitting(false);
     }, 1500);
   };

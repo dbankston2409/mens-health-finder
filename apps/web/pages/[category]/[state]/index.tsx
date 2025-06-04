@@ -145,16 +145,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
       paths.push({
         params: {
           category: categorySlug,
-          state: getStateSlug(state),
-        },
-      });
+          state: getStateSlug(state)}});
     });
   });
 
   return {
     paths,
-    fallback: 'blocking',
-  };
+    fallback: 'blocking'};
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
@@ -199,8 +196,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const citiesByClinicCount = Object.entries(clinicsByCity).map(([city, clinics]) => ({
     city,
     citySlug: slugify(city), // This is already using our slugify function
-    count: clinics.length,
-  }))
+    count: clinics.length}))
   .sort((a, b) => b.count - a.count);
 
   return {
@@ -208,15 +204,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       categoryInfo: {
         id: getServiceSlug(categoryData.id), // Use the full service name format
         title: categoryData.title,
-        description: categoryData.description,
-      },
+        description: categoryData.description},
       stateInfo: {
         stateCode: matchingState,
-        fullName: getStateFullName(matchingState),
-      },
-      citiesByClinicCount,
-    },
+        fullName: getStateFullName(matchingState)},
+      citiesByClinicCount},
     // Revalidate every day
-    revalidate: 86400,
-  };
+    revalidate: 86400};
 };

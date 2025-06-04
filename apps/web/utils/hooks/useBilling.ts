@@ -33,9 +33,7 @@ export const useBilling = (clinicId: string | undefined) => {
       name: '',
       amount: 0,
       renewalDate: null,
-      status: '',
-    },
-  });
+      status: ''}});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -64,8 +62,7 @@ export const useBilling = (clinicId: string | undefined) => {
           name: 'Free',
           amount: 0,
           renewalDate: null,
-          status: 'active',
-        };
+          status: 'active'};
 
         querySnapshot.forEach((doc) => {
           const data = doc.data();
@@ -86,8 +83,7 @@ export const useBilling = (clinicId: string | undefined) => {
             notes: data.notes,
             renewalDate: renewalDate || undefined,
             paymentMethod: data.paymentMethod,
-            cancellationReason: data.cancellationReason,
-          };
+            cancellationReason: data.cancellationReason};
 
           events.push(event);
         });
@@ -103,14 +99,12 @@ export const useBilling = (clinicId: string | undefined) => {
             name: latestSuccessful.plan,
             amount: latestSuccessful.amount,
             renewalDate: null,
-            status: latestSuccessful.status === 'canceled' ? 'canceled' : 'active',
-          };
+            status: latestSuccessful.status === 'canceled' ? 'canceled' : 'active'};
         }
 
         setBillingData({
           events,
-          currentPlan,
-        });
+          currentPlan});
         setLoading(false);
       },
       (err) => {

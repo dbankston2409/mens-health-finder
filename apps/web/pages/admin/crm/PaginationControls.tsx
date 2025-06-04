@@ -16,8 +16,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
   totalItems,
   itemsPerPage,
   onPageChange,
-  onItemsPerPageChange,
-}) => {
+  onItemsPerPageChange}) => {
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 

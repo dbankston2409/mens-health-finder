@@ -50,8 +50,7 @@ const WebsiteHealthCard: React.FC<WebsiteHealthCardProps> = ({ onRefresh }) => {
     lastChecked: new Date(),
     speedScore: hasPerformanceMetrics(websiteHealth) ? Math.floor(websiteHealth.performance * 100) : fallbackHealthData.speedScore,
     seoScore: hasPerformanceMetrics(websiteHealth) ? Math.floor(websiteHealth.seo * 100) : fallbackHealthData.seoScore,
-    accessibilityScore: hasPerformanceMetrics(websiteHealth) ? Math.floor(websiteHealth.accessibility * 100) : fallbackHealthData.accessibilityScore,
-  };
+    accessibilityScore: hasPerformanceMetrics(websiteHealth) ? Math.floor(websiteHealth.accessibility * 100) : fallbackHealthData.accessibilityScore};
   
   const getStatusBadge = (status: string) => {
     switch (status) {

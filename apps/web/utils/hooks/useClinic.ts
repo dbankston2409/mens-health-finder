@@ -39,8 +39,7 @@ export const useClinic = (clinicId: string | undefined) => {
             createdAt,
             updatedAt,
             services: data.services || [],
-            tags: data.tags || [],
-          } as Clinic);
+            tags: data.tags || []} as Clinic);
         } else {
           setClinic(null);
         }

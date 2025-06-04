@@ -204,8 +204,7 @@ export function generateClinicMetaTags(
     'twitter:title': clinic.seoMeta?.title || defaultTitle,
     'twitter:description': clinic.seoMeta?.description || 
       `${clinic.name} in ${clinic.city}, ${clinic.state} offers specialized men's health services.`,
-    'twitter:image': clinic.imageUrl || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://menshealthfinder.com'}/images/logos/mens-health-finder-logo.png`,
-  };
+    'twitter:image': clinic.imageUrl || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://menshealthfinder.com'}/images/logos/mens-health-finder-logo.png`};
 }
 
 // Helper function to get street address from full address

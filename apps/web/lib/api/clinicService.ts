@@ -37,9 +37,7 @@ function convertDocToClinic(doc: DocumentData): Clinic {
     trafficMeta: {
       totalClicks: data.trafficMeta?.totalClicks || 0,
       topSearchTerms: data.trafficMeta?.topSearchTerms || [],
-      lastViewed: data.trafficMeta?.lastViewed || null,
-    },
-  } as Clinic;
+      lastViewed: data.trafficMeta?.lastViewed || null}} as Clinic;
 }
 
 /**
@@ -328,8 +326,7 @@ export async function logClinicTraffic(
       searchQuery: searchQuery || '',
       resultingPage: clinicSlug,
       timestamp: Timestamp.now(),
-      userRegion: userRegion || '',
-    };
+      userRegion: userRegion || ''};
     
     // Use a transaction to update both the clinic and create a log entry
     await runTransaction(db, async (transaction) => {

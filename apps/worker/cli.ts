@@ -51,7 +51,7 @@ ${colors.bright}DISCOVERY EXAMPLES:${colors.reset}
 ${colors.bright}REVIEW UPDATE EXAMPLES:${colors.reset}
   npm run worker review-update --discovery-session session_123456789
   npm run worker review-update --clinic-ids clinic1,clinic2,clinic3
-  npm run worker review-update --discovery-session session_123 --no-yelp
+  npm run worker review-update --discovery-session session_123 
   npm run worker review-update --clinic-ids clinic1 --max-reviews 20 --rate-limit 2000
 
 ${colors.bright}DISCOVERY OPTIONS:${colors.reset}
@@ -70,7 +70,7 @@ ${colors.bright}REVIEW UPDATE OPTIONS:${colors.reset}
   --max-reviews N         Max reviews per source (default: 10)
   --rate-limit N          Rate limit in milliseconds (default: 1000)
   --no-google             Skip Google reviews
-  --no-yelp               Skip Yelp reviews
+  
   --quiet                 Disable progress logging
 
 ${colors.bright}SUPPORTED FORMATS:${colors.reset}
@@ -110,7 +110,7 @@ ${colors.bright}FEATURES:${colors.reset}
 
 ${colors.bright}ENVIRONMENT VARIABLES:${colors.reset}
   • GOOGLE_MAPS_API_KEY (for geocoding & Places API)
-  • YELP_API_KEY (for Yelp business data)
+  • 
   • OPENAI_API_KEY (for AI-powered SEO generation)
   • CLAUDE_API_KEY (for AI-powered content generation)
   • FIREBASE_PROJECT_ID (Firebase project)

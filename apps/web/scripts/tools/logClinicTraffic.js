@@ -18,8 +18,7 @@ async function logClinicTraffic(searchQuery, clinicSlug, userRegion = '') {
       searchQuery: searchQuery || '',
       resultingPage: clinicSlug,
       timestamp: admin.firestore.FieldValue.serverTimestamp(),
-      userRegion: userRegion || '',
-    };
+      userRegion: userRegion || ''};
     
     // Find the clinic by slug
     const clinicsRef = db.collection('clinics');

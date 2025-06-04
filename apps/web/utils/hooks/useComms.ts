@@ -65,8 +65,7 @@ export const useComms = (clinicId: string | undefined) => {
             content: data.content || '',
             status: data.status,
             adminId: data.adminId,
-            adminName: data.adminName,
-          };
+            adminName: data.adminName};
 
           commEvents.push(event);
         });

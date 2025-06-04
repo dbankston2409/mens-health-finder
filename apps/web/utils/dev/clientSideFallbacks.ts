@@ -139,9 +139,7 @@ export const getClinicEngagement = async (clinicId: string) => {
     lastViewed: new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)),
     viewsByDay: Array.from({ length: 30 }, (_, i) => ({
       date: new Date(Date.now() - (30 - i) * 24 * 60 * 60 * 1000),
-      count: Math.floor(Math.random() * 20) + 5,
-    })),
-  };
+      count: Math.floor(Math.random() * 20) + 5}))};
 };
 
 // Add more mock functions as needed for other admin features

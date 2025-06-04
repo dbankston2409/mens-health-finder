@@ -10,11 +10,10 @@ const ExternalReviewsSection: React.FC<ExternalReviewsSectionProps> = ({
   clinicId,
   className = ''
 }) => {
-  const [activeTab, setActiveTab] = useState<'all' | 'google' | 'yelp' | 'healthgrades'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'google' | 'healthgrades'>('all');
   const [reviews, setReviews] = useState<Record<string, ReviewData[]>>({
     all: [],
     google: [],
-    yelp: [],
     healthgrades: []
   });
   const [loading, setLoading] = useState(true);
@@ -32,13 +31,11 @@ const ExternalReviewsSection: React.FC<ExternalReviewsSectionProps> = ({
         
         // Organize by source
         const googleReviews = allReviews.filter(review => review.source === 'google');
-        const yelpReviews = allReviews.filter(review => review.source === 'yelp');
         const healthgradesReviews = allReviews.filter(review => review.source === 'healthgrades');
         
         setReviews({
           all: allReviews,
           google: googleReviews,
-          yelp: yelpReviews,
           healthgrades: healthgradesReviews
         });
       } catch (error) {
@@ -98,8 +95,6 @@ const ExternalReviewsSection: React.FC<ExternalReviewsSectionProps> = ({
     switch (source) {
       case 'google':
         return <img src="/images/icons/google-icon.svg" alt="Google" className="w-5 h-5" />;
-      case 'yelp':
-        return <img src="/images/icons/yelp-icon.svg" alt="Yelp" className="w-5 h-5" />;
       case 'healthgrades':
         return <span className="w-5 h-5 font-bold text-blue-500 text-xs">HG</span>;
       default:
@@ -161,18 +156,6 @@ const ExternalReviewsSection: React.FC<ExternalReviewsSectionProps> = ({
                       }`}
                     >
                       Google ({reviews.google.length})
-                    </button>
-                  )}
-                  {reviews.yelp.length > 0 && (
-                    <button
-                      onClick={() => setActiveTab('yelp')}
-                      className={`py-3 px-4 text-center border-b-2 text-sm font-medium ${
-                        activeTab === 'yelp'
-                          ? 'text-indigo-600 border-indigo-600'
-                          : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
-                      }`}
-                    >
-                      Yelp ({reviews.yelp.length})
                     </button>
                   )}
                   {reviews.healthgrades.length > 0 && (

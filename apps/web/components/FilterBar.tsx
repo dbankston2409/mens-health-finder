@@ -27,14 +27,12 @@ const SERVICE_OPTIONS: FilterOption[] = [
   { id: 'iv-therapy', label: 'IV Therapy', count: 19 },
   { id: 'hormone-therapy', label: 'Hormone Therapy', count: 35 },
   { id: 'wellness', label: 'Wellness', count: 42 },
-  { id: 'cryotherapy', label: 'Cryotherapy', count: 15 },
-];
+  { id: 'cryotherapy', label: 'Cryotherapy', count: 15 }];
 
 const TIER_OPTIONS: FilterOption[] = [
   { id: 'high', label: 'Premium', count: 15 },
   { id: 'low', label: 'Enhanced', count: 23 },
-  { id: 'free', label: 'Free', count: 67 },
-];
+  { id: 'free', label: 'Free', count: 67 }];
 
 const STATE_OPTIONS: FilterOption[] = [
   { id: 'TX', label: 'Texas', count: 28 },
@@ -44,8 +42,7 @@ const STATE_OPTIONS: FilterOption[] = [
   { id: 'IL', label: 'Illinois', count: 12 },
   { id: 'AZ', label: 'Arizona', count: 11 },
   { id: 'GA', label: 'Georgia', count: 9 },
-  { id: 'CO', label: 'Colorado', count: 8 },
-];
+  { id: 'CO', label: 'Colorado', count: 8 }];
 
 const FilterBar: React.FC<FilterBarProps> = ({
   filters,

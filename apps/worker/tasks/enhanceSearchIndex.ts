@@ -10,9 +10,7 @@ try {
     credential: admin.credential.cert({
       projectId: process.env.FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    }),
-  });
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')})});
 }
 
 const db = admin.firestore();
@@ -26,8 +24,7 @@ const SERVICE_SYNONYMS: Record<string, string[]> = {
   'Peptide Therapy': ['peptides', 'growth hormone', 'anti-aging peptides', 'healing peptides', 'recovery peptides', 'performance peptides'],
   'IV Therapy': ['iv drip', 'vitamin drip', 'iv nutrients', 'iv hydration', 'vitamin infusion', 'iv vitamins'],
   'PRP': ['prp therapy', 'platelet rich plasma', 'penis shot', 'p-shot', 'prp injections'],
-  'Hormone Optimization': ['hormone balancing', 'hormone restoration', 'hormone replacement', 'bhrt', 'hrt', 'hormone therapy'],
-};
+  'Hormone Optimization': ['hormone balancing', 'hormone restoration', 'hormone replacement', 'bhrt', 'hrt', 'hormone therapy']};
 
 // Local area terms that people might search for
 const LOCAL_AREA_TERMS = [
@@ -36,8 +33,7 @@ const LOCAL_AREA_TERMS = [
   'closest',
   'local',
   'in my area',
-  'around me',
-];
+  'around me'];
 
 /**
  * Generate an array of derived keywords for a clinic
@@ -160,19 +156,16 @@ async function processClinic(clinicId: string, clinicData: Clinic): Promise<{
     // Update the clinic document with derived keywords
     await db.collection('clinics').doc(clinicId).update({
       derivedKeywords,
-      lastIndexed: admin.firestore.FieldValue.serverTimestamp(),
-    });
+      lastIndexed: admin.firestore.FieldValue.serverTimestamp()});
     
     return {
       success: true,
-      keywordsCount: derivedKeywords.length,
-    };
+      keywordsCount: derivedKeywords.length};
   } catch (error) {
     console.error(`Error enhancing search index for clinic ${clinicId}:`, error);
     return {
       success: false,
-      error: (error as Error).message,
-    };
+      error: (error as Error).message};
   }
 }
 
@@ -189,8 +182,7 @@ export async function enhanceAllClinicsSearchIndex(): Promise<{
     total: 0,
     success: 0,
     failed: 0,
-    errors: [] as any[],
-  };
+    errors: [] as any[]};
   
   try {
     console.log('🔍 Starting search index enhancement for all clinics...');
@@ -216,8 +208,7 @@ export async function enhanceAllClinicsSearchIndex(): Promise<{
         results.errors.push({
           clinicId: doc.id,
           clinicName: clinicData.name,
-          error: result.error,
-        });
+          error: result.error});
         console.error(`❌ Failed to enhance search index for ${clinicData.name}: ${result.error}`);
       }
     }

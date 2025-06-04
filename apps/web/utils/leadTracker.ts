@@ -147,8 +147,7 @@ export const determineLeadSource = (): LeadSource => {
       return 'referral';
     }
   }
-  
-  
+
   // Check referrer domain
   if (referrer) {
     try {

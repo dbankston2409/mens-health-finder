@@ -19,8 +19,7 @@ const ReviewForm = ({
   initialRating = 0,
   initialText = '',
   onSuccess,
-  isEdit = false,
-}: ReviewFormProps) => {
+  isEdit = false}: ReviewFormProps) => {
   const [rating, setRating] = useState(initialRating);
   const [text, setText] = useState(initialText);
   const [isLoading, setIsLoading] = useState(false);
@@ -79,8 +78,7 @@ const ReviewForm = ({
         await updateDoc(doc(db, 'reviews', reviewId), {
           rating,
           text,
-          updatedAt: serverTimestamp(),
-        });
+          updatedAt: serverTimestamp()});
       } else if (clinicId) {
         // Create new review
         await addDoc(collection(db, 'reviews'), {
@@ -88,8 +86,7 @@ const ReviewForm = ({
           userId: currentUser.uid,
           rating,
           text,
-          createdAt: serverTimestamp(),
-        });
+          createdAt: serverTimestamp()});
       }
 
       setIsSubmitted(true);

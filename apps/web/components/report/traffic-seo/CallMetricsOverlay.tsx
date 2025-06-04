@@ -56,7 +56,7 @@ const CallMetricsOverlay: React.FC<CallMetricsOverlayProps> = ({
     if (!metrics || !metrics.callsByHour) return 'N/A';
     
     const sortedHours = Object.entries(metrics.callsByHour)
-      .sort(([, countA], [, countB]) => countB - countA)
+      .sort(([ countA], [ countB]) => countB - countA)
       .slice(0, 2)
       .map(([hour]) => hour);
     

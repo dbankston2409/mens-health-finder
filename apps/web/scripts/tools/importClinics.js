@@ -150,9 +150,7 @@ async function geocodeAddress(address, city, state, zip) {
       `https://nominatim.openstreetmap.org/search?format=json&q=${encodedSearch}&limit=1`,
       {
         headers: {
-          'User-Agent': 'MensHealthFinder/1.0',
-        },
-      }
+          'User-Agent': 'MensHealthFinder/1.0'}}
     );
     
     if (!response.ok) {
@@ -266,13 +264,11 @@ async function processClinicRecord(record, db, importSource = 'manual') {
       trafficMeta: {
         totalClicks: 0,
         topSearchTerms: [],
-        lastViewed: null,
-      },
+        lastViewed: null},
       validationStatus: {
         verified: false,
         method: 'auto',
-        websiteOK: false,
-      }
+        websiteOK: false}
     };
     
     // Validate required fields

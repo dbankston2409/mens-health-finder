@@ -71,7 +71,7 @@ function parseServices(servicesStr: string): string[] {
   
   // Split by common delimiters and clean up
   const services = servicesStr
-    .split(/[,;|]/)
+    .split(/[;|]/)
     .map(s => s.trim())
     .filter(s => s.length > 0)
     .map(s => {

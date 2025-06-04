@@ -54,8 +54,7 @@ export const useTraffic = (clinicId: string | undefined) => {
     lastViewed: null,
     topSearchTerms: [],
     topCities: [],
-    dailyTraffic: [],
-  });
+    dailyTraffic: []});
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -101,8 +100,7 @@ export const useTraffic = (clinicId: string | undefined) => {
             city: data.city,
             state: data.state,
             deviceType: data.deviceType,
-            sessionId: data.sessionId,
-          };
+            sessionId: data.sessionId};
 
           events.push(event);
         });
@@ -199,8 +197,7 @@ export const useTraffic = (clinicId: string | undefined) => {
           lastViewed,
           topSearchTerms,
           topCities,
-          dailyTraffic,
-        });
+          dailyTraffic});
         
         setLoading(false);
       },

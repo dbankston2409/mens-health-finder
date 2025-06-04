@@ -236,8 +236,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const topCities = [
     { city: 'Austin', state: 'TX' },
     { city: 'Dallas', state: 'TX' },
-    { city: 'Houston', state: 'TX' },
-  ];
+    { city: 'Houston', state: 'TX' }];
 
   // For each category and top city
   serviceCategories.forEach((category) => {
@@ -248,16 +247,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
         params: {
           category: categorySlug,
           state: slugify(state),
-          city: slugify(city),
-        },
-      });
+          city: slugify(city)}});
     });
   });
 
   return {
     paths,
-    fallback: 'blocking',
-  };
+    fallback: 'blocking'};
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
@@ -326,16 +322,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       categoryInfo: {
         id: categorySlug,
         title: categoryData.title,
-        description: categoryData.description,
-      },
+        description: categoryData.description},
       locationInfo: {
         stateCode: matchingState,
         stateFullName: getStateFullName(matchingState),
-        city: matchingCity,
-      },
-      clinics: sortedClinics,
-    },
+        city: matchingCity},
+      clinics: sortedClinics},
     // Revalidate every day
-    revalidate: 86400,
-  };
+    revalidate: 86400};
 };

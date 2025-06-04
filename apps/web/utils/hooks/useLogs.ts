@@ -57,8 +57,7 @@ export const useLogs = (clinicId: string | undefined) => {
             adminId: data.adminId || 'system',
             adminName: data.adminName,
             details: data.details || {},
-            notes: data.notes,
-          };
+            notes: data.notes};
 
           logEvents.push(event);
         });

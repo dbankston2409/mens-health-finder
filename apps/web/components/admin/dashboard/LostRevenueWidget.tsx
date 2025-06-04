@@ -58,10 +58,7 @@ const LostRevenueWidget: React.FC = () => {
         data: lostRevenue.reasons.map(reason => reason.amount),
         backgroundColor: lostRevenue.reasons.map(reason => reason.color),
         borderColor: lostRevenue.reasons.map(reason => reason.color),
-        borderWidth: 1,
-      },
-    ],
-  };
+        borderWidth: 1}]};
 
   // Chart options
   const chartOptions = {

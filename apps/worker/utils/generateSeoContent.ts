@@ -18,7 +18,7 @@ export async function generateSeoContent(clinic: ClinicInput): Promise<string> {
 }
 
 async function generateSeoContentWithClaude(clinic: ClinicInput): Promise<string> {
-  const prompt = `You are a highly skilled professional copywriter specializing in local SEO for healthcare clinics. Your task is to generate a 500–700 word clinic profile page for MHF (Men's Health Finder), a national men's health directory.
+  const prompt = `You are a highly skilled professional copywriter specializing in local SEO for healthcare clinics. Your task is to generate a 700–1,000 word clinic profile page for MHF (Men's Health Finder), a national men's health directory.
 
 Write the content as if it's going live on a public-facing SEO page — the kind of content Google rewards and real people trust.
 
@@ -28,7 +28,7 @@ You will receive the following inputs:
 - List of Services: ${clinic.services.join(', ')}
 
 **Output Requirements (VERY IMPORTANT):**
-- Word Count: 500–700 words (MUST be at least 500 words — verify before finalizing)
+- Word Count: 700–1,000 words (MUST be at least 700 words — verify before finalizing)
 - Tone: Professional, local, and natural — not corporate or robotic
 - SEO: Use local and service-related keywords naturally, without stuffing
 - Perspective: Third-person (e.g. "At ${clinic.name} in ${clinic.city}, men receive…")

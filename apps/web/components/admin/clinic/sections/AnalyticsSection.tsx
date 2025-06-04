@@ -10,8 +10,7 @@ import {
   Title,
   Tooltip,
   Legend,
-  ArcElement,
-} from 'chart.js';
+  ArcElement} from 'chart.js';
 
 // Register ChartJS components
 ChartJS.register(
@@ -79,17 +78,13 @@ const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({ analytics }) => {
           data: pageViews,
           borderColor: '#7837FC',
           backgroundColor: 'rgba(120, 55, 252, 0.1)',
-          tension: 0.3,
-        },
+          tension: 0.3},
         {
           label: 'Unique Visitors',
           data: visitors,
           borderColor: '#38BDF8',
           backgroundColor: 'rgba(56, 189, 248, 0.1)',
-          tension: 0.3,
-        },
-      ],
-    };
+          tension: 0.3}]};
   };
 
   const sourceChartData = {
@@ -101,18 +96,13 @@ const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({ analytics }) => {
           'rgba(120, 55, 252, 0.7)',
           'rgba(56, 189, 248, 0.7)',
           'rgba(251, 146, 60, 0.7)',
-          'rgba(139, 92, 246, 0.7)',
-        ],
+          'rgba(139, 92, 246, 0.7)'],
         borderColor: [
           'rgba(120, 55, 252, 1)',
           'rgba(56, 189, 248, 1)',
           'rgba(251, 146, 60, 1)',
-          'rgba(139, 92, 246, 1)',
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
+          'rgba(139, 92, 246, 1)'],
+        borderWidth: 1}]};
 
   const chartOptions = {
     responsive: true,
@@ -121,21 +111,14 @@ const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({ analytics }) => {
       y: {
         beginAtZero: true,
         grid: {
-          color: 'rgba(255, 255, 255, 0.1)',
-        },
+          color: 'rgba(255, 255, 255, 0.1)'},
         ticks: {
-          color: '#9CA3AF',
-        },
-      },
+          color: '#9CA3AF'}},
       x: {
         grid: {
-          display: false,
-        },
+          display: false},
         ticks: {
-          color: '#9CA3AF',
-        },
-      },
-    },
+          color: '#9CA3AF'}}},
     plugins: {
       legend: {
         position: 'top' as const,
@@ -143,9 +126,7 @@ const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({ analytics }) => {
           color: '#E5E7EB',
           padding: 20,
           usePointStyle: true,
-          pointStyle: 'circle',
-        },
-      },
+          pointStyle: 'circle'}},
       tooltip: {
         backgroundColor: 'rgba(17, 17, 17, 0.9)',
         titleColor: '#E5E7EB',
@@ -153,10 +134,7 @@ const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({ analytics }) => {
         borderColor: '#374151',
         borderWidth: 1,
         padding: 12,
-        displayColors: true,
-      },
-    },
-  };
+        displayColors: true}}};
 
   const doughnutOptions = {
     responsive: true,
@@ -168,9 +146,7 @@ const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({ analytics }) => {
           color: '#E5E7EB',
           padding: 20,
           usePointStyle: true,
-          pointStyle: 'circle',
-        },
-      },
+          pointStyle: 'circle'}},
       tooltip: {
         backgroundColor: 'rgba(17, 17, 17, 0.9)',
         titleColor: '#E5E7EB',
@@ -178,10 +154,7 @@ const AnalyticsSection: React.FC<AnalyticsSectionProps> = ({ analytics }) => {
         borderColor: '#374151',
         borderWidth: 1,
         padding: 12,
-        displayColors: true,
-      },
-    },
-  };
+        displayColors: true}}};
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -49,14 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         // Fetch Yelp reviews if enabled
-        if (enableYelp) {
-          try {
-            const yelpResult = await reviewAggregator.fetchYelpReviews(clinicId);
-            if (yelpResult.success) {
-              clinicReviewsImported += yelpResult.reviewsImported || 0;
-              results.yelpReviews += yelpResult.reviewsImported || 0;
-            } else {
-              results.errors.push(`Yelp reviews for ${clinicId}: ${yelpResult.error}`);
+        : ${yelpResult.error}`);
             }
           } catch (error) {
             results.errors.push(`Yelp reviews error for ${clinicId}: ${error.message}`);

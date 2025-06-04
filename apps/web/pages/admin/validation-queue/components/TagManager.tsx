@@ -13,8 +13,7 @@ const TagManager: React.FC<TagManagerProps> = ({
   tags,
   onAddTag,
   onRemoveTag,
-  className = '',
-}) => {
+  className = ''}) => {
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);

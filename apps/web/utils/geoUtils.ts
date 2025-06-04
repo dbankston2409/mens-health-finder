@@ -30,36 +30,8 @@ export function calculateDistance(
   return R * c;
 }
 
-/**
- * Prompt the user for their location
- * 
- * @returns Promise resolving to coordinates or null if denied
- */
-export async function getUserLocation(): Promise<{ lat: number; lng: number } | null> {
-  return new Promise((resolve) => {
-    if (!navigator.geolocation) {
-      resolve(null);
-      return;
-    }
-    
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        resolve({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        });
-      },
-      () => {
-        resolve(null);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 300000 // 5 minutes
-      }
-    );
-  });
-}
+// getUserLocation function has been removed in favor of server-side IP geolocation
+// Use the useAutoLocation hook instead for automatic location detection
 
 /**
  * Reverse geocode coordinates to get city and state

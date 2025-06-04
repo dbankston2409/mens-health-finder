@@ -78,8 +78,7 @@ const ClientManagerPanel: React.FC = () => {
     }},
     { id: 'high-engagement', name: 'High Engagement', filters: { minClicks: 50 }},
     { id: 'no-traffic', name: 'No Traffic (30 Days)', filters: { minClicks: 0 }},
-    { id: 'need-attention', name: 'Need Attention', filters: { tags: ['website-down', 'geo-mismatch', 'needs-review'] }},
-  ]);
+    { id: 'need-attention', name: 'Need Attention', filters: { tags: ['website-down', 'geo-mismatch', 'needs-review'] }}]);
   const [activeView, setActiveView] = useState<SavedView>(savedViews[0]);
   const [showViewsDropdown, setShowViewsDropdown] = useState(false);
   

@@ -26,9 +26,7 @@ function convertDocToClinic(doc: DocumentData): Clinic {
     trafficMeta: {
       totalClicks: data.trafficMeta?.totalClicks || 0,
       topSearchTerms: data.trafficMeta?.topSearchTerms || [],
-      lastViewed: data.trafficMeta?.lastViewed || null,
-    },
-  } as Clinic;
+      lastViewed: data.trafficMeta?.lastViewed || null}} as Clinic;
 }
 
 /**

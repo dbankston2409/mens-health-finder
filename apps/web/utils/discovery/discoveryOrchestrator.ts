@@ -244,16 +244,6 @@ export class DiscoveryOrchestrator {
       try {
         let enhancedClinic = clinic;
 
-        // Add Yelp data
-        const yelpData = await this.dataCollector.getYelpBusinessData(
-          clinic.name,
-          clinic.address,
-          clinic.phone
-        );
-        if (yelpData) {
-          enhancedClinic = { ...enhancedClinic, ...yelpData };
-        }
-
         // Add social media data if enabled
         if (this.session.config.enableSocialEnhancement && clinic.website) {
           const socialData = await this.dataCollector.extractSocialMediaLinks(clinic.website);
@@ -265,10 +255,6 @@ export class DiscoveryOrchestrator {
           if (clinic.googlePlacesId) {
             const googleReviews = await this.dataCollector.getGoogleReviews(clinic.googlePlacesId);
             enhancedClinic.googleReviews = googleReviews;
-          }
-          if (clinic.yelpBusinessId) {
-            const yelpReviews = await this.dataCollector.getYelpReviews(clinic.yelpBusinessId);
-            enhancedClinic.yelpReviews = yelpReviews;
           }
         }
 

@@ -9,8 +9,7 @@ const BillingSection: React.FC<BillingSectionProps> = ({ billing }) => {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
-    }).format(amount);
+      currency: 'USD'}).format(amount);
   };
 
   const getStatusColor = (status: string) => {

@@ -5,8 +5,7 @@ import { SalesMetrics } from '../../../../utils/metrics/types';
 
 // Use dynamic import with SSR disabled to prevent server-side rendering issues
 const SalesSnapshotCard = dynamic(() => Promise.resolve(RawSalesSnapshotCard), {
-  ssr: false,
-});
+  ssr: false});
 
 interface SalesSnapshotCardProps {
   data: SalesMetrics | null;

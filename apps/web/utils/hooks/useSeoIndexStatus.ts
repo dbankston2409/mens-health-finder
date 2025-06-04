@@ -133,7 +133,7 @@ export function useSeoIndexStatus(filters?: FilterOptions): UseSeoIndexStatusRes
       });
       
       const topQueries = Object.entries(queryCount)
-        .sort(([,a], [,b]) => b - a)
+        .sort(([a], [b]) => b - a)
         .slice(0, 10)
         .map(([query]) => query);
       

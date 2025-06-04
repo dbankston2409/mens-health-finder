@@ -19,8 +19,7 @@ const Breadcrumbs: React.FC<BreadcrumbProps> = ({
   city,
   clinic,
   categoryTitle,
-  stateFullName,
-}) => {
+  stateFullName}) => {
   const router = useRouter();
   let breadcrumbs = [];
 
@@ -28,8 +27,7 @@ const Breadcrumbs: React.FC<BreadcrumbProps> = ({
   breadcrumbs.push({
     label: 'Home',
     href: '/',
-    current: router.pathname === '/',
-  });
+    current: router.pathname === '/'});
 
   // Category crumb
   if (category) {
@@ -44,8 +42,7 @@ const Breadcrumbs: React.FC<BreadcrumbProps> = ({
     breadcrumbs.push({
       label: categoryInfo?.title || category,
       href: `/${categorySlug}`,
-      current: router.pathname === '/[category]',
-    });
+      current: router.pathname === '/[category]'});
   }
 
   // State crumb
@@ -56,8 +53,7 @@ const Breadcrumbs: React.FC<BreadcrumbProps> = ({
     breadcrumbs.push({
       label: stateFullName || state,
       href: `/${getServiceSlug(category)}/${stateSlugForUrl}`,
-      current: router.pathname === '/[category]/[state]',
-    });
+      current: router.pathname === '/[category]/[state]'});
   }
 
   // City crumb
@@ -68,8 +64,7 @@ const Breadcrumbs: React.FC<BreadcrumbProps> = ({
     breadcrumbs.push({
       label: city.replace(/-/g, ' '),
       href: `/${getServiceSlug(category)}/${stateSlugForUrl}/${city}`,
-      current: router.pathname === '/[category]/[state]/[city]',
-    });
+      current: router.pathname === '/[category]/[state]/[city]'});
   }
 
   // Clinic crumb
@@ -80,8 +75,7 @@ const Breadcrumbs: React.FC<BreadcrumbProps> = ({
     breadcrumbs.push({
       label: clinic.replace(/-/g, ' '),
       href: `/${getServiceSlug(category)}/${stateSlugForUrl}/${city}/${clinic}`,
-      current: router.pathname === '/[category]/[state]/[city]/[clinic-slug]',
-    });
+      current: router.pathname === '/[category]/[state]/[city]/[clinic-slug]'});
   }
 
   return (

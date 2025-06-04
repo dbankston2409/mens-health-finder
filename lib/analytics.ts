@@ -49,8 +49,7 @@ export const trackClinicView = (clinicId: string, clinicSlug: string, clinicName
     
     // Also fire a virtual pageview for this clinic
     trackPageView(`/clinics/${clinicSlug}`, `${clinicName} | Men's Health Finder`);
-    
-    
+
     console.debug(`[Analytics] Tracked clinic view: ${clinicName} (${clinicId})`);
   } catch (error) {
     console.error('Error tracking clinic view:', error);
@@ -73,8 +72,7 @@ export const trackClickToCall = (clinicId: string, clinicName: string, phoneNumb
       event_label: phoneNumber,
       ...attributionParams
     });
-    
-    
+
     console.debug(`[Analytics] Tracked click to call: ${phoneNumber} for ${clinicName}`);
   } catch (error) {
     console.error('Error tracking click to call:', error);
@@ -179,8 +177,7 @@ export const initAnalytics = () => {
     window.gtag('config', process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID!, {
       send_page_view: false // We'll handle page views manually
     });
-    
-    
+
     console.debug('[Analytics] Initialized analytics');
   }
 };

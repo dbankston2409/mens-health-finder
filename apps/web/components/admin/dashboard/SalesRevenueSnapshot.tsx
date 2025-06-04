@@ -35,10 +35,7 @@ const SalesRevenueSnapshot: React.FC = () => {
           'rgba(59, 130, 246, 1)',
           'rgba(239, 68, 68, 1)'
         ],
-        borderWidth: 1,
-      },
-    ],
-  };
+        borderWidth: 1}]};
 
   // Chart options
   const chartOptions = {

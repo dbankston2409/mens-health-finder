@@ -64,8 +64,7 @@ const DownloadReportButton: React.FC<DownloadReportButtonProps> = ({
       const response = await fetch('/api/reports/generate', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json'},
         body: JSON.stringify({
           clinicSlug,
           startDate: startDate.toISOString(),

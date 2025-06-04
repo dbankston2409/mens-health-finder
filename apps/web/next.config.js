@@ -3,25 +3,19 @@ const nextConfig = {
   // Exclude worker app from build
   transpilePackages: [],
   experimental: {
-    externalDir: true,
-  },
+    externalDir: true},
   // Disable ESLint during build
   eslint: {
-    ignoreDuringBuilds: true,
-  },
+    ignoreDuringBuilds: true},
   // Disable TypeScript type checking during build
   typescript: {
-    ignoreBuildErrors: true,
-  },
+    ignoreBuildErrors: true},
   reactStrictMode: true,
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'placehold.co',
-      },
-    ],
-  },
+        hostname: 'placehold.co'}]},
   async headers() {
     return [
       {
@@ -29,23 +23,16 @@ const nextConfig = {
         headers: [
           {
             key: 'X-Frame-Options',
-            value: 'DENY',
-          },
+            value: 'DENY'},
           {
             key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
+            value: 'nosniff'},
           {
             key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
-          },
+            value: 'strict-origin-when-cross-origin'},
           {
             key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
-        ],
-      },
-    ];
+            value: '1; mode=block'}]}];
   },
   // Handle Node.js specific modules for client-side
   webpack: (config, { isServer }) => {
@@ -63,12 +50,10 @@ const nextConfig = {
         http: false,
         https: false,
         zlib: false,
-        querystring: false,
-      };
+        querystring: false};
     }
 
     return config;
-  },
-};
+  }};
 
 module.exports = nextConfig;

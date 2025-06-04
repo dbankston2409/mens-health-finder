@@ -138,8 +138,7 @@ export default function BlogPostPage({ post, relatedPosts }: BlogPostPageProps) 
 export const getStaticPaths: GetStaticPaths = async () => {
   // Generate paths for all blog posts
   const paths = mockBlogPosts.map((post) => ({
-    params: { slug: post.slug },
-  }));
+    params: { slug: post.slug }}));
 
   return {
     paths,
@@ -167,7 +166,5 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   return {
     props: {
       post: post || null,
-      relatedPosts,
-    },
-  };
+      relatedPosts}};
 };

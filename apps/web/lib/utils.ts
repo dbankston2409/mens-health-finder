@@ -212,8 +212,7 @@ export const stateMap: Record<string, string> = {
   'WV': 'West Virginia',
   'WI': 'Wisconsin',
   'WY': 'Wyoming',
-  'DC': 'District of Columbia',
-};
+  'DC': 'District of Columbia'};
 
 /**
  * Map of service category IDs to full service names

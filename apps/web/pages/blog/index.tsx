@@ -125,7 +125,5 @@ export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {
       posts: remainingPosts,
-      featuredPost,
-    },
-  };
+      featuredPost}};
 };

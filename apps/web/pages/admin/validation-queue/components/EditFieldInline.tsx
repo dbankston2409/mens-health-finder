@@ -18,8 +18,7 @@ const EditFieldInline: React.FC<EditFieldInlineProps> = ({
   type = 'text',
   placeholder = 'Enter value',
   disabled = false,
-  className = '',
-}) => {
+  className = ''}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentValue, setCurrentValue] = useState(value);
   const inputRef = useRef<HTMLInputElement>(null);

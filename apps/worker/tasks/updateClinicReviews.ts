@@ -2,7 +2,7 @@ const reviewIntegration = require('../utils/reviewIntegration.js');
 
 export interface ReviewUpdateTaskConfig {
   enableGoogleReviews?: boolean;
-  enableYelpReviews?: boolean;
+  enable
   maxReviewsPerSource?: number;
   rateLimitMs?: number;
   clinicIds?: string[];
@@ -29,8 +29,7 @@ export async function updateClinicReviews(config: ReviewUpdateTaskConfig): Promi
     // Log the configuration
     console.log('Review Update Configuration:');
     console.log(`  Enable Google Reviews: ${config.enableGoogleReviews ?? true}`);
-    console.log(`  Enable Yelp Reviews: ${config.enableYelpReviews ?? true}`);
-    console.log(`  Max Reviews per Source: ${config.maxReviewsPerSource ?? 10}`);
+    console.log(`  Enable 
     console.log(`  Rate Limit: ${config.rateLimitMs ?? 1000}ms`);
     console.log(`  Batch Size: ${config.batchSize ?? 50}`);
     console.log(`  Logging Enabled: ${config.enableLogging ?? true}`);
@@ -55,8 +54,7 @@ export async function updateClinicReviews(config: ReviewUpdateTaskConfig): Promi
     // Prepare configuration for review integration
     const integrationConfig = {
       enableGoogleReviews: config.enableGoogleReviews ?? true,
-      enableYelpReviews: config.enableYelpReviews ?? true,
-      maxReviewsPerSource: config.maxReviewsPerSource ?? 10,
+      enable,
       rateLimitMs: config.rateLimitMs ?? 1000,
       clinicIds: config.clinicIds || []
     };
@@ -150,7 +148,7 @@ export async function executeReviewUpdateCommand(args: string[]) {
       case '--no-google':
         config.enableGoogleReviews = false;
         break;
-      case '--no-yelp':
+      case '
         config.enableYelpReviews = false;
         break;
       case '--quiet':
@@ -187,5 +185,5 @@ export async function executeReviewUpdateCommand(args: string[]) {
 // Example usage:
 // npm run worker review-update --discovery-session session_123456789
 // npm run worker review-update --clinic-ids clinic1,clinic2,clinic3 --max-reviews 20
-// npm run worker review-update --discovery-session session_123 --no-yelp --rate-limit 2000
+// npm run worker review-update --discovery-session session_123 
 // npm run worker review-update --clinic-ids clinic1 --batch-size 10 --quiet

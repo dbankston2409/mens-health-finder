@@ -24,9 +24,7 @@ if (!admin.apps.length) {
     credential: admin.credential.cert({
       projectId: process.env.FIREBASE_PROJECT_ID,
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    }),
-  });
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')})});
   
   firestore = admin.firestore();
 } else {
@@ -155,13 +153,10 @@ async function fetchGoogleReviews(clinicId, placesId) {
  * @param {string} yelpBusinessId - The Yelp business ID
  * @returns {Promise<Object>} - Reviews and success status
  */
-async function fetchYelpReviews(clinicId, yelpBusinessId) {
-  if (!process.env.YELP_API_KEY) {
-    return { success: false, error: 'Yelp API key not found' };
+async function ;
   }
   
-  if (!yelpBusinessId) {
-    return { success: false, error: 'No Yelp business ID provided' };
+  ;
   }
   
   try {
@@ -169,7 +164,7 @@ async function fetchYelpReviews(clinicId, yelpBusinessId) {
     
     const response = await axios.get(url, {
       headers: {
-        Authorization: `Bearer ${process.env.YELP_API_KEY}`
+        Authorization: `Bearer ${process.env.
       }
     });
     
@@ -182,7 +177,7 @@ async function fetchYelpReviews(clinicId, yelpBusinessId) {
     // Also fetch the business to get the rating and review count
     const businessResponse = await axios.get(`https://api.yelp.com/v3/businesses/${yelpBusinessId}`, {
       headers: {
-        Authorization: `Bearer ${process.env.YELP_API_KEY}`
+        Authorization: `Bearer ${process.env.
       }
     });
     
@@ -405,21 +400,7 @@ async function fetchAllReviews(clinicId, externalIds) {
   }
   
   // Fetch Yelp reviews if we have a Yelp Business ID
-  if (externalIds.yelpBusinessId) {
-    results.yelp = await fetchYelpReviews(clinicId, externalIds.yelpBusinessId);
-    
-    // Respect rate limits
-    await sleep(1000);
-  }
-  
-  // Fetch Healthgrades reviews if we have a URL
-  if (externalIds.healthgradesUrl) {
-    results.healthgrades = await fetchHealthgradesReviews(clinicId, externalIds.healthgradesUrl);
-    
-    // Respect rate limits
-    await sleep(1000);
-  }
-  
+
   // Update overall metrics
   const updatedMetrics = await updateClinicReviewMetrics(clinicId);
   
@@ -472,21 +453,14 @@ async function refreshAllClinicsReviews(batchSize = 10) {
         results.processedClinics++;
         
         // Skip if no external IDs
-        if (!clinic.externalIds && 
-            !clinic.googlePlacesId && 
-            !clinic.yelpBusinessId && 
-            !clinic.healthgradesUrl) {
-          console.log(`Skipping clinic ${clinic.id} (${clinic.name}): No external IDs`);
+         (${clinic.name}): No external IDs`);
           results.skippedClinics++;
           return;
         }
         
         // Combine all possible external ID locations
         const externalIds = {
-          googlePlacesId: clinic.externalIds?.googlePlacesId || clinic.googlePlacesId,
-          yelpBusinessId: clinic.externalIds?.yelpBusinessId || clinic.yelpBusinessId,
-          healthgradesUrl: clinic.externalIds?.healthgradesUrl || clinic.healthgradesUrl
-        };
+          googlePlacesId: clinic.externalIds?.googlePlacesId || clinic.googlePlacesId};
         
         console.log(`Fetching reviews for ${clinic.id} (${clinic.name})...`);
         
@@ -561,16 +535,10 @@ async function refreshClinicReviews(clinicId) {
     
     // Combine all possible external ID locations
     const externalIds = {
-      googlePlacesId: clinic.externalIds?.googlePlacesId || clinic.googlePlacesId,
-      yelpBusinessId: clinic.externalIds?.yelpBusinessId || clinic.yelpBusinessId,
-      healthgradesUrl: clinic.externalIds?.healthgradesUrl || clinic.healthgradesUrl
-    };
+      googlePlacesId: clinic.externalIds?.googlePlacesId || clinic.googlePlacesId};
     
     // Skip if no external IDs
-    if (!externalIds.googlePlacesId && 
-        !externalIds.yelpBusinessId && 
-        !externalIds.healthgradesUrl) {
-      console.log(`Skipping clinic ${clinic.id} (${clinic.name}): No external IDs`);
+     (${clinic.name}): No external IDs`);
       return { success: false, error: 'No external IDs found for this clinic' };
     }
     
@@ -643,9 +611,4 @@ if (require.main === module) {
 
 module.exports = {
   fetchGoogleReviews,
-  fetchYelpReviews,
-  fetchHealthgradesReviews,
-  fetchAllReviews,
-  refreshClinicReviews,
-  refreshAllClinicsReviews
-};
+  ;

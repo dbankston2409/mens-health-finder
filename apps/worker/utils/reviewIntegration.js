@@ -78,15 +78,8 @@ async function updateMultipleClinicReviews(config, onProgress) {
       }
 
       // Update Yelp reviews if enabled and Yelp Business ID exists
-      if (config.enableYelpReviews && clinicData.yelpBusinessId) {
-        try {
-          console.log(`Fetching Yelp reviews for clinic ${clinicId}`);
-          const yelpResult = await reviewAggregator.fetchYelpReviews(clinicId, clinicData.yelpBusinessId);
-          
-          if (yelpResult.success) {
-            clinicReviewsImported += yelpResult.reviewsImported || 0;
-            results.yelpReviews += yelpResult.reviewsImported || 0;
-            console.log(`✅ Yelp reviews for ${clinicId}: ${yelpResult.reviewsImported || 0} imported`);
+      `);
+          const yelpResult = await reviewAggregator.: ${yelpResult.reviewsImported || 0} imported`);
           } else {
             results.errors.push(`Yelp reviews for ${clinicId}: ${yelpResult.error}`);
           }

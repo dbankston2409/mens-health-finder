@@ -7,8 +7,7 @@ import {
   ExclamationCircleIcon, 
   GlobeAltIcon,
   DevicePhoneMobileIcon,
-  ArrowTrendingUpIcon,
-} from '@heroicons/react/24/outline';
+  ArrowTrendingUpIcon} from '@heroicons/react/24/outline';
 
 interface PrintableSEOReportProps {
   clinicId: string;

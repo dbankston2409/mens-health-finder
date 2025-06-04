@@ -173,15 +173,13 @@ export default function CategoryPage({ categoryInfo, statesByClinicCount }: Cate
 export const getStaticPaths: GetStaticPaths = async () => {
   // Generate paths for all service categories using the full name format
   const paths = serviceCategories.map((category) => ({
-    params: { category: getServiceSlug(category.id) },
-  }));
+    params: { category: getServiceSlug(category.id) }}));
 
   return {
     paths,
     // Use fallback: 'blocking' so that if we add more categories later,
     // they'll be generated at request time
-    fallback: 'blocking',
-  };
+    fallback: 'blocking'};
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
@@ -198,8 +196,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   // If no matching category, return 404
   if (!categoryData) {
     return {
-      notFound: true,
-    };
+      notFound: true};
   }
   
   // Filter clinics by this category
@@ -213,8 +210,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     state,
     stateSlug: getStateSlug(state),
     fullName: getStateFullName(state),
-    count: clinics.length,
-  }))
+    count: clinics.length}))
   .sort((a, b) => b.count - a.count);
 
   return {
@@ -222,11 +218,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       categoryInfo: {
         id: getServiceSlug(categoryData.id), // Use the full service name format
         title: categoryData.title,
-        description: categoryData.description,
-      },
-      statesByClinicCount,
-    },
+        description: categoryData.description},
+      statesByClinicCount},
     // Revalidate this page every day (in seconds)
-    revalidate: 86400,
-  };
+    revalidate: 86400};
 };
