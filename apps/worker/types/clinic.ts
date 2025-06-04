@@ -23,6 +23,7 @@ export interface ClinicInput {
   zip: string;
   phone: string;
   website: string;
+  email?: string;
   services: string[];
   package: 'free' | 'basic' | 'premium';
   status: 'active' | 'paused' | 'inactive';

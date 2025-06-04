@@ -58,9 +58,9 @@ async function generateWithClaude(
   const serviceDetails = buildServiceDetails(servicesByCategory);
   
   // Extract unique value propositions
-  const specializations = scrapedData.additionalInfo?.specializations || [];
-  const acceptsInsurance = scrapedData.additionalInfo?.acceptsInsurance || false;
-  const hasFinancing = scrapedData.additionalInfo?.hasFinancing || false;
+  const specializations = scrapedData.businessInfo?.specializations || [];
+  const acceptsInsurance = false; // Insurance info not collected per design
+  const hasFinancing = false; // Financing info not collected per design
   
   const prompt = `You are an expert medical copywriter creating SEO-optimized content for men's health clinics. 
 
@@ -161,9 +161,7 @@ function buildServiceDetails(servicesByCategory: Map<string, ScrapedService[]>):
       details += `\n**${category}:**\n`;
       services.forEach(service => {
         details += `- Found on website: "${service.context || service.service}"\n`;
-        if (service.price) {
-          details += `  - Pricing: ${service.price}\n`;
-        }
+        // Note: Pricing information excluded per design
         if (service.details && service.details.length > 0) {
           details += `  - Details: ${service.details.join(', ')}\n`;
         }
@@ -224,13 +222,11 @@ export function generateServiceBasedFAQs(
     });
   }
   
-  // Insurance/Payment FAQ
-  if (clinic.scrapedData?.additionalInfo?.acceptsInsurance) {
-    faqs.push({
-      question: `Does ${clinic.name} accept insurance?`,
-      answer: `Yes, we work with many insurance providers for covered services. Our team can verify your benefits and explain coverage options during your consultation. We also offer self-pay options and financing for treatments not covered by insurance.`
-    });
-  }
+  // Insurance/Payment FAQ (generic since we don't collect specific insurance info)
+  faqs.push({
+    question: `Does ${clinic.name} accept insurance?`,
+    answer: `Please contact ${clinic.name} directly to discuss insurance coverage and payment options. Our team can verify your benefits and explain coverage options during your consultation. We also offer self-pay options for treatments not covered by insurance.`
+  });
   
   // Location/Service Area FAQ
   faqs.push({

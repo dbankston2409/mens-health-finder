@@ -210,11 +210,11 @@ export class EnhancedClinicWebsiteScraper {
       
       // Extract services
       const pageText = $('body').text();
-      const extractedServices = this.extractServicesFromPage($, pageText);
+      const extractedServices = this.extractServicesFromPage($ as any, pageText);
       services.push(...extractedServices);
       
       // Extract business value information
-      const extractedBusinessInfo = this.extractBusinessInfo($, pageText);
+      const extractedBusinessInfo = this.extractBusinessInfo($ as any, pageText);
       Object.assign(businessInfo, extractedBusinessInfo);
       
       return { services, businessInfo, html };

@@ -107,7 +107,7 @@ export class TreatmentExtractor {
     }
     
     // Extract from specific HTML elements
-    this.extractFromElements($, treatments);
+    this.extractFromElements($ as any, treatments);
     
     // Convert to array and sort by confidence/frequency
     const treatmentArray = Array.from(treatments.values())

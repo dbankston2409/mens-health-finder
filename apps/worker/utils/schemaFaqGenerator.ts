@@ -100,9 +100,7 @@ export function generateStructuredFAQs(
     question: `How do I schedule a consultation at ${clinic.name}?`,
     answer: `To schedule a consultation at ${clinic.name}, you can call us at ${
       clinic.phone
-    }${clinic.website ? `, visit our website at ${clinic.website}` : ''}${
-      clinic.email ? `, or email us at ${clinic.email}` : ''
-    }. Our team will help you schedule a convenient appointment time.`,
+    }${clinic.website ? ` or visit our website at ${clinic.website}` : ''}. Our team will help you schedule a convenient appointment time and answer any questions about our services.`,
     category: 'process',
     priority: 30
   });
