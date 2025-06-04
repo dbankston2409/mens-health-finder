@@ -24,7 +24,6 @@ export class ReviewUpdateService {
   
   constructor(config: ReviewUpdateConfig = {
     enableGoogleReviews: true,
-    enableYelpReviews: true,
     maxReviewsPerSource: 10,
     rateLimitMs: 1000
   }) {
@@ -39,7 +38,9 @@ export class ReviewUpdateService {
       clinicId,
       success: false,
       reviewsFound: 0,
-      reviewsImported: 0};
+      reviewsImported: 0,
+      sources: {}
+    };
 
     try {
       // Get clinic data
@@ -69,10 +70,7 @@ export class ReviewUpdateService {
         }
       }
 
-      // Update Yelp reviews if enabled and Yelp Business ID exists
-      ;
-        }
-      }
+      // Yelp reviews have been removed from the system
 
       // Update clinic metadata
       await this.updateClinicMetadata(clinicId);
@@ -98,11 +96,12 @@ export class ReviewUpdateService {
       const response = await fetch('/api/admin/update-reviews', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'},
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
           clinicIds,
           enableGoogle: this.config.enableGoogleReviews,
-          enableYelp: this.config.enableYelpReviews,
+          enableYelp: false, // Yelp has been removed
           rateLimitMs: this.config.rateLimitMs
         })
       });
@@ -124,8 +123,7 @@ export class ReviewUpdateService {
         reviewsFound: 0, // API doesn't return this detail
         reviewsImported: 0, // Will be filled from aggregate data
         sources: {
-          google: { found: 0, imported: 0 },
-          yelp: { found: 0, imported: 0 }
+          google: { found: 0, imported: 0 }
         }
       }));
 
@@ -145,7 +143,9 @@ export class ReviewUpdateService {
         success: false,
         reviewsFound: 0,
         reviewsImported: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'}));
+        error: error instanceof Error ? error.message : 'Unknown error',
+        sources: {}
+      }));
     }
   }
 
@@ -196,7 +196,6 @@ export class ReviewUpdateService {
     totalReviewsFound: number;
     totalReviewsImported: number;
     googleStats: { found: number; imported: number; errors: number };
-    yelpStats: { found: number; imported: number; errors: number };
     errors: string[];
   }> {
     const stats = {
@@ -205,7 +204,6 @@ export class ReviewUpdateService {
       totalReviewsFound: results.reduce((sum, r) => sum + r.reviewsFound, 0),
       totalReviewsImported: results.reduce((sum, r) => sum + r.reviewsImported, 0),
       googleStats: { found: 0, imported: 0, errors: 0 },
-      yelpStats: { found: 0, imported: 0, errors: 0 },
       errors: results.filter(r => r.error).map(r => `${r.clinicId}: ${r.error}`)
     };
 
@@ -215,7 +213,7 @@ export class ReviewUpdateService {
         stats.googleStats.imported += result.sources.google.imported;
         if (result.sources.google.error) stats.googleStats.errors++;
       }
-
+      
     });
 
     return stats;
@@ -236,20 +234,6 @@ export class ReviewUpdateService {
     };
   }
 
-  /**
-   * Fetch Yelp reviews using existing review aggregator
-   */
-  private async > {
-    // Note: In a real implementation, this would call the existing reviewAggregator.js
-    // via an API endpoint or shared service
-    console.log(`Would fetch Yelp reviews for business ID: ${businessId}`);
-    
-    // Return simulated result for now
-    return {
-      found: 3,
-      imported: Math.min(3, this.config.maxReviewsPerSource)
-    };
-  }
 
   /**
    * Update clinic metadata after review import
@@ -268,14 +252,12 @@ export class ReviewUpdateService {
       
       // Count by source
       const googleReviews = reviews.filter(r => r.source === 'google').length;
-      const yelpReviews = reviews.filter(r => r.source === 'yelp').length;
       
       // Update clinic document
       await updateDoc(doc(db, 'clinics', clinicId), {
         totalReviews,
         averageRating: Math.round(averageRating * 10) / 10, // Round to 1 decimal
         googleReviewCount: googleReviews,
-        yelpReviewCount: yelpReviews,
         lastReviewUpdate: new Date(),
         updatedAt: new Date()
       });

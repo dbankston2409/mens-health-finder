@@ -8,7 +8,7 @@ import MapSearchBar from '../components/MapSearchBar';
 import FilterBar from '../components/FilterBar';
 import ClinicCard from '../components/ClinicCard';
 import MobileMapToggle from '../components/MobileMapToggle';
-import LocationPromptModal from '../components/LocationPromptModal';
+import ChangeLocationModal from '../components/ChangeLocationModal';
 import useGeoSearch, { useUserLocation } from '../utils/hooks/useGeoSearch';
 
 // Import types
@@ -452,12 +452,20 @@ const SearchPage: React.FC = () => {
         </div>
 
         {/* Location Prompt Modal */}
-        <LocationPromptModal
+        {showLocationModal && (
+          <ChangeLocationModal
           isOpen={showLocationModal}
           onClose={() => setShowLocationModal(false)}
-          onLocationAccepted={handleLocationAccepted}
-          onLocationDenied={handleLocationDenied}
+          onLocationChanged={(newLocation) => {
+            handleLocationAccepted({
+              lat: newLocation.lat,
+              lng: newLocation.lng,
+              city: newLocation.city,
+              state: newLocation.state
+            });
+          }}
         />
+        )}
       </main>
     </>
   );

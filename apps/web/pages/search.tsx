@@ -5,8 +5,7 @@ import { useRouter } from 'next/router';
 import { Clinic, ClinicLocation, TierCountsFlexible, ClinicFilter } from '../types';
 import TierBadge from '../components/TierBadge';
 import dynamic from 'next/dynamic';
-import { geocodeCityState, reverseGeocode } from '../components/Map';
-import { createClinicUrl } from '../components/Map';
+// Remove Map imports - these functions don't exist in Map component
 import { getServiceSlug } from '../lib/utils';
 import SearchResultsList from '../components/SearchResultsList';
 import { useAutoLocation } from '../hooks/useAutoLocation';

@@ -22,7 +22,7 @@ const Map = dynamic(() => import('../../../../components/Map'), {
 });
 
 // Import our helper function for creating clinic URLs
-import { createClinicUrl } from '../../../../components/Map';
+import { createClinicUrlPath } from '../../../../lib/utils';
 
 interface CityPageProps {
   categoryInfo: {

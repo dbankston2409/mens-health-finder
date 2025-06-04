@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { createClinicUrl, reverseGeocode } from '../components/Map';
+// Remove Map imports - these functions don't exist in Map component
 import { getServiceSlug } from '../lib/utils';
 import { mockBlogPosts, mockClinics, BlogPost } from '../lib/mockData';
 import LocationAwareSearch from '../components/LocationAwareSearch';
