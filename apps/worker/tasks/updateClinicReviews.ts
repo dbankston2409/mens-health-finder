@@ -2,7 +2,7 @@ const reviewIntegration = require('../utils/reviewIntegration.js');
 
 export interface ReviewUpdateTaskConfig {
   enableGoogleReviews?: boolean;
-  enable
+  enableYelpReviews?: boolean;
   maxReviewsPerSource?: number;
   rateLimitMs?: number;
   clinicIds?: string[];
@@ -29,7 +29,7 @@ export async function updateClinicReviews(config: ReviewUpdateTaskConfig): Promi
     // Log the configuration
     console.log('Review Update Configuration:');
     console.log(`  Enable Google Reviews: ${config.enableGoogleReviews ?? true}`);
-    console.log(`  Enable 
+    console.log(`  Enable Yelp Reviews: ${config.enableYelpReviews ?? false}`);
     console.log(`  Rate Limit: ${config.rateLimitMs ?? 1000}ms`);
     console.log(`  Batch Size: ${config.batchSize ?? 50}`);
     console.log(`  Logging Enabled: ${config.enableLogging ?? true}`);
@@ -54,7 +54,7 @@ export async function updateClinicReviews(config: ReviewUpdateTaskConfig): Promi
     // Prepare configuration for review integration
     const integrationConfig = {
       enableGoogleReviews: config.enableGoogleReviews ?? true,
-      enable,
+      enableYelpReviews: config.enableYelpReviews ?? false,
       rateLimitMs: config.rateLimitMs ?? 1000,
       clinicIds: config.clinicIds || []
     };
@@ -106,12 +106,12 @@ export async function updateClinicReviews(config: ReviewUpdateTaskConfig): Promi
   }
 }
 
-// CLI command interface
-export async function executeReviewUpdateCommand(args: string[]) {
+// CLI interface for running this task
+export async function runReviewUpdateCLI(args: string[]) {
   const config: ReviewUpdateTaskConfig = {
     enableGoogleReviews: true,
-    enableYelpReviews: true,
-    maxReviewsPerSource: 10,
+    enableYelpReviews: false,
+    maxReviewsPerSource: 100,
     rateLimitMs: 1000,
     batchSize: 50,
     enableLogging: true
@@ -120,35 +120,30 @@ export async function executeReviewUpdateCommand(args: string[]) {
   // Parse command line arguments
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    const nextArg = args[i + 1];
-
+    
     switch (arg) {
-      case '--clinic-ids':
-        if (nextArg) {
-          config.clinicIds = nextArg.split(',').map(id => id.trim());
-        }
-        i++;
-        break;
       case '--discovery-session':
-        if (nextArg) config.discoverySessionId = nextArg;
-        i++;
+        config.discoverySessionId = args[++i];
+        break;
+      case '--clinic-ids':
+        config.clinicIds = args[++i].split(',');
         break;
       case '--max-reviews':
-        if (nextArg) config.maxReviewsPerSource = parseInt(nextArg);
-        i++;
+        config.maxReviewsPerSource = parseInt(args[++i], 10);
         break;
       case '--rate-limit':
-        if (nextArg) config.rateLimitMs = parseInt(nextArg);
-        i++;
+        config.rateLimitMs = parseInt(args[++i], 10);
         break;
       case '--batch-size':
-        if (nextArg) config.batchSize = parseInt(nextArg);
-        i++;
+        config.batchSize = parseInt(args[++i], 10);
         break;
       case '--no-google':
         config.enableGoogleReviews = false;
         break;
-      case '
+      case '--enable-yelp':
+        config.enableYelpReviews = true;
+        break;
+      case '--no-yelp':
         config.enableYelpReviews = false;
         break;
       case '--quiet':
@@ -185,5 +180,5 @@ export async function executeReviewUpdateCommand(args: string[]) {
 // Example usage:
 // npm run worker review-update --discovery-session session_123456789
 // npm run worker review-update --clinic-ids clinic1,clinic2,clinic3 --max-reviews 20
-// npm run worker review-update --discovery-session session_123 
+// npm run worker review-update --discovery-session session_123 --no-yelp
 // npm run worker review-update --clinic-ids clinic1 --batch-size 10 --quiet

@@ -1,4 +1,4 @@
-import { ClinicWebsiteScraper } from './websiteScraper';
+import { EnhancedClinicWebsiteScraper } from './enhancedWebsiteScraper';
 import { generateEnhancedSeoContent, generateServiceBasedFAQs } from './enhancedSeoGenerator';
 import { ClinicInput } from '../types/clinic';
 import FirebaseAdmin from '../lib/firebase-admin';
@@ -12,11 +12,18 @@ export interface EnrichmentResult {
   clinicId: string;
   success: boolean;
   servicesFound: number;
+  treatmentsFound: number;
   seoContentGenerated: boolean;
   faqsGenerated: boolean;
   error?: string;
   enrichedData?: {
     verifiedServices: string[];
+    searchableTerms?: string[];  // Pre-processed terms for Firestore search
+    treatments?: Array<{
+      term: string;
+      type: string;
+      confidence: number;
+    }>;
     specializations?: string[];
     seoContent?: string;
     faqs?: Array<{question: string; answer: string}>;
@@ -28,11 +35,11 @@ export interface EnrichmentResult {
 }
 
 export class ClinicEnrichmentPipeline {
-  private scraper: ClinicWebsiteScraper;
+  private scraper: EnhancedClinicWebsiteScraper;
   private db: FirebaseFirestore.Firestore;
 
   constructor() {
-    this.scraper = new ClinicWebsiteScraper();
+    this.scraper = new EnhancedClinicWebsiteScraper();
     this.db = FirebaseAdmin.firestore();
   }
 
@@ -44,6 +51,7 @@ export class ClinicEnrichmentPipeline {
       clinicId: clinic.id || '',
       success: false,
       servicesFound: 0,
+      treatmentsFound: 0,
       seoContentGenerated: false,
       faqsGenerated: false,
     };
@@ -65,7 +73,8 @@ export class ClinicEnrichmentPipeline {
       }
 
       result.servicesFound = scrapingResult.services.length;
-      console.log(`✅ Found ${result.servicesFound} services`);
+      result.treatmentsFound = scrapingResult.treatments?.treatments.length || 0;
+      console.log(`✅ Found ${result.servicesFound} services and ${result.treatmentsFound} treatments`);
 
       // Step 2: Generate enhanced SEO content
       console.log('📝 Generating enhanced SEO content...');
@@ -85,7 +94,13 @@ export class ClinicEnrichmentPipeline {
 
       result.enrichedData = {
         verifiedServices: Array.from(new Set(verifiedServices)), // Deduplicate
-        specializations: scrapingResult.additionalInfo?.specializations,
+        searchableTerms: scrapingResult.searchableTerms || [],
+        treatments: scrapingResult.treatments?.treatments.map(t => ({
+          term: t.term,
+          type: t.type,
+          confidence: t.confidence
+        })),
+        specializations: scrapingResult.treatments?.specialties || [],
         seoContent,
         faqs,
         scrapingDetails: {
@@ -137,6 +152,7 @@ export class ClinicEnrichmentPipeline {
     // Log summary
     const successful = results.filter(r => r.success).length;
     const totalServices = results.reduce((acc, r) => acc + r.servicesFound, 0);
+    const totalTreatments = results.reduce((acc, r) => acc + r.treatmentsFound, 0);
     
     console.log(`
 📊 Enrichment Summary:
@@ -144,7 +160,9 @@ export class ClinicEnrichmentPipeline {
 - Successful: ${successful}
 - Failed: ${results.length - successful}
 - Total services discovered: ${totalServices}
+- Total treatments found: ${totalTreatments}
 - Average services per clinic: ${(totalServices / successful).toFixed(1)}
+- Average treatments per clinic: ${(totalTreatments / successful).toFixed(1)}
     `);
 
     return results;
@@ -165,6 +183,12 @@ export class ClinicEnrichmentPipeline {
         ...enrichedData.verifiedServices
       ),
       
+      // Add searchable terms for fast querying
+      searchableTerms: enrichedData.searchableTerms || [],
+      
+      // Add detailed treatments found
+      treatments: enrichedData.treatments || [],
+      
       // Update SEO content
       'seoMeta.generatedContent': enrichedData.seoContent,
       'seoMeta.contentGeneratedAt': FirebaseAdmin.firestore.FieldValue.serverTimestamp(),
@@ -177,6 +201,7 @@ export class ClinicEnrichmentPipeline {
       enrichmentData: {
         lastEnriched: FirebaseAdmin.firestore.FieldValue.serverTimestamp(),
         servicesVerified: enrichedData.verifiedServices.length,
+        treatmentsFound: enrichedData.treatments?.length || 0,
         specializations: enrichedData.specializations,
         scrapingConfidence: enrichedData.scrapingDetails?.confidence,
         pagesAnalyzed: enrichedData.scrapingDetails?.pagesScraped,

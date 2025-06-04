@@ -147,10 +147,18 @@ export async function searchClinics(
           service.toLowerCase().includes(searchTermLower)
         )) return true;
         
+        // Check pre-processed searchable terms (includes treatments like BPC-157)
+        if (clinic.searchableTerms?.some(term => 
+          term.includes(searchTermLower)
+        )) return true;
+        
         // Check keywords
         if (clinic.seo?.keywords?.some(keyword => 
           keyword.toLowerCase().includes(searchTermLower)
         )) return true;
+        
+        // Check SEO description for matches
+        if (clinic.seo?.description?.toLowerCase().includes(searchTermLower)) return true;
         
         // No match
         return false;

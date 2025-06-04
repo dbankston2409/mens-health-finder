@@ -1,6 +1,7 @@
 import * as cheerio from 'cheerio';
 import fetch from 'node-fetch';
 import { URL } from 'url';
+import { treatmentExtractor, TreatmentExtractionResult } from './treatmentExtractor';
 
 /**
  * Enhanced website scraper focused on extracting valuable business information
@@ -107,6 +108,8 @@ export interface WebsiteScrapingResult {
   providerInfo?: string[];
   testimonialThemes?: string[];
   scrapedPages: string[];
+  treatments?: TreatmentExtractionResult;  // Add treatment extraction results
+  searchableTerms?: string[];  // Pre-processed terms for Firestore indexing
   error?: string;
 }
 
@@ -134,6 +137,7 @@ export class EnhancedClinicWebsiteScraper {
       const allServices: ScrapedService[] = [...homepageData.services];
       const businessInfo: BusinessInformation = this.mergeBusinessInfo(homepageData.businessInfo);
       const scrapedPages = [websiteUrl];
+      let allHtmlContent = homepageData.html || '';
       
       // Limit to 5 additional pages to be respectful
       for (const pageUrl of relevantPages.slice(0, 5)) {
@@ -142,6 +146,7 @@ export class EnhancedClinicWebsiteScraper {
           allServices.push(...pageData.services);
           this.mergeBusinessInfo(businessInfo, pageData.businessInfo);
           scrapedPages.push(pageUrl);
+          allHtmlContent += '\n' + (pageData.html || '');
           
           // Respectful delay between requests
           await new Promise(resolve => setTimeout(resolve, 1000));
@@ -150,6 +155,9 @@ export class EnhancedClinicWebsiteScraper {
       
       // Consolidate and deduplicate
       const consolidatedServices = this.consolidateServices(allServices);
+      
+      // Extract treatments from all collected HTML
+      const treatments = treatmentExtractor.extractTreatments(allHtmlContent);
       
       // Extract additional valuable information
       const testimonialThemes = await this.extractTestimonialThemes(websiteUrl);
@@ -163,6 +171,8 @@ export class EnhancedClinicWebsiteScraper {
         providerInfo,
         testimonialThemes,
         scrapedPages,
+        treatments,
+        searchableTerms: treatments.searchableTerms,
       };
       
     } catch (error) {
@@ -178,7 +188,7 @@ export class EnhancedClinicWebsiteScraper {
     }
   }
 
-  private async scrapePage(pageUrl: string): Promise<{ services: ScrapedService[], businessInfo: BusinessInformation }> {
+  private async scrapePage(pageUrl: string): Promise<{ services: ScrapedService[], businessInfo: BusinessInformation, html?: string }> {
     try {
       const response = await fetch(pageUrl, { 
         headers: this.headers,
@@ -207,7 +217,7 @@ export class EnhancedClinicWebsiteScraper {
       const extractedBusinessInfo = this.extractBusinessInfo($, pageText);
       Object.assign(businessInfo, extractedBusinessInfo);
       
-      return { services, businessInfo };
+      return { services, businessInfo, html };
       
     } catch (error) {
       console.error(`Error scraping page ${pageUrl}:`, error);

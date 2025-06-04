@@ -3,7 +3,7 @@ import Link from 'next/link';
 import TierBadge from './TierBadge';
 import { convertTierToEnum } from '../lib/utils';
 import { Clinic, ClinicFilter } from '../types';
-import { queryClinics } from '../lib/api/clinicService';
+import { searchClinicsOptimized } from '../lib/optimizedSearch';
 import TrackedPhoneLink from './TrackedPhoneLink';
 import { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 import { useRouter } from 'next/router';
@@ -47,7 +47,12 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({ initialFilters, u
           return;
         }
         
-        const result = await queryClinics(filters, PAGE_SIZE, lastDoc || undefined);
+        // Add user location to filters if available
+        const searchFilters = userLocation ? 
+          { ...filters, lat: userLocation.lat, lng: userLocation.lng } : 
+          filters;
+        
+        const result = await searchClinicsOptimized(searchFilters, PAGE_SIZE, lastDoc);
         
         // If this is a new search (lastDoc is null), replace the current results
         // Otherwise, append the new results
