@@ -1,5 +1,4 @@
-// Note: This task requires web app integration for full functionality
-// For now, we'll provide a CLI interface that logs the configuration
+const reviewIntegration = require('../utils/reviewIntegration.js');
 
 export interface ReviewUpdateTaskConfig {
   enableGoogleReviews?: boolean;
@@ -44,19 +43,53 @@ export async function updateClinicReviews(config: ReviewUpdateTaskConfig): Promi
       console.log(`  Clinic IDs: ${config.clinicIds.length} specified`);
     }
 
-    // TODO: Implement actual review update orchestration when web app dependencies are available
-    console.log('Note: Full review update requires web app integration with existing reviewAggregator.js');
-    console.log('Use the web interface at /admin/discovery for complete functionality.');
-    console.log('Integration with existing review aggregator service is recommended.');
+    // Progress tracking
+    const onProgress = config.enableLogging 
+      ? (completed: number, total: number, current: string) => {
+          if (completed % 10 === 0 || completed === total) {
+            console.log(`Review update progress: ${completed}/${total} clinics completed. Current: ${current}`);
+          }
+        }
+      : undefined;
+
+    // Prepare configuration for review integration
+    const integrationConfig = {
+      enableGoogleReviews: config.enableGoogleReviews ?? true,
+      enableYelpReviews: config.enableYelpReviews ?? true,
+      maxReviewsPerSource: config.maxReviewsPerSource ?? 10,
+      rateLimitMs: config.rateLimitMs ?? 1000,
+      clinicIds: config.clinicIds || []
+    };
+
+    let results;
+
+    if (config.discoverySessionId) {
+      // Update reviews for discovered clinics
+      console.log('Updating reviews for discovered clinics...');
+      results = await reviewIntegration.updateDiscoveredClinicReviews(
+        config.discoverySessionId,
+        integrationConfig,
+        onProgress
+      );
+    } else if (config.clinicIds && config.clinicIds.length > 0) {
+      // Update reviews for specific clinics
+      console.log('Updating reviews for specified clinics...');
+      results = await reviewIntegration.updateMultipleClinicReviews(
+        integrationConfig,
+        onProgress
+      );
+    } else {
+      throw new Error('Either clinicIds or discoverySessionId must be provided');
+    }
     
     const duration = Date.now() - startTime;
     
     return {
       success: true,
-      totalClinics: config.clinicIds?.length || 0,
-      successfulUpdates: 0,
-      totalReviewsImported: 0,
-      errors: [],
+      totalClinics: results.totalClinics,
+      successfulUpdates: results.successful,
+      totalReviewsImported: results.totalReviewsImported,
+      errors: results.errors,
       duration
     };
 
