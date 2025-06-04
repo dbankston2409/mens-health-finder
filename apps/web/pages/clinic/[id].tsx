@@ -1,3 +1,4 @@
+import React from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -268,7 +269,7 @@ const ClinicProfile = () => {
   const hasCTAButton = tier === 'advanced';
 
   return (
-    <>
+    <React.Fragment>
       <Head>
         <title>
           {enhancedClinic.seoMeta?.title || `${enhancedClinic.name} | Men's Health Finder`}
@@ -638,7 +639,7 @@ const ClinicProfile = () => {
           )}
         </div>
       </main>
-    </>
+    </React.Fragment>
   );
 };
 
