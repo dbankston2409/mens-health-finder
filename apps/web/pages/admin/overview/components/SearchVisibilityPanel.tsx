@@ -67,16 +67,16 @@ const SearchVisibilityPanel: React.FC<SearchVisibilityPanelProps> = ({ data, loa
   const COLORS = ['#3B82F6', '#10B981', '#8B5CF6', '#EC4899', '#F59E0B', '#6366F1'];
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
+    <div className="bg-[#111111] rounded-2xl shadow-lg border border-[#222222] p-6">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center">
           <MagnifyingGlassIcon className="h-6 w-6 text-indigo-500 mr-2" />
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Search Visibility</h2>
+          <h2 className="text-xl font-semibold text-white">Search Visibility</h2>
         </div>
         
         <button 
           onClick={onRefresh}
-          className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+          className="text-gray-400 hover:text-gray-300"
           title="Refresh data"
         >
           <ArrowPathIcon className="h-5 w-5" />
@@ -85,15 +85,15 @@ const SearchVisibilityPanel: React.FC<SearchVisibilityPanelProps> = ({ data, loa
       
       {loading ? (
         <div className="space-y-6 animate-pulse">
-          <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+          <div className="h-20 bg-gray-800 rounded-lg"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-            <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+            <div className="h-64 bg-gray-800 rounded-lg"></div>
+            <div className="h-64 bg-gray-800 rounded-lg"></div>
           </div>
         </div>
       ) : !data ? (
         <div className="py-10 text-center">
-          <p className="text-gray-500 dark:text-gray-400">
+          <p className="text-gray-400">
             Failed to load search visibility data. Try refreshing.
           </p>
         </div>
@@ -105,27 +105,27 @@ const SearchVisibilityPanel: React.FC<SearchVisibilityPanelProps> = ({ data, loa
               <div className="text-sm text-indigo-700 dark:text-indigo-300 mb-1">
                 Total Search Impressions
               </div>
-              <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+              <div className="text-2xl font-semibold text-white">
                 {data.totalSearchImpressions.toLocaleString()}
               </div>
             </div>
             
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-              <div className="text-sm text-gray-700 dark:text-gray-300 mb-1 flex items-center">
+            <div className="bg-gray-800 rounded-lg p-4">
+              <div className="text-sm text-gray-300 mb-1 flex items-center">
                 <CursorArrowRaysIcon className="h-4 w-4 mr-1" />
                 <span>Click-Through Rate</span>
               </div>
-              <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+              <div className="text-2xl font-semibold text-white">
                 {(data.averageClicksPerSearch * 100).toFixed(1)}%
               </div>
             </div>
             
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-              <div className="text-sm text-gray-700 dark:text-gray-300 mb-1 flex items-center">
+            <div className="bg-gray-800 rounded-lg p-4">
+              <div className="text-sm text-gray-300 mb-1 flex items-center">
                 <MapPinIcon className="h-4 w-4 mr-1" />
                 <span>Top City</span>
               </div>
-              <div className="text-xl font-semibold text-gray-900 dark:text-white">
+              <div className="text-xl font-semibold text-white">
                 {data.topCitiesSearched && data.topCitiesSearched.length > 0 
                   ? data.topCitiesSearched[0].city
                   : 'N/A'}
@@ -137,7 +137,7 @@ const SearchVisibilityPanel: React.FC<SearchVisibilityPanelProps> = ({ data, loa
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
             {/* Top Search Terms */}
             <div>
-              <h3 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-4">Top Search Terms</h3>
+              <h3 className="text-md font-medium text-white mb-4">Top Search Terms</h3>
               
               {searchTermsData.length > 0 ? (
                 <div className="h-64 w-full">
@@ -169,15 +169,15 @@ const SearchVisibilityPanel: React.FC<SearchVisibilityPanelProps> = ({ data, loa
                   </ResponsiveContainer>
                 </div>
               ) : (
-                <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <p className="text-gray-500 dark:text-gray-400">No search terms data available</p>
+                <div className="flex items-center justify-center h-64 bg-gray-800 rounded-lg">
+                  <p className="text-gray-400">No search terms data available</p>
                 </div>
               )}
             </div>
             
             {/* Top Cities */}
             <div>
-              <h3 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-4">Top Cities</h3>
+              <h3 className="text-md font-medium text-white mb-4">Top Cities</h3>
               
               {citiesData.length > 0 ? (
                 <div className="h-64 w-full">
@@ -209,8 +209,8 @@ const SearchVisibilityPanel: React.FC<SearchVisibilityPanelProps> = ({ data, loa
                   </ResponsiveContainer>
                 </div>
               ) : (
-                <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <p className="text-gray-500 dark:text-gray-400">No city data available</p>
+                <div className="flex items-center justify-center h-64 bg-gray-800 rounded-lg">
+                  <p className="text-gray-400">No city data available</p>
                 </div>
               )}
             </div>
@@ -219,7 +219,7 @@ const SearchVisibilityPanel: React.FC<SearchVisibilityPanelProps> = ({ data, loa
           {/* Services Pie Chart (If Available) */}
           {servicesData.length > 0 && (
             <div>
-              <h3 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-4">Top Services</h3>
+              <h3 className="text-md font-medium text-white mb-4">Top Services</h3>
               <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
@@ -255,7 +255,7 @@ const SearchVisibilityPanel: React.FC<SearchVisibilityPanelProps> = ({ data, loa
           {/* External links */}
           <div className="mt-6 flex justify-end">
             <button 
-              className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+              className="text-sm text-blue-400 hover:underline"
               onClick={() => window.open('https://search.google.com/search-console', '_blank')}
             >
               View in Search Console

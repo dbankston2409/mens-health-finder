@@ -64,10 +64,10 @@ export default function WorkerControl() {
 
   if (!workerConfig) {
     return (
-      <div className="bg-white rounded-lg shadow p-6">
+      <div className="bg-[#111111] border border-[#222222] rounded-lg shadow-lg p-6">
         <div className="animate-pulse">
-          <div className="h-4 bg-gray-200 rounded w-1/4 mb-2"></div>
-          <div className="h-8 bg-gray-200 rounded w-1/2"></div>
+          <div className="h-4 bg-gray-800 rounded w-1/4 mb-2"></div>
+          <div className="h-8 bg-gray-800 rounded w-1/2"></div>
         </div>
       </div>
     );
@@ -76,19 +76,19 @@ export default function WorkerControl() {
   const isPaused = workerConfig.isPaused;
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-[#111111] border border-[#222222] rounded-lg shadow-lg p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3 className="text-lg font-semibold text-white">
             Background Worker Status
           </h3>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-gray-400 mt-1">
             Controls automated jobs for analytics, reports, and maintenance
           </p>
         </div>
         
         <div className="flex items-center space-x-4">
-          <div className={`flex items-center ${isPaused ? 'text-yellow-600' : 'text-green-600'}`}>
+          <div className={`flex items-center ${isPaused ? 'text-yellow-500' : 'text-green-500'}`}>
             {isPaused ? (
               <>
                 <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -111,7 +111,7 @@ export default function WorkerControl() {
             disabled={isUpdating}
             className={`px-4 py-2 rounded-md text-white font-medium transition-colors ${
               isUpdating 
-                ? 'bg-gray-400 cursor-not-allowed' 
+                ? 'bg-gray-700 cursor-not-allowed' 
                 : isPaused
                   ? 'bg-green-600 hover:bg-green-700'
                   : 'bg-yellow-600 hover:bg-yellow-700'
@@ -123,18 +123,18 @@ export default function WorkerControl() {
       </div>
 
       {error && (
-        <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
-          <p className="text-sm text-red-600">{error}</p>
+        <div className="mt-4 p-3 bg-red-900/20 border border-red-900/50 rounded-md">
+          <p className="text-sm text-red-400">{error}</p>
         </div>
       )}
 
       {workerConfig.schedules && (
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <h4 className="text-sm font-medium text-gray-900 mb-3">Job Schedules</h4>
+        <div className="mt-6 pt-6 border-t border-[#222222]">
+          <h4 className="text-sm font-medium text-white mb-3">Job Schedules</h4>
           <div className="grid grid-cols-2 gap-3">
             {Object.entries(workerConfig.schedules).map(([job, interval]) => (
               <div key={job} className="text-sm">
-                <span className="font-medium text-gray-700 capitalize">
+                <span className="font-medium text-gray-300 capitalize">
                   {job.replace(/([A-Z])/g, ' $1').trim()}:
                 </span>
                 <span className="text-gray-500 ml-1">

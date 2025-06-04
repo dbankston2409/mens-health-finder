@@ -32,13 +32,13 @@ const AdminOverviewPanel: React.FC = () => {
   
   return (
     <ProtectedRoute adminOnly>
-      <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+      <div className="min-h-screen bg-[#111111]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Admin Dashboard</h1>
-              <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-1">
+              <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
+              <div className="flex items-center text-sm text-gray-400 mt-1">
                 <span>Overview</span>
                 <span className="mx-2">•</span>
                 <span>{new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
@@ -51,8 +51,8 @@ const AdminOverviewPanel: React.FC = () => {
                 disabled={refreshing}
                 className={`flex items-center px-4 py-2 rounded-md ${
                   refreshing
-                    ? 'bg-gray-300 dark:bg-gray-700 text-gray-600 dark:text-gray-400 cursor-not-allowed'
-                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                    ? 'bg-gray-800 text-gray-400 cursor-not-allowed'
+                    : 'bg-primary text-white hover:bg-primary-dark'
                 }`}
               >
                 <ArrowPathIcon className={`h-5 w-5 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
@@ -60,15 +60,15 @@ const AdminOverviewPanel: React.FC = () => {
               </button>
               
               <div className="hidden md:flex space-x-2">
-                <Link href="/admin/crm" className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
+                <Link href="/admin/crm" className="px-4 py-2 bg-gray-800 border border-[#222222] rounded-md text-gray-200 hover:bg-gray-700">
                   CRM
                 </Link>
                 
-                <Link href="/admin/clients" className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
+                <Link href="/admin/clients" className="px-4 py-2 bg-gray-800 border border-[#222222] rounded-md text-gray-200 hover:bg-gray-700">
                   Client Management
                 </Link>
                 
-                <Link href="/admin/settings" className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
+                <Link href="/admin/settings" className="px-4 py-2 bg-gray-800 border border-[#222222] rounded-md text-gray-200 hover:bg-gray-700">
                   Settings
                 </Link>
               </div>

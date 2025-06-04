@@ -79,11 +79,11 @@ const TrafficAnalyticsPanel: React.FC<TrafficAnalyticsPanelProps> = ({ data, loa
   const searchTermsData = getSearchTermsData();
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
+    <div className="bg-[#111111] rounded-2xl shadow-lg border border-[#222222] p-6">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center">
           <ChartBarIcon className="h-6 w-6 text-blue-500 mr-2" />
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Traffic Analytics</h2>
+          <h2 className="text-xl font-semibold text-white">Traffic Analytics</h2>
         </div>
         
         <div className="flex items-center space-x-3">
@@ -93,7 +93,7 @@ const TrafficAnalyticsPanel: React.FC<TrafficAnalyticsPanelProps> = ({ data, loa
               className={`px-3 py-1.5 text-sm font-medium rounded-l-md ${
                 timeRange === '7d' 
                   ? 'bg-blue-600 text-white' 
-                  : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
+                  : 'bg-gray-800 text-gray-400 border border-[#222222] hover:bg-gray-700 hover:text-gray-300'
               }`}
               onClick={() => setTimeRange('7d')}
             >
@@ -104,7 +104,7 @@ const TrafficAnalyticsPanel: React.FC<TrafficAnalyticsPanelProps> = ({ data, loa
               className={`px-3 py-1.5 text-sm font-medium rounded-r-md ${
                 timeRange === '30d' 
                   ? 'bg-blue-600 text-white' 
-                  : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-t border-b border-r border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
+                  : 'bg-gray-800 text-gray-400 border-t border-b border-r border-[#222222] hover:bg-gray-700 hover:text-gray-300'
               }`}
               onClick={() => setTimeRange('30d')}
             >
@@ -114,7 +114,7 @@ const TrafficAnalyticsPanel: React.FC<TrafficAnalyticsPanelProps> = ({ data, loa
           
           <button 
             onClick={onRefresh}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+            className="text-gray-400 hover:text-gray-300"
             title="Refresh data"
           >
             <ArrowPathIcon className="h-5 w-5" />
@@ -124,16 +124,16 @@ const TrafficAnalyticsPanel: React.FC<TrafficAnalyticsPanelProps> = ({ data, loa
       
       {loading ? (
         <div className="space-y-6 animate-pulse">
-          <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-          <div className="h-72 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+          <div className="h-20 bg-gray-800 rounded-lg"></div>
+          <div className="h-72 bg-gray-800 rounded-lg"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-            <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+            <div className="h-64 bg-gray-800 rounded-lg"></div>
+            <div className="h-64 bg-gray-800 rounded-lg"></div>
           </div>
         </div>
       ) : !data ? (
         <div className="py-10 text-center">
-          <p className="text-gray-500 dark:text-gray-400">
+          <p className="text-gray-400">
             Failed to load traffic data. Try refreshing.
           </p>
         </div>
@@ -146,38 +146,38 @@ const TrafficAnalyticsPanel: React.FC<TrafficAnalyticsPanelProps> = ({ data, loa
                 <EyeIcon className="h-4 w-4 mr-1" />
                 <span>Total Clicks (30d)</span>
               </div>
-              <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+              <div className="text-2xl font-semibold text-white">
                 {data.totalClicksThisMonth.toLocaleString()}
               </div>
             </div>
             
             {data.bounceRateEstimate !== undefined && (
-              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                <div className="text-sm text-gray-700 dark:text-gray-300 mb-1">Bounce Rate</div>
-                <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+              <div className="bg-gray-800 rounded-lg p-4">
+                <div className="text-sm text-gray-300 mb-1">Bounce Rate</div>
+                <div className="text-2xl font-semibold text-white">
                   {data.bounceRateEstimate.toFixed(1)}%
                 </div>
               </div>
             )}
             
             {data.avgClicksPerDay !== undefined && (
-              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-                <div className="text-sm text-gray-700 dark:text-gray-300 mb-1 flex items-center">
+              <div className="bg-gray-800 rounded-lg p-4">
+                <div className="text-sm text-gray-300 mb-1 flex items-center">
                   <ArrowTrendingUpIcon className="h-4 w-4 mr-1" />
                   <span>Avg. Clicks/Day</span>
                 </div>
-                <div className="text-2xl font-semibold text-gray-900 dark:text-white">
+                <div className="text-2xl font-semibold text-white">
                   {data.avgClicksPerDay.toFixed(1)}
                 </div>
               </div>
             )}
             
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-              <div className="text-sm text-gray-700 dark:text-gray-300 mb-1 flex items-center">
+            <div className="bg-gray-800 rounded-lg p-4">
+              <div className="text-sm text-gray-300 mb-1 flex items-center">
                 <DocumentTextIcon className="h-4 w-4 mr-1" />
                 <span>Top Landing Page</span>
               </div>
-              <div className="text-lg font-semibold text-gray-900 dark:text-white truncate">
+              <div className="text-lg font-semibold text-white truncate">
                 {data.topPages && data.topPages.length > 0 
                   ? data.topPages[0].slug.split('/').pop() || data.topPages[0].slug
                   : 'N/A'}
@@ -187,7 +187,7 @@ const TrafficAnalyticsPanel: React.FC<TrafficAnalyticsPanelProps> = ({ data, loa
           
           {/* Traffic Over Time Chart */}
           <div className="mb-8">
-            <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4">Traffic Trends</h3>
+            <h3 className="text-lg font-medium text-white mb-4">Traffic Trends</h3>
             
             {chartData.length > 0 ? (
               <div className="h-72 w-full">
@@ -235,8 +235,8 @@ const TrafficAnalyticsPanel: React.FC<TrafficAnalyticsPanelProps> = ({ data, loa
                 </ResponsiveContainer>
               </div>
             ) : (
-              <div className="flex items-center justify-center h-72 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                <p className="text-gray-500 dark:text-gray-400">No traffic data available</p>
+              <div className="flex items-center justify-center h-72 bg-gray-800 rounded-lg">
+                <p className="text-gray-400">No traffic data available</p>
               </div>
             )}
           </div>
@@ -245,7 +245,7 @@ const TrafficAnalyticsPanel: React.FC<TrafficAnalyticsPanelProps> = ({ data, loa
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Top Pages */}
             <div>
-              <h3 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-4">Top Pages</h3>
+              <h3 className="text-md font-medium text-white mb-4">Top Pages</h3>
               
               {pagesChartData.length > 0 ? (
                 <div className="h-64 w-full">
@@ -277,15 +277,15 @@ const TrafficAnalyticsPanel: React.FC<TrafficAnalyticsPanelProps> = ({ data, loa
                   </ResponsiveContainer>
                 </div>
               ) : (
-                <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <p className="text-gray-500 dark:text-gray-400">No page data available</p>
+                <div className="flex items-center justify-center h-64 bg-gray-800 rounded-lg">
+                  <p className="text-gray-400">No page data available</p>
                 </div>
               )}
             </div>
             
             {/* Top Search Queries */}
             <div>
-              <h3 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-4">Top Search Queries</h3>
+              <h3 className="text-md font-medium text-white mb-4">Top Search Queries</h3>
               
               {searchTermsData.length > 0 ? (
                 <div className="h-64 w-full">
@@ -317,8 +317,8 @@ const TrafficAnalyticsPanel: React.FC<TrafficAnalyticsPanelProps> = ({ data, loa
                   </ResponsiveContainer>
                 </div>
               ) : (
-                <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <p className="text-gray-500 dark:text-gray-400">No search terms data available</p>
+                <div className="flex items-center justify-center h-64 bg-gray-800 rounded-lg">
+                  <p className="text-gray-400">No search terms data available</p>
                 </div>
               )}
             </div>

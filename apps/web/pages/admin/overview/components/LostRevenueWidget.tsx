@@ -74,17 +74,17 @@ const LostRevenueWidget: React.FC<LostRevenueWidgetProps> = ({ data, loading, on
   const filteredEvents = getFilteredEvents();
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
+    <div className="bg-[#111111] rounded-2xl shadow-lg border border-[#222222] p-6">
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center">
           <ExclamationTriangleIcon className="h-6 w-6 text-yellow-500 mr-2" />
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Lost Revenue</h2>
+          <h2 className="text-xl font-semibold text-white">Lost Revenue</h2>
         </div>
         
         <div className="flex items-center space-x-2">
           <button 
             onClick={onRefresh}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+            className="text-gray-400 hover:text-gray-300"
             title="Refresh data"
           >
             <ArrowPathIcon className="h-5 w-5" />
@@ -92,7 +92,7 @@ const LostRevenueWidget: React.FC<LostRevenueWidgetProps> = ({ data, loading, on
           
           <button 
             onClick={() => setExpanded(!expanded)}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+            className="text-gray-400 hover:text-gray-300"
             title={expanded ? "Collapse" : "Expand"}
           >
             {expanded ? <ChevronUpIcon className="h-5 w-5" /> : <ChevronDownIcon className="h-5 w-5" />}
@@ -102,15 +102,15 @@ const LostRevenueWidget: React.FC<LostRevenueWidgetProps> = ({ data, loading, on
       
       {loading ? (
         <div className="space-y-4 animate-pulse">
-          <div className="h-20 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+          <div className="h-20 bg-gray-800 rounded-lg"></div>
           <div className="grid grid-cols-2 gap-4">
-            <div className="h-16 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-            <div className="h-16 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+            <div className="h-16 bg-gray-800 rounded-lg"></div>
+            <div className="h-16 bg-gray-800 rounded-lg"></div>
           </div>
         </div>
       ) : !data ? (
         <div className="py-10 text-center">
-          <p className="text-gray-500 dark:text-gray-400">
+          <p className="text-gray-400">
             Failed to load lost revenue data. Try refreshing.
           </p>
         </div>
@@ -123,14 +123,14 @@ const LostRevenueWidget: React.FC<LostRevenueWidgetProps> = ({ data, loading, on
                 <BanknotesIcon className="h-5 w-5 text-red-600 dark:text-red-400 mr-2" />
                 <span className="text-sm font-medium text-red-600 dark:text-red-400">Lost This Month</span>
               </div>
-              <div className="text-xl font-semibold text-gray-900 dark:text-white mt-1">
+              <div className="text-xl font-semibold text-white mt-1">
                 {formatCurrency(data.lostThisMonth)}
               </div>
             </div>
             
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-              <div className="text-sm font-medium text-gray-700 dark:text-gray-300">Lost This Year</div>
-              <div className="text-xl font-semibold text-gray-900 dark:text-white mt-1">
+            <div className="bg-gray-800 rounded-lg p-4">
+              <div className="text-sm font-medium text-gray-300">Lost This Year</div>
+              <div className="text-xl font-semibold text-white mt-1">
                 {formatCurrency(data.lostThisYear)}
               </div>
             </div>
@@ -141,7 +141,7 @@ const LostRevenueWidget: React.FC<LostRevenueWidgetProps> = ({ data, loading, on
             <div className="mt-6 space-y-6">
               {/* Chart Section */}
               <div>
-                <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">Lost Revenue by Reason</h3>
+                <h3 className="text-sm font-medium text-gray-300 mb-4">Lost Revenue by Reason</h3>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Pie Chart */}
                   <div className="h-64">
@@ -187,7 +187,7 @@ const LostRevenueWidget: React.FC<LostRevenueWidgetProps> = ({ data, loading, on
               {/* Events Table Section */}
               <div>
                 <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Recent Lost Revenue Events</h3>
+                  <h3 className="text-sm font-medium text-gray-300">Recent Lost Revenue Events</h3>
                   
                   <div>
                     <select
@@ -204,13 +204,13 @@ const LostRevenueWidget: React.FC<LostRevenueWidgetProps> = ({ data, loading, on
                 </div>
                 
                 {filteredEvents.length === 0 ? (
-                  <div className="text-center py-6 bg-gray-50 dark:bg-gray-700/30 rounded-lg">
-                    <p className="text-gray-500 dark:text-gray-400">No lost revenue events to display</p>
+                  <div className="text-center py-6 bg-gray-800/30 rounded-lg">
+                    <p className="text-gray-400">No lost revenue events to display</p>
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                      <thead className="bg-gray-50 dark:bg-gray-700">
+                      <thead className="bg-gray-800">
                         <tr>
                           <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                             Clinic
@@ -229,13 +229,13 @@ const LostRevenueWidget: React.FC<LostRevenueWidgetProps> = ({ data, loading, on
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                      <tbody className="bg-[#111111] divide-y divide-gray-200 dark:divide-gray-700">
                         {filteredEvents.slice(0, 10).map((event) => (
                           <tr key={event.clinicId + toDate(event.date as any).getTime()} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
                               {event.clinicName}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
                               {formatCurrency(event.amount)}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
@@ -246,7 +246,7 @@ const LostRevenueWidget: React.FC<LostRevenueWidgetProps> = ({ data, loading, on
                                 {event.reason.charAt(0).toUpperCase() + event.reason.slice(1).replace(/_/g, ' ')}
                               </span>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
                               {formatDate(toDate(event.date as any))}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

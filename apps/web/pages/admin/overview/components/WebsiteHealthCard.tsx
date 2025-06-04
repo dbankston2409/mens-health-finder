@@ -115,16 +115,16 @@ const WebsiteHealthCard: React.FC<WebsiteHealthCardProps> = ({ onRefresh }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
+    <div className="bg-[#111111] rounded-2xl shadow-lg border border-[#222222] p-6">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center">
           <GlobeAltIcon className="h-6 w-6 text-purple-500 mr-2" />
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Website Health</h2>
+          <h2 className="text-xl font-semibold text-white">Website Health</h2>
         </div>
         
         <button 
           onClick={onRefresh}
-          className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+          className="text-gray-400 hover:text-gray-300"
           title="Refresh data"
         >
           <ArrowPathIcon className="h-5 w-5" />
@@ -135,13 +135,13 @@ const WebsiteHealthCard: React.FC<WebsiteHealthCardProps> = ({ onRefresh }) => {
       <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/30 dark:to-blue-900/30 rounded-lg p-4 mb-6 border border-purple-100 dark:border-purple-800">
         <div className="flex items-center justify-between">
           <div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">Status</div>
+            <div className="text-sm text-gray-400">Status</div>
             <div className="mt-1">{getStatusBadge(websiteHealthData.uptimeStatus)}</div>
           </div>
           
           <div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">Last Checked</div>
-            <div className="text-sm text-gray-700 dark:text-gray-300">{formatDate(websiteHealthData.lastChecked)}</div>
+            <div className="text-sm text-gray-400">Last Checked</div>
+            <div className="text-sm text-gray-300">{formatDate(websiteHealthData.lastChecked)}</div>
           </div>
         </div>
       </div>
@@ -149,23 +149,23 @@ const WebsiteHealthCard: React.FC<WebsiteHealthCardProps> = ({ onRefresh }) => {
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-4 mb-6">
         {/* Load Time */}
-        <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-          <div className="flex items-center text-gray-500 dark:text-gray-400 text-sm mb-1">
+        <div className="bg-gray-800 rounded-lg p-4">
+          <div className="flex items-center text-gray-400 text-sm mb-1">
             <ClockIcon className="h-4 w-4 mr-1" />
             <span>Average Load Time</span>
           </div>
-          <div className="text-xl font-semibold text-gray-900 dark:text-white">
+          <div className="text-xl font-semibold text-white">
             {websiteHealthData.avgLoadTime}s
           </div>
         </div>
         
         {/* Indexed Pages */}
-        <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
-          <div className="flex items-center text-gray-500 dark:text-gray-400 text-sm mb-1">
+        <div className="bg-gray-800 rounded-lg p-4">
+          <div className="flex items-center text-gray-400 text-sm mb-1">
             <MagnifyingGlassIcon className="h-4 w-4 mr-1" />
             <span>Indexed Pages</span>
           </div>
-          <div className="text-xl font-semibold text-gray-900 dark:text-white">
+          <div className="text-xl font-semibold text-white">
             {websiteHealthData.indexedPages}
           </div>
         </div>
@@ -190,24 +190,24 @@ const WebsiteHealthCard: React.FC<WebsiteHealthCardProps> = ({ onRefresh }) => {
       
       {/* Performance Scores */}
       <div>
-        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">Performance Scores</h3>
+        <h3 className="text-sm font-medium text-gray-300 mb-4">Performance Scores</h3>
         
         <div className="grid grid-cols-3 gap-4">
           {/* Speed Score */}
-          <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 flex flex-col items-center">
-            <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">Speed</div>
+          <div className="bg-gray-800 rounded-lg p-4 flex flex-col items-center">
+            <div className="text-sm text-gray-400 mb-2">Speed</div>
             {getScoreBadge(websiteHealthData.speedScore)}
           </div>
           
           {/* SEO Score */}
-          <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 flex flex-col items-center">
-            <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">SEO</div>
+          <div className="bg-gray-800 rounded-lg p-4 flex flex-col items-center">
+            <div className="text-sm text-gray-400 mb-2">SEO</div>
             {getScoreBadge(websiteHealthData.seoScore)}
           </div>
           
           {/* Accessibility Score */}
-          <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 flex flex-col items-center">
-            <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">Accessibility</div>
+          <div className="bg-gray-800 rounded-lg p-4 flex flex-col items-center">
+            <div className="text-sm text-gray-400 mb-2">Accessibility</div>
             {getScoreBadge(websiteHealthData.accessibilityScore)}
           </div>
         </div>

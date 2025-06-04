@@ -28,16 +28,16 @@ const TopClinicsCard: React.FC<TopClinicsCardProps> = ({ data, loading, onRefres
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
+    <div className="bg-[#111111] rounded-2xl shadow-lg border border-[#222222] p-6">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center">
           <StarIcon className="h-6 w-6 text-yellow-500 mr-2" />
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Top Clinics</h2>
+          <h2 className="text-xl font-semibold text-white">Top Clinics</h2>
         </div>
         
         <button 
           onClick={onRefresh}
-          className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+          className="text-gray-400 hover:text-gray-300"
           title="Refresh data"
         >
           <ArrowPathIcon className="h-5 w-5" />
@@ -47,12 +47,12 @@ const TopClinicsCard: React.FC<TopClinicsCardProps> = ({ data, loading, onRefres
       {loading ? (
         <div className="space-y-4 animate-pulse">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-16 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+            <div key={i} className="h-16 bg-gray-800 rounded-lg"></div>
           ))}
         </div>
       ) : !data || data.length === 0 ? (
         <div className="py-10 text-center">
-          <p className="text-gray-500 dark:text-gray-400">
+          <p className="text-gray-400">
             No clinic data available. Try refreshing.
           </p>
         </div>
@@ -61,51 +61,51 @@ const TopClinicsCard: React.FC<TopClinicsCardProps> = ({ data, loading, onRefres
           {data.map((clinic, index) => (
             <div 
               key={clinic.clinicId}
-              className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+              className="bg-gray-800 rounded-lg p-4 hover:bg-gray-700 transition"
             >
               <div className="flex items-start justify-between">
                 <div>
                   <div className="flex items-center">
-                    <div className="flex items-center justify-center h-6 w-6 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm font-semibold mr-2">
+                    <div className="flex items-center justify-center h-6 w-6 rounded-full bg-blue-900 text-blue-200 text-sm font-semibold mr-2">
                       {index + 1}
                     </div>
-                    <h3 className="text-md font-medium text-gray-900 dark:text-white">
+                    <h3 className="text-md font-medium text-white">
                       {clinic.clinicName}
                     </h3>
                   </div>
                   
-                  <div className="mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400">
+                  <div className="mt-1 flex items-center text-sm text-gray-400">
                     <MapPinIcon className="h-4 w-4 mr-1" />
                     <span>Location data not available</span>
                   </div>
                 </div>
                 
-                <Link href={`/admin/clinic/${clinic.clinicId}`} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                <Link href={`/admin/clinic/${clinic.clinicId}`} className="text-blue-400 hover:text-blue-300">
                   <ArrowTopRightOnSquareIcon className="h-5 w-5" />
                 </Link>
               </div>
               
               <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-                <div className="bg-white dark:bg-gray-800 rounded p-2">
-                  <div className="text-gray-500 dark:text-gray-400">Total Views</div>
-                  <div className="font-semibold text-gray-900 dark:text-white">{clinic.totalViews.toLocaleString()}</div>
+                <div className="bg-[#111111] rounded p-2">
+                  <div className="text-gray-400">Total Views</div>
+                  <div className="font-semibold text-white">{clinic.totalViews.toLocaleString()}</div>
                 </div>
                 
-                <div className="bg-white dark:bg-gray-800 rounded p-2">
-                  <div className="text-gray-500 dark:text-gray-400">Views This Month</div>
-                  <div className="font-semibold text-gray-900 dark:text-white">{clinic.viewsThisMonth.toLocaleString()}</div>
+                <div className="bg-[#111111] rounded p-2">
+                  <div className="text-gray-400">Views This Month</div>
+                  <div className="font-semibold text-white">{clinic.viewsThisMonth.toLocaleString()}</div>
                 </div>
                 
-                <div className="bg-white dark:bg-gray-800 rounded p-2 col-span-2">
-                  <div className="text-gray-500 dark:text-gray-400">Last Viewed</div>
-                  <div className="font-semibold text-gray-900 dark:text-white">{formatDate(clinic.lastViewed)}</div>
+                <div className="bg-[#111111] rounded p-2 col-span-2">
+                  <div className="text-gray-400">Last Viewed</div>
+                  <div className="font-semibold text-white">{formatDate(clinic.lastViewed)}</div>
                 </div>
               </div>
             </div>
           ))}
           
           <div className="text-center pt-2">
-            <Link href="/admin/crm" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+            <Link href="/admin/crm" className="text-sm text-blue-400 hover:underline">
               View all clinics
             </Link>
           </div>

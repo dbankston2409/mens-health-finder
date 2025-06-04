@@ -113,11 +113,11 @@ const NotificationsFeed: React.FC<NotificationsFeedProps> = ({ onRefresh }) => {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6">
+    <div className="bg-[#111111] rounded-2xl shadow-lg border border-[#222222] p-6">
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center">
           <BellIcon className="h-6 w-6 text-blue-500 mr-2" />
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Notifications</h2>
+          <h2 className="text-xl font-semibold text-white">Notifications</h2>
           {unreadCount > 0 && (
             <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
               {unreadCount} new
@@ -128,7 +128,7 @@ const NotificationsFeed: React.FC<NotificationsFeedProps> = ({ onRefresh }) => {
         <div className="flex items-center space-x-2">
           <button 
             onClick={onRefresh}
-            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+            className="text-gray-400 hover:text-gray-300"
             title="Refresh"
           >
             <ArrowPathIcon className="h-5 w-5" />
@@ -147,7 +147,7 @@ const NotificationsFeed: React.FC<NotificationsFeedProps> = ({ onRefresh }) => {
       
       <div className="space-y-3 max-h-96 overflow-y-auto">
         {notifications.length === 0 ? (
-          <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+          <div className="text-center py-8 text-gray-400">
             No notifications
           </div>
         ) : (
@@ -156,7 +156,7 @@ const NotificationsFeed: React.FC<NotificationsFeedProps> = ({ onRefresh }) => {
               key={notification.id} 
               className={`p-3 rounded-lg relative ${
                 notification.read 
-                  ? 'bg-gray-50 dark:bg-gray-700/50' 
+                  ? 'bg-gray-800' 
                   : 'bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 dark:border-blue-600'
               }`}
             >
@@ -166,12 +166,12 @@ const NotificationsFeed: React.FC<NotificationsFeedProps> = ({ onRefresh }) => {
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <p className={`text-sm ${notification.read ? 'text-gray-700 dark:text-gray-300' : 'text-gray-900 dark:text-white'}`}>
+                  <p className={`text-sm ${notification.read ? 'text-gray-300' : 'text-white'}`}>
                     {notification.message}
                   </p>
                   
                   <div className="mt-1 flex items-center">
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-xs text-gray-400">
                       {formatTimestamp(notification.timestamp)}
                     </span>
                     
