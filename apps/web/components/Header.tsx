@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 import { useAuth } from '../lib/contexts/authContext';
+import OnlineProvidersMenu from './OnlineProvidersMenu';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,6 +32,7 @@ const Header = () => {
           <Link href="/search" className="text-white hover:text-primary transition-colors text-sm font-medium">
             Find a Clinic
           </Link>
+          <OnlineProvidersMenu />
           <Link href="/about" className="text-white hover:text-primary transition-colors text-sm font-medium">
             About
           </Link>
@@ -75,6 +77,13 @@ const Header = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               Find a Clinic
+            </Link>
+            <Link 
+              href="/online-providers" 
+              className="text-white hover:text-primary transition-colors font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Online Providers
             </Link>
             <Link 
               href="/about" 
