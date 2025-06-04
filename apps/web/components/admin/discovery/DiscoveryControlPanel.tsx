@@ -107,12 +107,12 @@ const DiscoveryControlPanel: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'running': return 'text-green-600 bg-green-100';
-      case 'paused': return 'text-yellow-600 bg-yellow-100';
-      case 'completed': return 'text-blue-600 bg-blue-100';
-      case 'stopped': return 'text-gray-600 bg-gray-100';
-      case 'error': return 'text-red-600 bg-red-100';
-      default: return 'text-gray-600 bg-gray-100';
+      case 'running': return 'text-green-400 bg-green-900/30';
+      case 'paused': return 'text-yellow-400 bg-yellow-900/30';
+      case 'completed': return 'text-blue-400 bg-blue-900/30';
+      case 'stopped': return 'text-gray-400 bg-gray-800';
+      case 'error': return 'text-red-400 bg-red-900/30';
+      default: return 'text-gray-400 bg-gray-800';
     }
   };
 
@@ -121,19 +121,19 @@ const DiscoveryControlPanel: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Business Discovery System</h2>
-          <p className="text-gray-600">Systematically discover and import men's health clinics nationwide</p>
+          <h2 className="text-2xl font-bold text-white">Business Discovery System</h2>
+          <p className="text-gray-400">Systematically discover and import men's health clinics nationwide</p>
         </div>
         <div className="flex space-x-3">
           <button
             onClick={() => setIsConfigVisible(!isConfigVisible)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/80 transition-colors"
           >
             New Discovery
           </button>
           <button
             onClick={loadSavedSessions}
-            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+            className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
           >
             Refresh
           </button>
@@ -142,19 +142,19 @@ const DiscoveryControlPanel: React.FC = () => {
 
       {/* Configuration Panel */}
       {isConfigVisible && (
-        <div className="bg-white p-6 rounded-lg border border-gray-200">
-          <h3 className="text-lg font-semibold mb-4">Discovery Configuration</h3>
+        <div className="bg-[#0A0A0A] p-6 rounded-lg border border-[#222222]">
+          <h3 className="text-lg font-semibold mb-4 text-white">Discovery Configuration</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Target Clinic Count
               </label>
               <input
                 type="number"
                 value={config.targetClinicCount}
                 onChange={(e) => setConfig({...config, targetClinicCount: parseInt(e.target.value)})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-[#111111] border border-[#333333] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 min="100"
                 max="50000"
                 step="100"
@@ -162,13 +162,13 @@ const DiscoveryControlPanel: React.FC = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Search Strategy
               </label>
               <select
                 value={config.strategy}
                 onChange={(e) => setConfig({...config, strategy: e.target.value as any})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-[#111111] border border-[#333333] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 <option value="metro_first">Metro First</option>
                 <option value="nationwide">Nationwide</option>
@@ -177,13 +177,13 @@ const DiscoveryControlPanel: React.FC = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Search Niche
               </label>
               <select
                 value={config.searchNiche}
                 onChange={(e) => setConfig({...config, searchNiche: e.target.value as SearchNiche})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-[#111111] border border-[#333333] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 <option value="mensHealth">Men's Health</option>
                 <option value="urgentCare">Urgent Care</option>
@@ -192,28 +192,28 @@ const DiscoveryControlPanel: React.FC = () => {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Max Concurrent Searches
               </label>
               <input
                 type="number"
                 value={config.maxConcurrentSearches}
                 onChange={(e) => setConfig({...config, maxConcurrentSearches: parseInt(e.target.value)})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-[#111111] border border-[#333333] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 min="1"
                 max="10"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Auto-pause After (minutes)
               </label>
               <input
                 type="number"
                 value={config.pauseAfterMinutes || ''}
                 onChange={(e) => setConfig({...config, pauseAfterMinutes: e.target.value ? parseInt(e.target.value) : undefined})}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 bg-[#111111] border border-[#333333] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 min="5"
                 max="480"
                 placeholder="Optional"
@@ -227,9 +227,9 @@ const DiscoveryControlPanel: React.FC = () => {
                 type="checkbox"
                 checked={config.enableReviewImport}
                 onChange={(e) => setConfig({...config, enableReviewImport: e.target.checked})}
-                className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                className="rounded border-gray-600 text-primary bg-[#111111] focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
               />
-              <span className="ml-2 text-sm text-gray-700">Import Google & Yelp Reviews</span>
+              <span className="ml-2 text-sm text-gray-300">Import Google & Yelp Reviews</span>
             </label>
             
             <label className="flex items-center">
@@ -237,9 +237,9 @@ const DiscoveryControlPanel: React.FC = () => {
                 type="checkbox"
                 checked={config.enableSocialEnhancement}
                 onChange={(e) => setConfig({...config, enableSocialEnhancement: e.target.checked})}
-                className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                className="rounded border-gray-600 text-primary bg-[#111111] focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
               />
-              <span className="ml-2 text-sm text-gray-700">Extract Social Media & Enhanced Data</span>
+              <span className="ml-2 text-sm text-gray-300">Extract Social Media & Enhanced Data</span>
             </label>
           </div>
           
@@ -252,7 +252,7 @@ const DiscoveryControlPanel: React.FC = () => {
             </button>
             <button
               onClick={() => setIsConfigVisible(false)}
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
+              className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
             >
               Cancel
             </button>
@@ -262,9 +262,9 @@ const DiscoveryControlPanel: React.FC = () => {
 
       {/* Current Session Controls */}
       {progress && (
-        <div className="bg-white p-6 rounded-lg border border-gray-200">
+        <div className="bg-[#0A0A0A] p-6 rounded-lg border border-[#222222]">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold">Current Session</h3>
+            <h3 className="text-lg font-semibold text-white">Current Session</h3>
             <div className="flex space-x-2">
               {progress.isRunning && (
                 <button
@@ -293,40 +293,40 @@ const DiscoveryControlPanel: React.FC = () => {
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4">
             <div>
-              <div className="text-gray-600">Progress</div>
-              <div className="font-semibold">
+              <div className="text-gray-400">Progress</div>
+              <div className="font-semibold text-white">
                 {progress.completedGrids} / {progress.totalGrids} grids
               </div>
             </div>
             <div>
-              <div className="text-gray-600">Clinics Found</div>
-              <div className="font-semibold">{progress.clinicsFound}</div>
+              <div className="text-gray-400">Clinics Found</div>
+              <div className="font-semibold text-white">{progress.clinicsFound}</div>
             </div>
             <div>
-              <div className="text-gray-600">Clinics Imported</div>
-              <div className="font-semibold">{progress.clinicsImported}</div>
+              <div className="text-gray-400">Clinics Imported</div>
+              <div className="font-semibold text-white">{progress.clinicsImported}</div>
             </div>
             <div>
-              <div className="text-gray-600">Time Remaining</div>
-              <div className="font-semibold">
+              <div className="text-gray-400">Time Remaining</div>
+              <div className="font-semibold text-white">
                 {progress.estimatedTimeRemaining > 0 ? formatTimeRemaining(progress.estimatedTimeRemaining) : 'Calculating...'}
               </div>
             </div>
           </div>
           
-          <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
+          <div className="w-full bg-gray-700 rounded-full h-3 mb-2">
             <div 
-              className="bg-blue-600 h-3 rounded-full transition-all duration-300"
+              className="bg-primary h-3 rounded-full transition-all duration-300"
               style={{ width: `${(progress.completedGrids / progress.totalGrids) * 100}%` }}
             ></div>
           </div>
           
-          <div className="text-xs text-gray-600">
-            Status: <span className={`px-2 py-1 rounded-full text-xs font-medium ${progress.isRunning ? 'text-green-600 bg-green-100' : progress.isPaused ? 'text-yellow-600 bg-yellow-100' : 'text-gray-600 bg-gray-100'}`}>
+          <div className="text-xs text-gray-400">
+            Status: <span className={`px-2 py-1 rounded-full text-xs font-medium ${progress.isRunning ? 'text-green-400 bg-green-900/30' : progress.isPaused ? 'text-yellow-400 bg-yellow-900/30' : 'text-gray-400 bg-gray-800'}`}>
               {progress.isRunning ? 'Running' : progress.isPaused ? 'Paused' : 'Stopped'}
             </span>
             {progress.errors.length > 0 && (
-              <span className="ml-2 text-red-600">
+              <span className="ml-2 text-red-400">
                 ({progress.errors.length} error{progress.errors.length !== 1 ? 's' : ''})
               </span>
             )}
@@ -335,31 +335,31 @@ const DiscoveryControlPanel: React.FC = () => {
       )}
 
       {/* Discovery Map */}
-      <div className="bg-white p-6 rounded-lg border border-gray-200">
-        <h3 className="text-lg font-semibold mb-4">Discovery Map</h3>
+      <div className="bg-[#0A0A0A] p-6 rounded-lg border border-[#222222]">
+        <h3 className="text-lg font-semibold mb-4 text-white">Discovery Map</h3>
         <DiscoveryMap session={currentSession} />
       </div>
 
       {/* Saved Sessions */}
-      <div className="bg-white p-6 rounded-lg border border-gray-200">
-        <h3 className="text-lg font-semibold mb-4">Discovery Sessions</h3>
+      <div className="bg-[#0A0A0A] p-6 rounded-lg border border-[#222222]">
+        <h3 className="text-lg font-semibold mb-4 text-white">Discovery Sessions</h3>
         
         {savedSessions.length === 0 ? (
-          <p className="text-gray-600">No discovery sessions found. Start a new discovery to begin.</p>
+          <p className="text-gray-400">No discovery sessions found. Start a new discovery to begin.</p>
         ) : (
           <div className="space-y-3">
             {savedSessions.slice(0, 10).map((session) => (
-              <div key={session.id} className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+              <div key={session.id} className="flex items-center justify-between p-3 border border-[#333333] rounded-lg bg-[#111111]">
                 <div className="flex-1">
                   <div className="flex items-center space-x-2">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(session.status)}`}>
                       {session.status}
                     </span>
-                    <span className="text-sm font-medium">
+                    <span className="text-sm font-medium text-white">
                       {session.config.strategy.replace('_', ' ')} - {session.config.targetClinicCount} target
                     </span>
                   </div>
-                  <div className="text-xs text-gray-600 mt-1">
+                  <div className="text-xs text-gray-400 mt-1">
                     Created: {formatDate(session.createdAt)} | 
                     Found: {session.clinicsFound} | 
                     Imported: {session.clinicsImported} | 
@@ -369,14 +369,14 @@ const DiscoveryControlPanel: React.FC = () => {
                 <div className="flex space-x-2">
                   <button
                     onClick={() => setCurrentSession(session)}
-                    className="px-3 py-1 bg-blue-100 text-blue-600 rounded text-sm hover:bg-blue-200 transition-colors"
+                    className="px-3 py-1 bg-primary/20 text-primary rounded text-sm hover:bg-primary/30 transition-colors"
                   >
                     View
                   </button>
                   {(session.status === 'paused' || session.status === 'stopped') && (
                     <button
                       onClick={() => resumeSession(session.id)}
-                      className="px-3 py-1 bg-green-100 text-green-600 rounded text-sm hover:bg-green-200 transition-colors"
+                      className="px-3 py-1 bg-green-900/30 text-green-400 rounded text-sm hover:bg-green-900/50 transition-colors"
                     >
                       Resume
                     </button>

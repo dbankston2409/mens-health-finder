@@ -65,14 +65,14 @@ const DiscoveryMap: React.FC<DiscoveryMapProps> = ({
 
   if (!isClient) {
     return (
-      <div className="w-full h-96 bg-gray-100 flex items-center justify-center rounded-lg">
-        <div className="text-gray-500">Loading map...</div>
+      <div className="w-full h-96 bg-[#111111] flex items-center justify-center rounded-lg border border-[#333333]">
+        <div className="text-gray-400">Loading map...</div>
       </div>
     );
   }
 
   return (
-    <div className="w-full h-96 rounded-lg overflow-hidden border border-gray-200">
+    <div className="w-full h-96 rounded-lg overflow-hidden border border-[#333333]">
       <MapContainer
         ref={mapRef}
         center={[39.8283, -98.5795]} // Center of US
@@ -149,43 +149,43 @@ const DiscoveryMap: React.FC<DiscoveryMapProps> = ({
       </MapContainer>
       
       {showProgress && session && (
-        <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+        <div className="mt-4 p-4 bg-[#111111] rounded-lg border border-[#333333]">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="font-semibold text-gray-900">Discovery Progress</h3>
-            <span className="text-sm text-gray-600 capitalize">{session.status}</span>
+            <h3 className="font-semibold text-white">Discovery Progress</h3>
+            <span className="text-sm text-gray-400 capitalize">{session.status}</span>
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             <div>
-              <div className="text-gray-600">Grids Completed</div>
-              <div className="font-semibold">
+              <div className="text-gray-400">Grids Completed</div>
+              <div className="font-semibold text-white">
                 {session.grids.filter(g => g.status === 'completed').length} / {session.grids.length}
               </div>
             </div>
             <div>
-              <div className="text-gray-600">Clinics Found</div>
-              <div className="font-semibold">{session.clinicsFound}</div>
+              <div className="text-gray-400">Clinics Found</div>
+              <div className="font-semibold text-white">{session.clinicsFound}</div>
             </div>
             <div>
-              <div className="text-gray-600">Clinics Imported</div>
-              <div className="font-semibold">{session.clinicsImported}</div>
+              <div className="text-gray-400">Clinics Imported</div>
+              <div className="font-semibold text-white">{session.clinicsImported}</div>
             </div>
             <div>
-              <div className="text-gray-600">Target</div>
-              <div className="font-semibold">{session.config.targetClinicCount}</div>
+              <div className="text-gray-400">Target</div>
+              <div className="font-semibold text-white">{session.config.targetClinicCount}</div>
             </div>
           </div>
           
           <div className="mt-3">
-            <div className="flex justify-between text-xs text-gray-600 mb-1">
+            <div className="flex justify-between text-xs text-gray-400 mb-1">
               <span>Progress</span>
               <span>
                 {Math.round((session.grids.filter(g => g.status === 'completed').length / session.grids.length) * 100)}%
               </span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-gray-700 rounded-full h-2">
               <div 
-                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                className="bg-primary h-2 rounded-full transition-all duration-300"
                 style={{ 
                   width: `${(session.grids.filter(g => g.status === 'completed').length / session.grids.length) * 100}%` 
                 }}
@@ -196,10 +196,10 @@ const DiscoveryMap: React.FC<DiscoveryMapProps> = ({
           {session.errors && session.errors.length > 0 && (
             <div className="mt-3">
               <details className="text-sm">
-                <summary className="text-red-600 cursor-pointer">
+                <summary className="text-red-400 cursor-pointer">
                   {session.errors.length} Error{session.errors.length !== 1 ? 's' : ''}
                 </summary>
-                <div className="mt-2 space-y-1 text-xs text-red-600 max-h-20 overflow-y-auto">
+                <div className="mt-2 space-y-1 text-xs text-red-400 max-h-20 overflow-y-auto">
                   {session.errors.slice(-5).map((error, index) => (
                     <div key={index}>{error}</div>
                   ))}
@@ -211,24 +211,24 @@ const DiscoveryMap: React.FC<DiscoveryMapProps> = ({
       )}
       
       {/* Legend */}
-      <div className="mt-4 p-3 bg-white rounded-lg border border-gray-200">
-        <h4 className="font-semibold text-sm mb-2">Grid Status Legend</h4>
+      <div className="mt-4 p-3 bg-[#111111] rounded-lg border border-[#333333]">
+        <h4 className="font-semibold text-sm mb-2 text-white">Grid Status Legend</h4>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
           <div className="flex items-center">
             <div className="w-3 h-3 bg-gray-400 rounded mr-2 opacity-30"></div>
-            Pending
+            <span className="text-gray-300">Pending</span>
           </div>
           <div className="flex items-center">
             <div className="w-3 h-3 bg-yellow-500 rounded mr-2 opacity-80"></div>
-            Searching
+            <span className="text-gray-300">Searching</span>
           </div>
           <div className="flex items-center">
             <div className="w-3 h-3 bg-green-500 rounded mr-2 opacity-70"></div>
-            Completed
+            <span className="text-gray-300">Completed</span>
           </div>
           <div className="flex items-center">
             <div className="w-3 h-3 bg-red-500 rounded mr-2 opacity-60"></div>
-            Error
+            <span className="text-gray-300">Error</span>
           </div>
         </div>
       </div>

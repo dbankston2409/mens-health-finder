@@ -7,10 +7,8 @@ import ProtectedRoute from '../../components/ProtectedRoute';
 const DiscoveryPage: React.FC = () => {
   return (
     <ProtectedRoute requireAdmin>
-      <AdminLayout>
-        <div className="p-6">
-          <DiscoveryControlPanel />
-        </div>
+      <AdminLayout title="Business Discovery">
+        <DiscoveryControlPanel />
       </AdminLayout>
     </ProtectedRoute>
   );
