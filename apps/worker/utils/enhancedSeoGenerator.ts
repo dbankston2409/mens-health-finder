@@ -1,6 +1,9 @@
 import { ClinicInput } from '../types/clinic';
 import { WebsiteScrapingResult, ScrapedService } from './enhancedWebsiteScraper';
 import fetch from 'node-fetch';
+import { retryWithBackoff, retryStrategies } from './retryWithBackoff';
+import { db } from '../lib/firebase';
+import { doc, updateDoc, serverTimestamp } from '../lib/firebase-compat';
 
 /**
  * Enhanced SEO content generator that uses scraped website data
@@ -14,7 +17,8 @@ interface EnhancedClinicData extends ClinicInput {
 
 export async function generateEnhancedSeoContent(
   clinic: EnhancedClinicData,
-  scrapedData: WebsiteScrapingResult
+  scrapedData: WebsiteScrapingResult,
+  clinicId?: string
 ): Promise<string> {
   // Filter high-confidence services (>0.7 confidence)
   const verifiedServices = scrapedData.services.filter(s => s.confidence > 0.7);
@@ -23,16 +27,48 @@ export async function generateEnhancedSeoContent(
   const servicesByCategory = groupServicesByCategory(verifiedServices);
   
   // Generate content with Claude using detailed service data
-  if (process.env.CLAUDE_API_KEY) {
-    try {
-      return await generateWithClaude(clinic, servicesByCategory, scrapedData);
-    } catch (error) {
-      console.error('Enhanced content generation failed:', error);
-      throw error;
-    }
+  if (!process.env.CLAUDE_API_KEY) {
+    throw new Error('ENHANCED_SEO_GENERATION_FAILED: Claude API key required');
   }
-  
-  throw new Error('ENHANCED_SEO_GENERATION_FAILED: Claude API key required');
+
+  try {
+    // Use retry logic with Claude-specific strategy
+    const content = await retryWithBackoff(
+      () => generateWithClaude(clinic, servicesByCategory, scrapedData),
+      {
+        ...retryStrategies.claude,
+        onRetry: (attempt, error) => {
+          console.log(`SEO generation retry attempt ${attempt} for ${clinic.name}:`, error.message);
+        }
+      }
+    );
+
+    // Clear any previous failure flags if successful
+    if (clinicId) {
+      await updateDoc(doc(db, 'clinics', clinicId), {
+        needs_seo_content: false,
+        seo_generation_failed_at: null,
+        seo_generation_error: null,
+        seo_content_generated_at: serverTimestamp()
+      });
+    }
+
+    return content;
+  } catch (error) {
+    console.error('Enhanced content generation failed after retries:', error);
+    
+    // Mark clinic as needing content generation
+    if (clinicId) {
+      await updateDoc(doc(db, 'clinics', clinicId), {
+        needs_seo_content: true,
+        seo_generation_failed_at: serverTimestamp(),
+        seo_generation_error: error instanceof Error ? error.message : 'Unknown error',
+        seo_generation_attempts: (clinic as any).seo_generation_attempts ? (clinic as any).seo_generation_attempts + 1 : 1
+      });
+    }
+    
+    throw error;
+  }
 }
 
 function groupServicesByCategory(services: ScrapedService[]): Map<string, ScrapedService[]> {

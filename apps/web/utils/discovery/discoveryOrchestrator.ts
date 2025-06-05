@@ -50,7 +50,7 @@ export class DiscoveryOrchestrator {
     if (!googleApiKey) {
       console.warn('Google Places API key not found. Discovery features will be limited.');
     }
-    this.dataCollector = new EnhancedDataCollector(googleApiKey);
+    this.dataCollector = new ExtendedDataCollector(googleApiKey);
     this.onProgressUpdate = onProgressUpdate;
   }
 
