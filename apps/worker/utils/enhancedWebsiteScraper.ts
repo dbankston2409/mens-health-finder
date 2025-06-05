@@ -72,13 +72,41 @@ export const TARGET_SERVICE_CATEGORIES = {
 
 // Valuable business information to extract
 const BUSINESS_VALUE_INDICATORS = {
-  credentials: ['board certified', 'fellowship trained', 'years experience', 'medical director', 'specialized training'],
-  technology: ['state of the art', 'latest technology', 'advanced equipment', 'cutting edge', 'fda approved'],
-  approach: ['personalized', 'customized', 'individualized', 'comprehensive', 'holistic', 'integrative'],
-  convenience: ['same day', 'walk in', 'evening hours', 'weekend hours', 'telemedicine', 'virtual visits'],
-  specialization: ['specialize', 'expert', 'focus', 'dedicated', 'exclusive'],
-  results: ['proven results', 'success rate', 'patient outcomes', 'testimonials', 'before after'],
-  certifications: ['certified', 'accredited', 'licensed', 'registered', 'member of']
+  credentials: [
+    'board certified', 'fellowship trained', 'years experience', 'medical director', 
+    'specialized training', 'harvard', 'mayo clinic', 'cleveland clinic', 'johns hopkins',
+    'phd', 'md', 'do', 'nurse practitioner', 'physician assistant', 'decades of experience'
+  ],
+  technology: [
+    'state of the art', 'latest technology', 'advanced equipment', 'cutting edge', 
+    'fda approved', 'fda cleared', 'newest generation', 'upgraded equipment',
+    'gainswave', 'emsculpt', 'coolsculpting', 'body composition analysis', 'dexa scan'
+  ],
+  approach: [
+    'personalized', 'customized', 'individualized', 'comprehensive', 'holistic', 
+    'integrative', 'evidence based', 'data driven', 'concierge', 'boutique',
+    'one on one', 'tailored treatment', 'precision medicine'
+  ],
+  convenience: [
+    'same day', 'walk in', 'evening hours', 'weekend hours', 'telemedicine', 
+    'virtual visits', 'online booking', 'flexible scheduling', 'home visits',
+    'mobile clinic', 'multiple locations', 'easy parking', 'no wait time'
+  ],
+  specialization: [
+    'specialize', 'expert', 'focus', 'dedicated', 'exclusive', 'leading provider',
+    'center of excellence', 'premier clinic', 'top rated', 'best in class',
+    'nationally recognized', 'award winning'
+  ],
+  results: [
+    'proven results', 'success rate', 'patient outcomes', 'testimonials', 
+    'before after', 'life changing', 'transformation', 'satisfied patients',
+    '5 star reviews', 'google reviews', 'patient success stories'
+  ],
+  certifications: [
+    'certified', 'accredited', 'licensed', 'registered', 'member of',
+    'american board', 'age management medicine', 'a4m certified', 'hormone specialist',
+    'peptide certified', 'functional medicine', 'integrative medicine certified'
+  ]
 };
 
 export interface ScrapedService {
@@ -122,6 +150,38 @@ export class EnhancedClinicWebsiteScraper {
     'Connection': 'keep-alive',
   };
 
+  // Priority-based page patterns for smart crawling
+  private readonly PAGE_PRIORITIES = {
+    high: [
+      // Service pages - most likely to contain treatment info
+      '/services', '/treatments', '/procedures', '/therapies',
+      '/hormone-therapy', '/testosterone', '/trt', '/hrt',
+      '/peptides', '/peptide-therapy', '/weight-loss', '/ed-treatment',
+      // Business info pages - contain credentials and trust signals
+      '/about', '/about-us', '/team', '/providers', '/doctors', 
+      '/staff', '/meet-the-team', '/our-providers', '/physicians'
+    ],
+    medium: [
+      // Trust and social proof
+      '/testimonials', '/reviews', '/success-stories', '/results',
+      '/before-after', '/patient-stories',
+      // Process and accessibility
+      '/faq', '/frequently-asked-questions', '/new-patients', 
+      '/first-visit', '/what-to-expect', '/process',
+      // Additional services
+      '/technology', '/equipment', '/techniques', '/approach',
+      '/philosophy', '/mission', '/specialties', '/conditions'
+    ],
+    low: [
+      // Supporting content
+      '/blog', '/articles', '/resources', '/education',
+      '/news', '/events', '/media', '/press',
+      // Administrative
+      '/contact', '/locations', '/hours', '/directions',
+      '/forms', '/patient-forms', '/policies', '/privacy'
+    ]
+  };
+
   async scrapeWebsite(websiteUrl: string): Promise<WebsiteScrapingResult> {
     try {
       const url = new URL(websiteUrl);
@@ -130,8 +190,9 @@ export class EnhancedClinicWebsiteScraper {
       // Start with homepage
       const homepageData = await this.scrapePage(websiteUrl);
       
-      // Find relevant pages
-      const relevantPages = await this.findRelevantPages(websiteUrl);
+      // Find and prioritize relevant pages
+      const allFoundPages = await this.findRelevantPages(websiteUrl);
+      const prioritizedPages = this.prioritizePages(allFoundPages, baseUrl);
       
       // Scrape each page
       const allServices: ScrapedService[] = [...homepageData.services];
@@ -139,14 +200,18 @@ export class EnhancedClinicWebsiteScraper {
       const scrapedPages = [websiteUrl];
       let allHtmlContent = homepageData.html || '';
       
-      // Limit to 5 additional pages to be respectful
-      for (const pageUrl of relevantPages.slice(0, 5)) {
-        if (!scrapedPages.includes(pageUrl)) {
+      // Scrape up to 24 additional pages (25 total including homepage)
+      let pagesScraped = 0;
+      const maxPages = 24;
+      
+      for (const pageUrl of prioritizedPages) {
+        if (!scrapedPages.includes(pageUrl) && pagesScraped < maxPages) {
           const pageData = await this.scrapePage(pageUrl);
           allServices.push(...pageData.services);
           this.mergeBusinessInfo(businessInfo, pageData.businessInfo);
           scrapedPages.push(pageUrl);
           allHtmlContent += '\n' + (pageData.html || '');
+          pagesScraped++;
           
           // Respectful delay between requests
           await new Promise(resolve => setTimeout(resolve, 1000));
@@ -465,5 +530,55 @@ export class EnhancedClinicWebsiteScraper {
     });
     
     return merged;
+  }
+
+  private prioritizePages(pages: string[], baseUrl: string): string[] {
+    const priorityMap = new Map<string, number>();
+    
+    pages.forEach(pageUrl => {
+      // Extract path from URL
+      let path = pageUrl.replace(baseUrl, '').toLowerCase();
+      if (!path.startsWith('/')) path = '/' + path;
+      
+      // Assign priority based on patterns
+      let priority = 3; // Default to low priority
+      
+      // Check high priority patterns
+      for (const pattern of this.PAGE_PRIORITIES.high) {
+        if (path.includes(pattern)) {
+          priority = 0;
+          break;
+        }
+      }
+      
+      // Check medium priority if not already high
+      if (priority === 3) {
+        for (const pattern of this.PAGE_PRIORITIES.medium) {
+          if (path.includes(pattern)) {
+            priority = 1;
+            break;
+          }
+        }
+      }
+      
+      // Check low priority patterns
+      if (priority === 3) {
+        for (const pattern of this.PAGE_PRIORITIES.low) {
+          if (path.includes(pattern)) {
+            priority = 2;
+            break;
+          }
+        }
+      }
+      
+      priorityMap.set(pageUrl, priority);
+    });
+    
+    // Sort by priority (0 = high, 1 = medium, 2 = low, 3 = other)
+    return pages.sort((a, b) => {
+      const priorityA = priorityMap.get(a) || 3;
+      const priorityB = priorityMap.get(b) || 3;
+      return priorityA - priorityB;
+    });
   }
 }
