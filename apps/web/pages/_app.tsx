@@ -7,6 +7,7 @@ import Script from 'next/script';
 import Layout from '@/components/Layout';
 import { AuthProvider } from '@/lib/contexts/authContext';
 import { initAnalytics, trackPageView, exposeAnalytics } from '../../../lib/analytics';
+import { trackPageView as trackFirebasePageView } from '../lib/firebaseAnalytics';
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -26,10 +27,12 @@ export default function App({ Component, pageProps }: AppProps) {
     
     // Track page view on initial load
     trackPageView(router.pathname);
+    trackFirebasePageView(router.pathname);
     
     // Track page views on route changes
     const handleRouteChange = (url: string) => {
       trackPageView(url);
+      trackFirebasePageView(url);
     };
     
     router.events.on('routeChangeComplete', handleRouteChange);
