@@ -54,13 +54,12 @@ const SearchPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   
   const [mapCenter, setMapCenter] = useState<{lat: number; lng: number; zoom: number} | null>(null);
-  const [locationError, setLocationError] = useState<string | null>(null);
   const [hasAttemptedAutoLocation, setHasAttemptedAutoLocation] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
   
   // Use auto-location hook
-  const { location: autoLocation, loading: autoLocationLoading, error: autoLocationError } = useAutoLocation();
+  const { location: autoLocation, isLoading: autoLocationLoading, error: autoLocationError } = useAutoLocation();
   
   // Initialize from URL query params
   useEffect(() => {

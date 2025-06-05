@@ -322,7 +322,7 @@ export default function Home() {
                   center={userLocation}
                   height="400px"
                   singleLocation={false}
-                  defaultToUS={locationError !== null}
+                  defaultToUS={autoLocationError !== null}
                 />
               </div>
             </div>
