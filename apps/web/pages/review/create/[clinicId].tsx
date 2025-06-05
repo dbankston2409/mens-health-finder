@@ -4,7 +4,6 @@ import Head from 'next/head';
 import ProtectedRoute from '../../../components/ProtectedRoute';
 import ReviewForm from '../../../components/ReviewForm';
 import { useAuth } from '../../../lib/contexts/authContext';
-import { mockClinics } from '../../../lib/mockData';
 
 const CreateReview = () => {
   const router = useRouter();
@@ -15,17 +14,9 @@ const CreateReview = () => {
 
   useEffect(() => {
     if (clinicId) {
-      // In a real app, fetch the clinic data from Firestore
-      // For now, we'll use our mock data
-      const foundClinic = mockClinics.find(c => c.id === Number(clinicId));
-      
-      if (foundClinic) {
-        setClinic(foundClinic);
-      } else {
-        // Clinic not found, redirect to dashboard
-        router.push('/dashboard');
-      }
-      
+      // TODO: Fetch clinic data from Firestore
+      // For now, redirect to dashboard since we have no data
+      router.push('/dashboard');
       setIsLoading(false);
     }
   }, [clinicId, router]);

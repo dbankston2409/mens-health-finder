@@ -1,7 +1,20 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import { mockBlogPosts, BlogPost } from '../../lib/mockData';
+// Blog post type
+interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  author: string;
+  publishDate: string;
+  categories: string[];
+  tags: string[];
+  readTime: string;
+  featuredImage?: string;
+}
 
 interface BlogPostPageProps {
   post: BlogPost;
@@ -136,6 +149,21 @@ export default function BlogPostPage({ post, relatedPosts }: BlogPostPageProps) 
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  // Return empty paths since we have no blog posts
+  return {
+    paths: [],
+    fallback: 'blocking'
+  };
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  // Return 404 since we have no blog posts
+  return {
+    notFound: true
+  };
+};
+
+export const getStaticPaths_old: GetStaticPaths = async () => {
   // Generate paths for all blog posts
   const paths = mockBlogPosts.map((post) => ({
     params: { slug: post.slug }}));

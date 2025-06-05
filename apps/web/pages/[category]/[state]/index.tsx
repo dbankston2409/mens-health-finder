@@ -3,7 +3,39 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Breadcrumbs from '../../../components/Breadcrumbs';
-import { mockClinics, serviceCategories } from '../../../lib/mockData';
+// Service categories data
+const serviceCategories = [
+  {
+    id: 'trt',
+    title: 'Testosterone Replacement Therapy',
+    description: 'Comprehensive TRT treatment programs'
+  },
+  {
+    id: 'ed-treatment',
+    title: 'ED Treatment',
+    description: 'Erectile dysfunction treatment'
+  },
+  {
+    id: 'hair-loss',
+    title: 'Hair Loss Treatment',
+    description: 'Hair restoration and prevention'
+  },
+  {
+    id: 'weight-management',
+    title: 'Weight Loss',
+    description: 'Medical weight management'
+  },
+  {
+    id: 'peptides',
+    title: 'Peptide Therapy',
+    description: 'Advanced peptide treatments'
+  },
+  {
+    id: 'iv-therapy',
+    title: 'IV Therapy',
+    description: 'IV nutrient therapy'
+  }
+];
 import { 
   slugify, 
   filterClinicsByCategory, 
@@ -155,6 +187,39 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const { category, state } = params as { category: string; state: string };
+  
+  // Get category info
+  const categoryData = serviceCategories.find(cat => {
+    const fullServiceSlug = getServiceSlug(cat.id);
+    return fullServiceSlug === category;
+  });
+  
+  if (!categoryData) {
+    return { notFound: true };
+  }
+  
+  // Since we're removing mock data, return empty city data
+  const citiesByClinicCount: any[] = [];
+  
+  return {
+    props: {
+      categoryInfo: {
+        id: getServiceSlug(categoryData.id),
+        title: categoryData.title,
+        description: categoryData.description
+      },
+      stateInfo: {
+        stateCode: state.toUpperCase(),
+        fullName: getStateFullName(state.toUpperCase())
+      },
+      citiesByClinicCount
+    },
+    revalidate: 86400
+  };
+};
+
+export const getStaticProps_old: GetStaticProps = async ({ params }) => {
   const categorySlug = params?.category as string;
   const stateSlug = params?.state as string;
   

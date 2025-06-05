@@ -3,143 +3,73 @@
  * Used to prevent errors when server-side code is imported into client-side bundle
  */
 
-// Import mock data
-import { mockAdminMetrics, mockClinicQueueData, mockClinicDetails, mockSeoPerformance } from './mockAdminData';
+// Import types only
 import { SalesMetrics, LostRevenueMetrics, TrafficMetrics, SearchVisibilityMetrics } from '../metrics/types';
 
-// Re-export mock functions with the same signatures as the server-side functions
+// Re-export empty functions with the same signatures as the server-side functions
 export const getSalesMetrics = async (): Promise<SalesMetrics> => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  // Return mock data in the expected format
+  // Return empty data
   return {
-    totalRevenueThisMonth: mockAdminMetrics.sales.totalRevenue,
-    totalRevenueThisYear: mockAdminMetrics.sales.totalRevenue * 12,
-    newSignupsThisMonth: mockAdminMetrics.sales.activeClinics / 4,
-    activeSubscriptions: mockAdminMetrics.sales.activeClinics,
-    churnedSubscriptions: Math.floor(mockAdminMetrics.sales.activeClinics * 0.03),
-    averageRevenuePerClinic: mockAdminMetrics.sales.totalRevenue / mockAdminMetrics.sales.activeClinics,
+    totalRevenueThisMonth: 0,
+    totalRevenueThisYear: 0,
+    newSignupsThisMonth: 0,
+    activeSubscriptions: 0,
+    churnedSubscriptions: 0,
+    averageRevenuePerClinic: 0,
     subscriptionsByPlan: {
-      'Basic': mockAdminMetrics.sales.subscriptionsByTier.low,
-      'Premium': mockAdminMetrics.sales.subscriptionsByTier.high,
-      'Free': mockAdminMetrics.sales.subscriptionsByTier.free
+      'Basic': 0,
+      'Premium': 0,
+      'Free': 0
     }
   };
 };
 
 export const getLostRevenue = async (): Promise<LostRevenueMetrics> => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 600));
-  
-  // Convert mock data to expected format
-  const reasonKeys = Object.keys(mockAdminMetrics.lostRevenue.reasonBreakdown);
+  // Return empty data
   return {
-    lostThisMonth: mockAdminMetrics.lostRevenue.totalEstimate / 12,
-    lostThisYear: mockAdminMetrics.lostRevenue.totalEstimate,
+    lostThisMonth: 0,
+    lostThisYear: 0,
     breakdownByReason: {
-      canceled: (mockAdminMetrics.lostRevenue.reasonBreakdown as any)[reasonKeys[0]] || 0,
-      downgrade: (mockAdminMetrics.lostRevenue.reasonBreakdown as any)[reasonKeys[1]] || 0,
-      failedPayment: (mockAdminMetrics.lostRevenue.reasonBreakdown as any)[reasonKeys[2]] || 0,
-      missedUpsell: (mockAdminMetrics.lostRevenue.reasonBreakdown as any)[reasonKeys[3]] || 0,
-      expiredTrial: (mockAdminMetrics.lostRevenue.reasonBreakdown as any)[reasonKeys[4]] || 0
+      canceled: 0,
+      downgrade: 0,
+      failedPayment: 0,
+      missedUpsell: 0,
+      expiredTrial: 0
     },
-    rawEvents: mockAdminMetrics.lostRevenue.clinicBreakdown.map(clinic => ({
-      clinicId: String(clinic.id),
-      clinicName: clinic.name,
-      amount: clinic.estimate,
-      reason: clinic.reason.includes('profile') ? 'canceled' : 
-             clinic.reason.includes('contact') ? 'missedUpsell' : 
-             clinic.reason.includes('review') ? 'downgrade' : 'failedPayment',
-      date: { 
-        seconds: Date.now()/1000 - (Math.random() * 86400 * 7), 
-        toDate: function() { return new Date(this.seconds * 1000); }
-      } as any
-    }))
+    rawEvents: []
   };
 };
 
 export const getTrafficMetrics = async (): Promise<TrafficMetrics> => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 700));
-  
+  // Return empty data
   return {
-    totalClicksThisMonth: mockAdminMetrics.traffic.totalPageviews,
-    topPages: mockAdminMetrics.traffic.topReferrers.map(ref => ({
-      slug: `/clinic/${ref.source.toLowerCase().replace(' ', '-')}-mens-health`,
-      clickCount: ref.visits
-    })),
-    topSearchQueries: mockAdminMetrics.seo.topSearchTerms.map(term => ({
-      term: term.term,
-      count: term.volume / 10
-    })),
-    bounceRateEstimate: mockAdminMetrics.traffic.bounceRate * 100,
-    avgClicksPerDay: mockAdminMetrics.traffic.uniqueVisitors / 30,
-    dailyTraffic: mockAdminMetrics.traffic.trafficByDay.map(day => ({
-      date: day.date,
-      views: day.visits,
-      clicks: Math.floor(day.visits * 0.4)
-    }))
+    sessionsThisMonth: 0,
+    sessionsLastMonth: 0,
+    pageViewsThisMonth: 0,
+    pageViewsLastMonth: 0,
+    topTrafficSources: [],
+    topVisitedClinics: []
   };
 };
 
 export const getSearchVisibilityMetrics = async (): Promise<SearchVisibilityMetrics> => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 800));
-  
+  // Return empty data
   return {
-    totalSearchImpressions: mockAdminMetrics.seo.totalKeywords * 50,
-    topSearchTerms: mockAdminMetrics.seo.topSearchTerms.map(term => ({
-      term: term.term,
-      count: term.volume
-    })),
-    topCitiesSearched: mockSeoPerformance.cityRankings.map(city => ({
-      city: city.city,
-      count: city.searchVolume
-    })),
-    averageClicksPerSearch: 0.34,
-    topServices: [
-      { service: 'Testosterone Therapy', count: 4532 },
-      { service: 'ED Treatment', count: 3876 },
-      { service: 'Hormone Optimization', count: 2987 },
-      { service: 'Weight Management', count: 2345 },
-      { service: 'Sexual Health', count: 2123 }
-    ],
-    websiteHealth: mockAdminMetrics.websiteHealth
+    totalImpressions: 0,
+    totalClicks: 0,
+    averageCTR: 0,
+    averagePosition: 0,
+    topSearchQueries: [],
+    topRankedClinics: []
   };
 };
 
-export const getAllClinicsEngagement = async () => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  return mockAdminMetrics.engagement.topClinics.map(clinic => ({
-    clinicId: String(clinic.id),
-    clinicName: clinic.name,
-    totalViews: clinic.views,
-    viewsThisMonth: Math.floor(clinic.views * 0.4),
-    lastViewed: new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000))
-  }));
+// Client-side fallback for queue data
+export const getClinicQueueData = async () => {
+  return [];
 };
 
-export const getClinicEngagement = async (clinicId: string) => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 600));
-  
-  const clinic = mockAdminMetrics.engagement.topClinics.find(c => String(c.id) === clinicId);
-  if (!clinic) {
-    return null;
-  }
-  
-  return {
-    clinicId,
-    clinicName: clinic.name,
-    totalViews: clinic.views,
-    viewsThisMonth: Math.floor(clinic.views * 0.4),
-    lastViewed: new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)),
-    viewsByDay: Array.from({ length: 30 }, (_, i) => ({
-      date: new Date(Date.now() - (30 - i) * 24 * 60 * 60 * 1000),
-      count: Math.floor(Math.random() * 20) + 5}))};
+// Client-side fallback for clinic details
+export const getClinicDetails = async (id: string) => {
+  return null;
 };
-
-// Add more mock functions as needed for other admin features

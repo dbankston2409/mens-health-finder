@@ -6,7 +6,6 @@ import ReviewForm from '../../../components/ReviewForm';
 import { useAuth } from '../../../lib/contexts/authContext';
 import { getDoc, doc } from 'firebase/firestore';
 import { db } from '../../../lib/firebase';
-import { mockClinics } from '../../../lib/mockData';
 
 const EditReview = () => {
   const router = useRouter();
@@ -46,8 +45,8 @@ const EditReview = () => {
           createdAt: reviewData.createdAt?.toDate() || new Date()
         });
         
-        // Find clinic from mock data (in a real app, fetch from Firestore)
-        const foundClinic = mockClinics.find(c => c.id === reviewData.clinicId);
+        // TODO: Fetch clinic from Firestore
+        const foundClinic = null;
         
         if (foundClinic) {
           setClinic(foundClinic);

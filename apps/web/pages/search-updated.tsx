@@ -14,14 +14,8 @@ import useGeoSearch, { useUserLocation } from '../utils/hooks/useGeoSearch';
 // Import types
 import { Clinic, ExtendedClinic, ClinicLocation, TierCountsFlexible, ClinicFilter, safeObjectAccess } from '../types';
 
-// Import either the real service or the mock service based on environment
-import * as realClinicService from '../lib/api/clinicService';
-import * as mockClinicService from '../lib/api/mockClinicService';
-
-// Use mock service in development mode, real service in production
-const clinicService = process.env.NODE_ENV === 'development' 
-  ? mockClinicService 
-  : realClinicService;
+// Import the real service only
+import * as clinicService from '../lib/api/clinicService';
 
 const { searchClinics, queryClinics } = clinicService;
 

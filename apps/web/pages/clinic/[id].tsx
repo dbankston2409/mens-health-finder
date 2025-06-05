@@ -12,7 +12,6 @@ import SeoContentSection from '../../components/SeoContentSection';
 import { VisibleFAQSection } from '../../components/VisibleFAQSection';
 import FaqSchemaScript from '../../components/FaqSchemaScript';
 import dynamic from 'next/dynamic';
-import { mockClinics } from '../../lib/mockData';
 import { useClinic } from '../../utils/hooks/useClinic';
 import { formatClinicName } from '../../lib/utils';
 import { event as trackEvent } from '../../lib/analytics';
@@ -29,9 +28,7 @@ const ClinicProfile: React.FC = () => {
   const { id } = router.query;
   const { clinic: firestoreClinic, loading: firestoreLoading, error: firestoreError } = useClinic(id as string);
   
-  // Fallback to mock data for demo
-  const mockClinic = mockClinics.find(c => c.id === id);
-  const clinic = firestoreClinic || mockClinic;
+  const clinic = firestoreClinic;
   
   const [activeTab, setActiveTab] = useState('about');
   const [seoContent, setSeoContent] = useState<string | null>(null);
@@ -71,7 +68,7 @@ const ClinicProfile: React.FC = () => {
     generateSeoContentForClinic();
   }, [clinic]);
   
-  if (!clinic) {
+  if (!clinic && !firestoreLoading) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold text-white mb-4">Clinic not found</h1>
@@ -80,6 +77,19 @@ const ClinicProfile: React.FC = () => {
         </Link>
       </div>
     );
+  }
+
+  if (firestoreLoading) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto mb-4"></div>
+        <p>Loading clinic...</p>
+      </div>
+    );
+  }
+
+  if (!clinic) {
+    return null;
   }
   
   // Get reviews for this clinic
@@ -97,12 +107,8 @@ const ClinicProfile: React.FC = () => {
     reviewCount: clinicReviews.length
   };
   
-  // Mock some clinics with MHF reviews for the RecommendedProviders
-  const mockClinicsWithMHFReviews = mockClinics.map(c => ({
-    ...c,
-    mhfReviewCount: Math.floor(Math.random() * 20) + 1,
-    mhfRating: 4 + Math.random()
-  }));
+  // Empty array since we removed mock data
+  const mockClinicsWithMHFReviews = [];
   
   // Get tier display info
   const tierMap = {
@@ -481,7 +487,7 @@ const ClinicProfile: React.FC = () => {
               currentCity={enhancedClinic.city}
               currentState={enhancedClinic.state}
               excludeClinicId={enhancedClinic.id}
-              clinics={mockClinicsWithMHFReviews as any}
+              clinics={[]}
             />
           )}
         </div>

@@ -4,7 +4,39 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import Breadcrumbs from '../../../../components/Breadcrumbs';
-import { mockClinics, serviceCategories } from '../../../../lib/mockData';
+// Service categories data
+const serviceCategories = [
+  {
+    id: 'trt',
+    title: 'Testosterone Replacement Therapy',
+    description: 'Comprehensive TRT treatment programs'
+  },
+  {
+    id: 'ed-treatment',
+    title: 'ED Treatment',
+    description: 'Erectile dysfunction treatment'
+  },
+  {
+    id: 'hair-loss',
+    title: 'Hair Loss Treatment',
+    description: 'Hair restoration and prevention'
+  },
+  {
+    id: 'weight-management',
+    title: 'Weight Loss',
+    description: 'Medical weight management'
+  },
+  {
+    id: 'peptides',
+    title: 'Peptide Therapy',
+    description: 'Advanced peptide treatments'
+  },
+  {
+    id: 'iv-therapy',
+    title: 'IV Therapy',
+    description: 'IV nutrient therapy'
+  }
+];
 import { 
   slugify, 
   createClinicSlug,
@@ -78,38 +110,56 @@ export default function CityPage({ categoryInfo, locationInfo, clinics }: CityPa
           Compare top-rated men's health clinics, read reviews, and connect with specialists.
         </p>
         
-        {/* Map View */}
-        <div className="mb-8">
-          <Map 
-            locations={clinics.map(clinic => ({
-              id: clinic.id,
-              name: clinic.name,
-              address: clinic.address,
-              city: clinic.city,
-              state: clinic.state,
-              lat: clinic.lat || 0,
-              lng: clinic.lng || 0,
-              tier: clinic.tier,
-              rating: clinic.rating,
-              phone: clinic.phone
-            }))}
-            center={{
-              lat: clinics[0]?.lat || 0,
-              lng: clinics[0]?.lng || 0,
-              zoom: 12
-            }}
-            height="400px"
-          />
-        </div>
-        
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-6">
-            {categoryInfo.title} Clinics in {locationInfo.city} ({clinics.length})
-          </h2>
-          
-          {/* Results list */}
-          <div className="space-y-6">
-            {clinics.map((clinic) => {
+        {/* Show empty state instead of map when no clinics */}
+        {clinics.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="glass-card p-8 max-w-2xl mx-auto">
+              <h2 className="text-2xl font-bold mb-4">No {categoryInfo.title} Clinics Found</h2>
+              <p className="text-[#AAAAAA] mb-6">
+                We haven't found any {categoryInfo.title.toLowerCase()} clinics in {locationInfo.city}, {locationInfo.stateCode} yet.
+              </p>
+              <Link href="/search" className="btn inline-flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                Search All Clinics
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Map View */}
+            <div className="mb-8">
+              <Map 
+                locations={clinics.map(clinic => ({
+                  id: clinic.id,
+                  name: clinic.name,
+                  address: clinic.address,
+                  city: clinic.city,
+                  state: clinic.state,
+                  lat: clinic.lat || 0,
+                  lng: clinic.lng || 0,
+                  tier: clinic.tier,
+                  rating: clinic.rating,
+                  phone: clinic.phone
+                }))}
+                center={{
+                  lat: clinics[0]?.lat || 0,
+                  lng: clinics[0]?.lng || 0,
+                  zoom: 12
+                }}
+                height="400px"
+              />
+            </div>
+            
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold mb-6">
+                {categoryInfo.title} Clinics in {locationInfo.city} ({clinics.length})
+              </h2>
+              
+              {/* Results list */}
+              <div className="space-y-6">
+                {clinics.map((clinic) => {
               return (
                 <div 
                   key={clinic.id} 
@@ -120,7 +170,7 @@ export default function CityPage({ categoryInfo, locationInfo, clinics }: CityPa
                       <div className="flex items-start justify-between">
                         <div>
                           <Link 
-                            href={createClinicUrl(categoryInfo.id, clinic)} 
+                            href={createClinicUrlPath(categoryInfo.id, clinic)} 
                             className="text-xl font-bold hover:text-primary transition-colors"
                           >
                             {clinic.name}
@@ -159,7 +209,7 @@ export default function CityPage({ categoryInfo, locationInfo, clinics }: CityPa
                     
                     <div className="md:w-1/4 flex flex-col justify-between gap-4">
                       <Link 
-                        href={createClinicUrl(categoryInfo.id, clinic)} 
+                        href={createClinicUrlPath(categoryInfo.id, clinic)} 
                         className="btn text-center"
                       >
                         View Profile
@@ -183,6 +233,8 @@ export default function CityPage({ categoryInfo, locationInfo, clinics }: CityPa
             })}
           </div>
         </div>
+          </>
+        )}
         
         <div className="bg-gray-900 rounded-xl p-6 mb-8">
           <h2 className="text-2xl font-bold mb-4">
@@ -271,51 +323,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     return { notFound: true };
   }
   
-  // Filter clinics by this category
-  const clinicsInCategory = filterClinicsByCategory(mockClinics, categoryData.title);
-  
-  // Group clinics by state
-  const clinicsByState = groupClinicsByState(clinicsInCategory);
-  
-  // Find the state that matches our slug
-  const matchingState = Object.keys(clinicsByState).find(
-    state => slugify(state) === stateSlug
-  );
-  
-  // If no matching state with clinics in this category, return 404
-  if (!matchingState) {
-    return { notFound: true };
-  }
-  
-  // Get clinics for this state
-  const clinicsInState = clinicsByState[matchingState];
-  
-  // Group clinics by city
-  const clinicsByCity = groupClinicsByCity(clinicsInState);
-  
-  // Find the city that matches our slug
-  const matchingCity = Object.keys(clinicsByCity).find(
-    city => slugify(city) === citySlug
-  );
-  
-  // If no matching city with clinics in this category/state, return 404
-  if (!matchingCity) {
-    return { notFound: true };
-  }
-  
-  // Get clinics for this city
-  const clinicsInCity = clinicsByCity[matchingCity];
-  
-  // Sort clinics by tier and then by rating
-  const sortedClinics = [...clinicsInCity].sort((a, b) => {
-    const tierOrder: Record<string, number> = { 'high': 0, 'low': 1, 'free': 2 };
-    const aTierOrder = tierOrder[a.tier] ?? 3;
-    const bTierOrder = tierOrder[b.tier] ?? 3;
-    if (aTierOrder !== bTierOrder) {
-      return aTierOrder - bTierOrder;
-    }
-    return b.rating - a.rating;
-  });
+  // Since we're removing mock data, return empty clinic data
+  const sortedClinics: any[] = [];
+  const matchingState = stateSlug.toUpperCase();
+  const matchingCity = citySlug.split('-').map(word => 
+    word.charAt(0).toUpperCase() + word.slice(1)
+  ).join(' ');
 
   return {
     props: {

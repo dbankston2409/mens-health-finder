@@ -2,7 +2,39 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { getCategoryById, getServiceSlug, getStateSlug } from '../lib/utils';
-import { serviceCategories } from '../lib/mockData';
+// Service categories data
+const serviceCategories = [
+  {
+    id: 'trt',
+    title: 'Testosterone Replacement Therapy',
+    description: 'Comprehensive TRT treatment programs'
+  },
+  {
+    id: 'ed-treatment',
+    title: 'ED Treatment',
+    description: 'Erectile dysfunction treatment'
+  },
+  {
+    id: 'hair-loss',
+    title: 'Hair Loss Treatment',
+    description: 'Hair restoration and prevention'
+  },
+  {
+    id: 'weight-management',
+    title: 'Weight Loss',
+    description: 'Medical weight management'
+  },
+  {
+    id: 'peptides',
+    title: 'Peptide Therapy',
+    description: 'Advanced peptide treatments'
+  },
+  {
+    id: 'iv-therapy',
+    title: 'IV Therapy',
+    description: 'IV nutrient therapy'
+  }
+];
 
 interface BreadcrumbProps {
   category?: string;
@@ -34,7 +66,7 @@ const Breadcrumbs: React.FC<BreadcrumbProps> = ({
     // If categoryTitle wasn't provided, try to find it from service categories
     const categoryInfo = categoryTitle 
       ? { title: categoryTitle } 
-      : getCategoryById(category, serviceCategories);
+      : getCategoryById(category);
 
     // Use the full service name format for URLs
     const categorySlug = getServiceSlug(category);

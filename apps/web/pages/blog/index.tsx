@@ -1,7 +1,20 @@
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
-import { mockBlogPosts, BlogPost } from '../../lib/mockData';
+// Blog post type
+interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  author: string;
+  publishDate: string;
+  categories: string[];
+  tags: string[];
+  readTime: string;
+  featuredImage?: string;
+}
 
 interface BlogIndexProps {
   posts: BlogPost[];
@@ -73,8 +86,9 @@ export default function BlogIndex({ posts, featuredPost }: BlogIndexProps) {
         )}
         
         {/* All posts grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {posts.map((post) => (
+        {posts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {posts.map((post) => (
             <Link 
               key={post.id} 
               href={`/blog/${post.slug}`}
@@ -105,12 +119,31 @@ export default function BlogIndex({ posts, featuredPost }: BlogIndexProps) {
             </Link>
           ))}
         </div>
+        ) : (
+          <div className="text-center py-16">
+            <div className="text-xl text-[#AAAAAA]">New insights coming soon</div>
+          </div>
+        )}
       </div>
     </>
   );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
+  // Return empty blog data
+  const posts: BlogPost[] = [];
+  const featuredPost = null;
+  
+  return {
+    props: {
+      posts,
+      featuredPost
+    },
+    revalidate: 86400
+  };
+};
+
+export const getStaticProps_old: GetStaticProps = async () => {
   // Sort posts by date (newest first)
   const sortedPosts = [...mockBlogPosts].sort((a, b) => 
     new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime()

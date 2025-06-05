@@ -3,7 +3,39 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Breadcrumbs from '../../components/Breadcrumbs';
-import { mockClinics, serviceCategories } from '../../lib/mockData';
+// Service categories data
+const serviceCategories = [
+  {
+    id: 'trt',
+    title: 'Testosterone Replacement Therapy',
+    description: 'Comprehensive TRT treatment programs'
+  },
+  {
+    id: 'ed-treatment',
+    title: 'ED Treatment',
+    description: 'Erectile dysfunction treatment'
+  },
+  {
+    id: 'hair-loss',
+    title: 'Hair Loss Treatment',
+    description: 'Hair restoration and prevention'
+  },
+  {
+    id: 'weight-management',
+    title: 'Weight Loss',
+    description: 'Medical weight management'
+  },
+  {
+    id: 'peptides',
+    title: 'Peptide Therapy',
+    description: 'Advanced peptide treatments'
+  },
+  {
+    id: 'iv-therapy',
+    title: 'IV Therapy',
+    description: 'IV nutrient therapy'
+  }
+];
 import { 
   slugify, 
   filterClinicsByCategory, 
@@ -60,18 +92,27 @@ export default function CategoryPage({ categoryInfo, statesByClinicCount }: Cate
         <div className="glass-card p-6 mb-10">
           <h2 className="text-2xl font-bold mb-6">Browse {categoryInfo.title} Clinics by State</h2>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {statesByClinicCount.map((stateData) => (
-              <Link 
-                key={stateData.state} 
-                href={`/${getServiceSlug(categoryInfo.id)}/${getStateSlug(stateData.state)}`}
-                className="flex justify-between items-center bg-gray-900 hover:bg-gray-800 transition-colors p-4 rounded-lg"
-              >
-                <span className="font-medium">{stateData.fullName}</span>
-                <span className="text-[#AAAAAA] text-sm">{stateData.count} clinics</span>
+          {statesByClinicCount.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {statesByClinicCount.map((stateData) => (
+                <Link 
+                  key={stateData.state} 
+                  href={`/${getServiceSlug(categoryInfo.id)}/${getStateSlug(stateData.state)}`}
+                  className="flex justify-between items-center bg-gray-900 hover:bg-gray-800 transition-colors p-4 rounded-lg"
+                >
+                  <span className="font-medium">{stateData.fullName}</span>
+                  <span className="text-[#AAAAAA] text-sm">{stateData.count} clinics</span>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-[#AAAAAA] mb-4">No clinics found in this category yet.</p>
+              <Link href="/search" className="text-primary hover:underline">
+                Browse all clinics
               </Link>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
         
         <div className="bg-gray-900 rounded-xl p-6 mb-8">
@@ -199,19 +240,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       notFound: true};
   }
   
-  // Filter clinics by this category
-  const clinicsInCategory = filterClinicsByCategory(mockClinics, categoryData.title);
-  
-  // Group clinics by state
-  const clinicsByState = groupClinicsByState(clinicsInCategory);
-  
-  // Create an array of states with their clinic counts, sorted by count
-  const statesByClinicCount = Object.entries(clinicsByState).map(([state, clinics]) => ({
-    state,
-    stateSlug: getStateSlug(state),
-    fullName: getStateFullName(state),
-    count: clinics.length}))
-  .sort((a, b) => b.count - a.count);
+  // Since we're removing mock data, return empty state data
+  const statesByClinicCount: any[] = [];
 
   return {
     props: {

@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
+import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
 
 interface Clinic {
   id: string;
@@ -49,109 +51,12 @@ const calculateDistance = (
   
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * (Math.PI / 180)) *
-    Math.cos(lat2 * (Math.PI / 180)) *
-    Math.sin(dLon / 2) *
-    Math.sin(dLon / 2);
-    
+    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 };
-
-// Mock data for demonstration - in production this would come from Firebase
-const mockClinics: Clinic[] = [
-  {
-    id: '1',
-    name: 'Prime Men\'s Health',
-    address: '123 Main St',
-    city: 'Austin',
-    state: 'TX',
-    lat: 30.2672,
-    lng: -97.7431,
-    services: ['TRT', 'ED Treatment', 'Weight Loss'],
-    tier: 'high',
-    phone: '(512) 555-0101',
-    rating: 4.8
-  },
-  {
-    id: '2',
-    name: 'Elite Men\'s Clinic',
-    address: '456 Oak Ave',
-    city: 'Dallas',
-    state: 'TX',
-    lat: 32.7767,
-    lng: -96.7970,
-    services: ['TRT', 'Hair Loss', 'ED Treatment'],
-    tier: 'high',
-    phone: '(214) 555-0102',
-    rating: 4.7
-  },
-  {
-    id: '3',
-    name: 'Men\'s Wellness Center',
-    address: '789 Pine St',
-    city: 'Houston',
-    state: 'TX',
-    lat: 29.7604,
-    lng: -95.3698,
-    services: ['TRT', 'Peptide Therapy'],
-    tier: 'low',
-    phone: '(713) 555-0103',
-    rating: 4.3
-  },
-  {
-    id: '4',
-    name: 'Superior Men\'s Clinic',
-    address: '321 Cedar Rd',
-    city: 'San Antonio',
-    state: 'TX',
-    lat: 29.4241,
-    lng: -98.4936,
-    services: ['TRT', 'ED Treatment', 'Weight Loss', 'Hair Loss'],
-    tier: 'high',
-    phone: '(210) 555-0104',
-    rating: 4.6
-  },
-  {
-    id: '5',
-    name: 'Lone Star Men\'s Health',
-    address: '654 Elm Way',
-    city: 'Fort Worth',
-    state: 'TX',
-    lat: 32.7555,
-    lng: -97.3308,
-    services: ['TRT', 'Wellness'],
-    tier: 'free',
-    phone: '(817) 555-0105',
-    rating: 4.1
-  },
-  {
-    id: '6',
-    name: 'California Men\'s Institute',
-    address: '987 Sunset Blvd',
-    city: 'Los Angeles',
-    state: 'CA',
-    lat: 34.0522,
-    lng: -118.2437,
-    services: ['TRT', 'ED Treatment', 'Hair Loss', 'IV Therapy'],
-    tier: 'high',
-    phone: '(213) 555-0106',
-    rating: 4.9
-  },
-  {
-    id: '7',
-    name: 'Mile High Men\'s Health',
-    address: '147 Mountain View Dr',
-    city: 'Denver',
-    state: 'CO',
-    lat: 39.7392,
-    lng: -104.9903,
-    services: ['TRT', 'Peptide Therapy', 'Cryotherapy'],
-    tier: 'low',
-    phone: '(303) 555-0107',
-    rating: 4.4
-  }
-];
 
 export const useGeoSearch = ({
   latitude,
@@ -165,25 +70,32 @@ export const useGeoSearch = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Simulate API call to fetch clinics
+  // Fetch clinics from Firebase
   const fetchClinics = async () => {
     setLoading(true);
     setError(null);
     
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Query Firestore for clinics
+      const clinicsRef = collection(db, 'clinics');
+      let q = query(clinicsRef, where('status', '==', 'active'));
       
-      // In production, this would be a Firestore query:
-      // const clinicsRef = collection(db, 'clinics');
-      // const q = query(clinicsRef, where('status', '==', 'active'));
-      // const snapshot = await getDocs(q);
-      // const clinics = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      // Add additional filters if needed
+      if (!includeInactive) {
+        q = query(clinicsRef, where('status', '==', 'active'), orderBy('name'));
+      }
       
-      setClinics(mockClinics);
+      const snapshot = await getDocs(q);
+      const fetchedClinics = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Clinic[];
+      
+      setClinics(fetchedClinics);
     } catch (err) {
       setError('Failed to fetch clinics');
       console.error('Error fetching clinics:', err);
+      setClinics([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
@@ -197,78 +109,74 @@ export const useGeoSearch = ({
   // Process clinics with distance calculation and filtering
   const processedClinics = useMemo(() => {
     if (!clinics.length) return [];
-
+    
     // Calculate distance for each clinic
-    const clinicsWithDistance: ClinicWithDistance[] = clinics.map(clinic => ({
+    const clinicsWithDistance = clinics.map(clinic => ({
       ...clinic,
       distance: calculateDistance(latitude, longitude, clinic.lat, clinic.lng)
     }));
-
+    
     // Filter by radius
     let filtered = clinicsWithDistance.filter(clinic => clinic.distance <= radius);
-
-    // Filter by service if specified
+    
+    // Filter by service
     if (serviceFilter) {
-      filtered = filtered.filter(clinic =>
-        clinic.services.some(service =>
+      filtered = filtered.filter(clinic => 
+        clinic.services.some(service => 
           service.toLowerCase().includes(serviceFilter.toLowerCase())
         )
       );
     }
-
-    // Filter by tier if specified
+    
+    // Filter by tier
     if (tierFilter && tierFilter.length > 0) {
-      filtered = filtered.filter(clinic =>
+      filtered = filtered.filter(clinic => 
         tierFilter.includes(clinic.tier)
       );
     }
-
-    // Sort by distance (closest first)
-    filtered.sort((a, b) => a.distance - b.distance);
-
-    return filtered;
+    
+    // Sort by distance
+    return filtered.sort((a, b) => a.distance - b.distance);
   }, [clinics, latitude, longitude, radius, serviceFilter, tierFilter]);
-
-  const totalWithinRadius = useMemo(() => {
-    return clinics.filter(clinic => 
-      calculateDistance(latitude, longitude, clinic.lat, clinic.lng) <= radius
-    ).length;
-  }, [clinics, latitude, longitude, radius]);
-
-  const refresh = () => {
-    fetchClinics();
-  };
 
   return {
     clinics: processedClinics,
     loading,
     error,
-    totalWithinRadius,
-    refresh
+    totalWithinRadius: processedClinics.length,
+    refresh: fetchClinics
   };
 };
 
-// Helper hook for getting user's current location
-// This hook has been deprecated in favor of useAutoLocation
-// which uses server-side IP geolocation instead of browser geolocation
+// Hook to get the user's current location
 export const useUserLocation = () => {
-  console.warn('useUserLocation is deprecated. Use useAutoLocation instead.');
-  
-  const [location, setLocation] = useState<{lat: number; lng: number} | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [location, setLocation] = useState<{latitude: number; longitude: number} | null>(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const getCurrentLocation = () => {
-    setError('This feature has been replaced with automatic location detection');
-    setLoading(false);
-  };
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported by your browser');
+      setLoading(false);
+      return;
+    }
 
-  return {
-    location,
-    loading,
-    error,
-    getCurrentLocation
-  };
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        });
+        setLoading(false);
+      },
+      (error) => {
+        setError(error.message);
+        setLoading(false);
+      }
+    );
+  }, []);
+
+  return { location, loading, error };
 };
 
 export default useGeoSearch;

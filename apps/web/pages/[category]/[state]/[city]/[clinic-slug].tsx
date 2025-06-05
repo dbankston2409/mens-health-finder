@@ -10,7 +10,39 @@ import StructuredData from '../../../../components/StructuredData';
 import TrackedPhoneLink from '../../../../components/TrackedPhoneLink';
 import SeoContentSection from '../../../../components/SeoContentSection';
 import { VisibleFAQSection } from '../../../../components/VisibleFAQSection';
-import { mockClinics, serviceCategories } from '../../../../lib/mockData';
+// Service categories data
+const serviceCategories = [
+  {
+    id: 'trt',
+    title: 'Testosterone Replacement Therapy',
+    description: 'Comprehensive TRT treatment programs'
+  },
+  {
+    id: 'ed-treatment',
+    title: 'ED Treatment',
+    description: 'Erectile dysfunction treatment'
+  },
+  {
+    id: 'hair-loss',
+    title: 'Hair Loss Treatment',
+    description: 'Hair restoration and prevention'
+  },
+  {
+    id: 'weight-loss',
+    title: 'Weight Loss',
+    description: 'Medical weight management'
+  },
+  {
+    id: 'peptides',
+    title: 'Peptide Therapy',
+    description: 'Advanced peptide treatments'
+  },
+  {
+    id: 'iv-therapy',
+    title: 'IV Therapy',
+    description: 'IV nutrient therapy'
+  }
+];
 import { 
   slugify, 
   createClinicSlug,
@@ -430,10 +462,8 @@ export default function ClinicDetailPage({
           <div className="container mx-auto px-4">
             <h2 className="text-2xl font-bold text-white mb-6">Other {categoryInfo.title} Clinics in {locationInfo.city}</h2>
             <div className="grid md:grid-cols-3 gap-4">
-              {mockClinics
-                .filter(c => c.city === locationInfo.city && c.id !== clinic.id && filterClinicsByCategory([c], categoryInfo.id).length > 0)
-                .slice(0, 3)
-                .map(relatedClinic => (
+              {/* Related clinics section - currently no data */}
+              {[].map(relatedClinic => (
                   <Link
                     key={relatedClinic.id}
                     href={createClinicUrlPath(categoryInfo.id, relatedClinic)}
@@ -485,39 +515,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     return { notFound: true };
   }
   
-  // Find clinics in this category, state, and city
-  const clinicsInCategory = filterClinicsByCategory(mockClinics, category);
-  const matchingClinics = clinicsInCategory.filter(clinic => 
-    clinic.state.toLowerCase() === state && 
-    slugify(clinic.city) === city
-  );
-  
-  // Find the specific clinic by slug
-  const matchingClinic = matchingClinics.find(clinic => 
-    createClinicSlug(clinic.name, clinic.city, clinic.state) === clinicSlug
-  );
-  
-  if (!matchingClinic) {
-    // Return 404 since we couldn't find the specific clinic
-    return { notFound: true };
-  }
-  
-  return {
-    props: {
-      categoryInfo: {
-        id: category,
-        title: categoryData.title,
-        description: categoryData.description
-      },
-      locationInfo: {
-        stateCode: matchingClinic.state,
-        stateFullName: getStateFullName(matchingClinic.state),
-        city: matchingClinic.city
-      },
-      clinic: matchingClinic,
-      clinicSlug
-    },
-    // Revalidate every day
-    revalidate: 86400
-  };
+  // Since we're removing mock data, return 404 for now
+  // This will need to be replaced with actual Firebase queries
+  return { notFound: true };
 };

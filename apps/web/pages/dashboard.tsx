@@ -6,7 +6,6 @@ import ProtectedRoute from '../components/ProtectedRoute';
 import { useAuth } from '../lib/contexts/authContext';
 import { collection, query, where, getDocs, orderBy, limit, doc, deleteDoc, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../lib/firebase';
-import { mockClinics } from '../lib/mockData';
 
 // Type for clinic data
 interface Clinic {
@@ -70,45 +69,7 @@ const UserDashboard = () => {
       setIsLoading(true);
       
       try {
-        // Using mock data in development to bypass Firebase permission issues
-        if (process.env.NODE_ENV === 'development') {
-          // Create sample saved providers
-          const savedProvidersData = [1, 4, 7].map((clinicId, index) => ({
-            id: `mock-saved-${index}`,
-            userId: currentUser.uid,
-            clinicId,
-            createdAt: new Date(Date.now() - (index * 24 * 60 * 60 * 1000)),
-            clinic: mockClinics.find(clinic => clinic.id === clinicId)
-          })) as SavedProvider[];
-          
-          setSavedProviders(savedProvidersData);
-          
-          // Create sample user reviews
-          const reviewsData = [2, 5, 8].map((clinicId, index) => ({
-            id: `mock-review-${index}`,
-            userId: currentUser.uid,
-            clinicId,
-            rating: 4 + (index % 2),
-            text: `This is a sample review ${index + 1} for testing purposes. The staff was great and the facility was clean.`,
-            createdAt: new Date(Date.now() - (index * 15 * 24 * 60 * 60 * 1000)),
-            clinic: mockClinics.find(clinic => clinic.id === clinicId)
-          })) as UserReview[];
-          
-          setUserReviews(reviewsData);
-          
-          // Filter local clinics by zip code and sort by tier
-          const sortedClinics = [...mockClinics].sort((a, b) => {
-            const tierOrder = { 'high': 0, 'low': 1, 'free': 2 };
-            return tierOrder[a.tier] - tierOrder[b.tier];
-          });
-          
-          setLocalClinics(sortedClinics);
-          
-          setIsLoading(false);
-          return;
-        }
-        
-        // Real Firebase queries for production
+        // Real Firebase queries
         // Fetch saved providers
         const savedProvidersRef = collection(db, 'savedProviders');
         const savedProvidersQuery = query(
@@ -122,8 +83,8 @@ const UserDashboard = () => {
           id: doc.id,
           ...doc.data(),
           createdAt: doc.data().createdAt?.toDate() || new Date(),
-          // Add clinic details by matching with mockClinics
-          clinic: mockClinics.find(clinic => clinic.id === doc.data().clinicId)
+          // TODO: Add clinic details from Firebase
+          clinic: undefined
         })) as SavedProvider[];
         
         setSavedProviders(savedProvidersData);
@@ -141,23 +102,14 @@ const UserDashboard = () => {
           id: doc.id,
           ...doc.data(),
           createdAt: doc.data().createdAt?.toDate() || new Date(),
-          // Add clinic details by matching with mockClinics
-          clinic: mockClinics.find(clinic => clinic.id === doc.data().clinicId)
+          // TODO: Add clinic details from Firebase
+          clinic: undefined
         })) as UserReview[];
         
         setUserReviews(reviewsData);
         
-        // Filter local clinics by zip code and sort by tier
-        if (userData.zipCode) {
-          // In a real implementation, we would filter based on proximity to zipCode
-          // For now, we'll just sort the mockClinics by tier
-          const sortedClinics = [...mockClinics].sort((a, b) => {
-            const tierOrder = { 'high': 0, 'low': 1, 'free': 2 };
-            return tierOrder[a.tier] - tierOrder[b.tier];
-          });
-          
-          setLocalClinics(sortedClinics);
-        }
+        // TODO: Fetch local clinics from Firebase based on zip code
+        setLocalClinics([]);
       } catch (error) {
         console.error('Error fetching user data:', error);
       } finally {

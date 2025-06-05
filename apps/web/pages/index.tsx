@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 // Remove Map imports - these functions don't exist in Map component
 import { getServiceSlug } from '../lib/utils';
-import { mockBlogPosts, mockClinics, BlogPost } from '../lib/mockData';
 import LocationAwareSearch from '../components/LocationAwareSearch';
 import FeaturedClinics from '../components/FeaturedClinics';
 import { useAutoLocation } from '../hooks/useAutoLocation';
@@ -28,35 +27,7 @@ const Map = dynamic(() => import('../components/Map'), {
 // Default center coordinates for the US map view
 const DEFAULT_US_CENTER = { lat: 39.8283, lng: -98.5795, zoom: 4 };
 
-// Mock data for featured clinics
-const featuredClinics = [
-  {
-    id: 1,
-    name: 'Prime Men\'s Health',
-    city: 'Austin',
-    state: 'TX',
-    rating: 5.0,
-    reviewCount: 24,
-    services: ['TRT', 'ED Treatment', 'Weight Loss']},
-  {
-    id: 4,
-    name: 'Superior Men\'s Clinic',
-    city: 'San Antonio',
-    state: 'TX',
-    rating: 4.7,
-    reviewCount: 29,
-    services: ['TRT', 'ED Treatment', 'Weight Loss', 'Hair Loss']},
-  {
-    id: 2,
-    name: 'Elite Men\'s Clinic',
-    city: 'Dallas',
-    state: 'TX',
-    rating: 4.8,
-    reviewCount: 36,
-    services: ['TRT', 'Hair Loss', 'ED Treatment']}];
 
-// Import service categories from mockData and add icons
-import { serviceCategories as mockServiceCategories } from '../lib/mockData';
 
 // Service categories with icons
 const serviceCategories = [
@@ -117,7 +88,7 @@ export default function Home() {
   const [hasAttemptedAutoLocation, setHasAttemptedAutoLocation] = useState(false);
   // Initialize with US view by default
   const [userLocation, setUserLocation] = useState<{lat: number; lng: number; zoom: number}>(DEFAULT_US_CENTER);
-  const [nearbyClinics, setNearbyClinics] = useState(mockClinics);
+  const [nearbyClinics, setNearbyClinics] = useState([]);
   
   // Use auto-location hook
   const { location: autoLocation, isLoading: isLocating, error: autoLocationError } = useAutoLocation();
@@ -282,8 +253,8 @@ export default function Home() {
                   <svg className="w-5 h-5 mr-2 text-primary" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                   </svg>
-                  {nearbyClinics.length === mockClinics.length 
-                    ? 'All Available Clinics' 
+                  {nearbyClinics.length === 0 
+                    ? 'No Clinics Found' 
                     : `Clinics Within 5 Miles (${nearbyClinics.length})`}
                 </h2>
                 <p className="text-[#AAAAAA] text-sm">
@@ -464,12 +435,8 @@ export default function Home() {
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-            {mockBlogPosts.length > 0 ? (
-              // Sort posts by date (newest first) and take the first 3
-              mockBlogPosts
-                .sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime())
-                .slice(0, 3)
-                .map((post) => (
+            {/* Blog posts section - currently no data */}
+            {
                   <div key={post.id} className="card overflow-hidden flex flex-col h-full transition-transform hover:translate-y-[-4px]">
                     {/* Featured Image */}
                     <Link href={`/blog/${post.slug}`} className="block">
@@ -514,13 +481,10 @@ export default function Home() {
                       </Link>
                     </div>
                   </div>
-                ))
-            ) : (
-              // Fallback when no blog posts are available
               <div className="col-span-3 text-center py-16">
                 <div className="text-xl text-[#AAAAAA]">New insights coming soon</div>
               </div>
-            )}
+            }
           </div>
           
           <div className="mt-10 text-center">
