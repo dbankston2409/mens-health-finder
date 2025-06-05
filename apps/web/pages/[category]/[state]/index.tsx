@@ -46,6 +46,7 @@ import {
   getStateSlug,
   getServiceSlug
 } from '../../../lib/utils';
+import { mockClinics } from '../../../lib/mockData';
 
 interface StatePageProps {
   categoryInfo: {

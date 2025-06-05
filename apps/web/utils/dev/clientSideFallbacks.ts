@@ -73,3 +73,19 @@ export const getClinicQueueData = async () => {
 export const getClinicDetails = async (id: string) => {
   return null;
 };
+
+// Client-side fallback for clinic engagement data
+export const getAllClinicsEngagement = async () => {
+  return [];
+};
+
+// Client-side fallback for single clinic engagement
+export const getClinicEngagement = async (clinicId: string) => {
+  return {
+    clinicId,
+    clinicName: '',
+    totalViews: 0,
+    viewsThisMonth: 0,
+    lastViewed: null
+  };
+};

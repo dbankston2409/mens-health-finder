@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { useClientsData, Clinic } from '../../../utils/admin/useClinicData';
+import { useClinicData, Clinic } from '../../../utils/admin/useClinicData';
 import ClientTable from './ClientTable';
 import ClientFilters from './ClientFilters';
 import ClientQuickActions from './ClientQuickActions';
@@ -56,7 +56,7 @@ const ClientManagerPanel: React.FC = () => {
     return { ...viewFilter, ...filters };
   }, [currentView, filters]);
 
-  const { clients, loading, error, totalCount } = useClientsData(viewFilters, currentPage, pageSize);
+  const { clients, loading, error, totalCount } = useClinicData(viewFilters, currentPage, pageSize);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);

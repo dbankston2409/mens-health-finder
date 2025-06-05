@@ -36,4 +36,4 @@ const db = getFirestore(firebaseApp);
 // Initialize Auth
 const auth = getAuth(firebaseApp);
 
-export { db, auth };
+export { db, auth, firebaseApp as app };
