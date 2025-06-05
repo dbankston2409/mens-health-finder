@@ -5,37 +5,170 @@ import * as cheerio from 'cheerio';
  * mentioned on a website, including specific medications, peptides, and brand names
  */
 
-// Common treatment patterns to identify
-const TREATMENT_PATTERNS = [
-  // Specific medications and compounds
-  /\b(bpc-?157|tb-?500|cjc-?1295|ipamorelin|sermorelin|mk-?677|ghrp-?[26])\b/gi,
-  /\b(semaglutide|ozempic|wegovy|tirzepatide|mounjaro|rybelsus|saxenda)\b/gi,
-  /\b(testosterone|cypionate|enanthate|propionate|sustanon|androgel)\b/gi,
-  /\b(hcg|human chorionic gonadotropin|pregnyl|ovidrel)\b/gi,
-  /\b(cialis|viagra|sildenafil|tadalafil|levitra|vardenafil)\b/gi,
-  /\b(finasteride|propecia|dutasteride|avodart|minoxidil|rogaine)\b/gi,
-  /\b(anastrozole|arimidex|letrozole|femara|exemestane|aromasin)\b/gi,
-  /\b(clomid|clomiphene|nolvadex|tamoxifen|enclomiphene)\b/gi,
-  /\b(metformin|glucophage|jardiance|invokana|farxiga)\b/gi,
-  /\b(nad\+?|nicotinamide adenine dinucleotide|nmn|nr)\b/gi,
-  /\b(glutathione|gsh|liposomal glutathione)\b/gi,
-  
-  // Treatment types
-  /\b(injection|infusion|therapy|treatment|procedure|protocol)\b/gi,
-  /\b(hormone|peptide|vitamin|nutrient|supplement)\s+(therapy|treatment|injection|infusion)/gi,
-  /\b(iv|intravenous|intramuscular|subcutaneous|sublingual)\s+\w+/gi,
-  
-  // Specific therapies
-  /\b(prp|platelet.?rich.?plasma|stem.?cell|exosome)\b/gi,
-  /\b(shockwave|acoustic.?wave|gainswave|eswt)\b/gi,
-  /\b(cryo|cold.?therapy|red.?light|infrared|pemf)\b/gi,
-  /\b(hyperbaric|hbot|oxygen.?therapy|ozone)\b/gi,
-  /\b(ketamine|tms|transcranial|psychedelic)\b/gi,
-  
-  // Brand names and devices
-  /\b(phoenix|vitality|renew|restore|optimize|enhance)\s+\w+/gi,
-  /\b(bioidentical|compound|custom|personalized)\s+\w+/gi
-];
+// Comprehensive treatment patterns organized by category
+const TREATMENT_PATTERNS = {
+  // HORMONE OPTIMIZATION
+  hormone_optimization: [
+    // Testosterone therapies
+    /\b(testosterone cypionate|test cyp|test-?c|cypionate|depo-?testosterone)\b/gi,
+    /\b(testosterone enanthate|test e|test-?e|enanthate|delatestryl)\b/gi,
+    /\b(testosterone propionate|test p|test-?p|propionate)\b/gi,
+    /\b(testosterone undecanoate|jatenzo|aveed|nebido)\b/gi,
+    /\b(androgel|testim|fortesta|axiron|natesto|vogelxo)\b/gi,
+    // Thyroid optimization
+    /\b(levothyroxine|synthroid|unithroid|levoxyl)\b/gi,
+    /\b(liothyronine|cytomel|t3)\b/gi,
+    /\b(armour thyroid|np thyroid|thyroid usp|desiccated thyroid)\b/gi,
+    // DHEA and other hormones
+    /\b(dhea|dehydroepiandrosterone|7-?keto dhea|micronized dhea)\b/gi,
+    // Estrogen blockers and support
+    /\b(anastrozole|arimidex|letrozole|femara|exemestane|aromasin)\b/gi,
+    /\b(clomiphene|clomid|enclomiphene|nolvadex|tamoxifen)\b/gi,
+    /\b(hcg|human chorionic gonadotropin|pregnyl|ovidrel)\b/gi
+  ],
+
+  // SEXUAL HEALTH
+  sexual_health: [
+    // ED medications
+    /\b(sildenafil|viagra|generic viagra)\b/gi,
+    /\b(tadalafil|cialis|generic cialis)\b/gi,
+    /\b(vardenafil|levitra|staxyn)\b/gi,
+    /\b(avanafil|stendra)\b/gi,
+    // Injectable ED treatments
+    /\b(trimix|tri-?mix|triple mix|bimix|bi-?mix|quadmix|quad-?mix)\b/gi,
+    /\b(alprostadil|caverject|edex|muse)\b/gi,
+    // Sexual enhancement
+    /\b(pt-?141|bremelanotide|vyleesi)\b/gi,
+    /\b(oxytocin|kisspeptin|melanotan)\b/gi,
+    // Procedures
+    /\b(p-?shot|priapus shot|prp penis|penile prp)\b/gi,
+    /\b(gainswave|gains wave|shockwave therapy|acoustic wave|eswt)\b/gi,
+    /\b(phoenix|pulse wave|radial wave)\b/gi
+  ],
+
+  // PEPTIDES & PERFORMANCE
+  peptides_performance: [
+    // Growth hormone secretagogues
+    /\b(cjc-?1295|cjc 1295|mod grf)\b/gi,
+    /\b(ipamorelin|ipa|ipam)\b/gi,
+    /\b(sermorelin|serm|grf)\b/gi,
+    /\b(tesamorelin|egrifta)\b/gi,
+    /\b(mk-?677|mk 677|ibutamoren)\b/gi,
+    /\b(ghrp-?[26]|ghrp [26]|hexarelin)\b/gi,
+    /\b(gh frag 176-?191|hgh frag|fragment 176)\b/gi,
+    /\b(igf-?1|igf1|lr3|des)\b/gi,
+    // Recovery peptides
+    /\b(bpc-?157|bpc 157|body protection compound)\b/gi,
+    /\b(tb-?500|tb 500|thymosin beta)\b/gi,
+    /\b(aod-?9604|aod 9604)\b/gi,
+    /\b(ghk-?cu|copper peptide)\b/gi,
+    // Other performance peptides
+    /\b(mots-?c|mitochondrial peptide)\b/gi,
+    /\b(5-?amino-?1mq|5amino1mq)\b/gi,
+    /\b(ll-?37|thymosin alpha)\b/gi,
+    /\b(epitalon|epithalon|semax|selank)\b/gi
+  ],
+
+  // HAIR LOSS & AESTHETICS
+  hair_aesthetics: [
+    // Hair medications
+    /\b(finasteride|propecia|proscar)\b/gi,
+    /\b(minoxidil|rogaine|foam|topical minoxidil|oral minoxidil)\b/gi,
+    /\b(dutasteride|avodart)\b/gi,
+    // Hair procedures
+    /\b(prp scalp|prp hair|platelet rich plasma hair)\b/gi,
+    /\b(hair transplant|fue|fut|follicular unit)\b/gi,
+    /\b(lllt|low level laser|laser cap|laser helmet)\b/gi,
+    /\b(microneedling|dermaroller|dermapen)\b/gi,
+    /\b(exosome scalp|stem cell hair)\b/gi,
+    // Aesthetics
+    /\b(botox|botulinum|dysport|xeomin|jeuveau)\b/gi,
+    /\b(dermal fillers?|juvederm|restylane|sculptra|radiesse)\b/gi,
+    /\b(prp facial|vampire facial|platelet rich plasma face)\b/gi,
+    /\b(chemical peel|glycolic|salicylic|tca peel)\b/gi
+  ],
+
+  // WEIGHT LOSS & METABOLIC
+  weight_metabolic: [
+    // GLP-1 medications
+    /\b(semaglutide|ozempic|wegovy|rybelsus)\b/gi,
+    /\b(tirzepatide|mounjaro|zepbound)\b/gi,
+    /\b(liraglutide|saxenda|victoza)\b/gi,
+    // Other weight loss meds
+    /\b(phentermine|adipex|lomaira)\b/gi,
+    /\b(topiramate|topamax|qsymia)\b/gi,
+    /\b(contrave|naltrexone|bupropion)\b/gi,
+    /\b(orlistat|xenical|alli)\b/gi,
+    /\b(metformin|glucophage)\b/gi,
+    // Injectable nutrients
+    /\b(lipotropic|lipo-?c|mic|mic-?b12)\b/gi,
+    /\b(b12 injection|methylcobalamin|cyanocobalamin)\b/gi,
+    /\b(l-?carnitine|carnitine injection)\b/gi,
+    /\b(glutathione|gsh|gluta)\b/gi
+  ],
+
+  // IV & INJECTION THERAPY
+  iv_therapy: [
+    // Popular IV cocktails
+    /\b(myers cocktail|myer's cocktail|myers' cocktail)\b/gi,
+    /\b(nad\+?|nad iv|nicotinamide adenine dinucleotide)\b/gi,
+    /\b(glutathione iv|glutathione push|gluta drip)\b/gi,
+    /\b(vitamin c iv|high dose c|ascorbic acid iv)\b/gi,
+    // Hydration and recovery
+    /\b(saline iv|lactated ringer|lr iv|hydration drip)\b/gi,
+    /\b(b-?complex|b complex iv|b vitamin drip)\b/gi,
+    /\b(magnesium iv|mag drip|magnesium push)\b/gi,
+    // Performance IVs
+    /\b(amino acid iv|amino blend|bcaa iv)\b/gi,
+    /\b(coq10|coenzyme q10|ubiquinol)\b/gi,
+    /\b(alpha lipoic acid|ala iv)\b/gi,
+    /\b(tri-?amino|arginine|citrulline)\b/gi
+  ],
+
+  // REGENERATIVE MEDICINE  
+  regenerative: [
+    // PRP variations
+    /\b(prp|platelet rich plasma|prp injection|prp therapy)\b/gi,
+    /\b(prf|platelet rich fibrin|advanced prf)\b/gi,
+    // Stem cell therapies
+    /\b(stem cell|stem cells|umbilical stem|adipose stem)\b/gi,
+    /\b(bmac|bone marrow aspirate)\b/gi,
+    /\b(exosomes?|exosome therapy|cell free)\b/gi,
+    /\b(amniotic|placental|wharton's jelly)\b/gi,
+    // Wave therapies
+    /\b(shockwave|shock wave|acoustic wave|eswt)\b/gi,
+    /\b(gainswave|phoenix|pulse wave|radial wave)\b/gi,
+    // Light and electromagnetic
+    /\b(red light therapy|lllt|photobiomodulation|infrared)\b/gi,
+    /\b(pemf|pulsed electromagnetic|magnetic therapy)\b/gi,
+    /\b(cryotherapy|cryo|cold therapy|ice therapy)\b/gi
+  ],
+
+  // DIAGNOSTICS & PANELS
+  diagnostics: [
+    // Hormone testing
+    /\b(total testosterone|free testosterone|bioavailable testosterone)\b/gi,
+    /\b(estradiol|e2|sensitive estradiol)\b/gi,
+    /\b(shbg|sex hormone binding globulin)\b/gi,
+    /\b(lh|luteinizing hormone|fsh|follicle stimulating)\b/gi,
+    /\b(dhea-?s|dhea sulfate|igf-?1|growth factor)\b/gi,
+    // Metabolic panels
+    /\b(cbc|complete blood count|cmp|comprehensive metabolic)\b/gi,
+    /\b(lipid panel|cholesterol panel|nmr lipoprofile)\b/gi,
+    /\b(a1c|hemoglobin a1c|glucose|insulin)\b/gi,
+    /\b(hs-?crp|c-?reactive protein|homocysteine)\b/gi,
+    // Thyroid testing
+    /\b(tsh|thyroid stimulating|free t3|free t4|reverse t3)\b/gi,
+    /\b(tpo antibodies|thyroglobulin|anti-?thyroid)\b/gi,
+    // Specialized testing
+    /\b(mthfr|methylation|apoe|genetic testing)\b/gi,
+    /\b(micronutrient|spectracell|nutreval)\b/gi,
+    /\b(gi-?map|gut testing|food sensitivity|igg)\b/gi
+  ]
+};
+
+// Flatten all patterns for backward compatibility
+const TREATMENT_PATTERNS_FLAT = Object.values(TREATMENT_PATTERNS).flat();
 
 // Medical terminology indicators
 const MEDICAL_INDICATORS = [
@@ -84,23 +217,30 @@ export class TreatmentExtractor {
     const textContent = $('body').text();
     const lowerContent = textContent.toLowerCase();
     
-    // Extract treatments using patterns
-    for (const pattern of TREATMENT_PATTERNS) {
-      const matches = textContent.match(pattern) || [];
-      for (const match of matches) {
-        const normalized = this.normalizeTreatment(match);
-        if (normalized && this.isValidTreatment(normalized, lowerContent)) {
-          const existing = treatments.get(normalized.toLowerCase());
-          if (existing) {
-            existing.frequency++;
-          } else {
-            treatments.set(normalized.toLowerCase(), {
-              term: normalized,
-              type: this.classifyTreatment(normalized),
-              confidence: this.calculateConfidence(normalized, lowerContent),
-              context: this.extractContext(normalized, textContent),
-              frequency: 1
-            });
+    // Extract treatments using categorized patterns
+    for (const [categoryKey, patterns] of Object.entries(TREATMENT_PATTERNS)) {
+      for (const pattern of patterns) {
+        const matches = textContent.match(pattern) || [];
+        for (const match of matches) {
+          const normalized = this.normalizeTreatment(match);
+          if (normalized && this.isValidTreatment(normalized, lowerContent)) {
+            const existing = treatments.get(normalized.toLowerCase());
+            if (existing) {
+              existing.frequency++;
+              // Update category if this match has higher confidence
+              if (!existing.category && categoryKey) {
+                existing.category = this.mapCategoryKeyToName(categoryKey);
+              }
+            } else {
+              treatments.set(normalized.toLowerCase(), {
+                term: normalized,
+                category: this.mapCategoryKeyToName(categoryKey),
+                type: this.classifyTreatment(normalized),
+                confidence: this.calculateConfidence(normalized, lowerContent),
+                context: this.extractContext(normalized, textContent),
+                frequency: 1
+              });
+            }
           }
         }
       }
@@ -191,11 +331,25 @@ export class TreatmentExtractor {
   private classifyTreatment(term: string): ExtractedTreatment['type'] {
     const lower = term.toLowerCase();
     
-    if (/peptide|bpc|tb-|cjc|ipamorelin|ghrp/i.test(lower)) return 'peptide';
-    if (/injection|infusion|iv|therapy/i.test(lower)) return 'therapy';
-    if (/procedure|surgery|implant/i.test(lower)) return 'procedure';
-    if (/vitamin|supplement|nutrient|mineral/i.test(lower)) return 'supplement';
-    if (/[a-z]+ide|[a-z]+one|[a-z]+in|[a-z]+ol/i.test(lower)) return 'medication';
+    // Peptides - check first as they're very specific
+    if (/bpc.?157|tb.?500|cjc.?1295|ipamorelin|sermorelin|ghrp|ghk.?cu|mots.?c|aod.?9604/i.test(lower)) return 'peptide';
+    
+    // Procedures - specific medical procedures
+    if (/transplant|prp|platelet.?rich|stem.?cell|exosome|shockwave|acoustic.?wave|gainswave|p.?shot|priapus/i.test(lower)) return 'procedure';
+    
+    // Medications - pharmaceutical drugs
+    if (/testosterone|estradiol|sildenafil|tadalafil|semaglutide|tirzepatide|phentermine|finasteride|minoxidil/i.test(lower)) return 'medication';
+    if (/cypionate|enanthate|propionate|undecanoate/i.test(lower)) return 'medication';
+    if (/androgel|testim|ozempic|wegovy|cialis|viagra/i.test(lower)) return 'medication';
+    
+    // Supplements - vitamins and nutrients
+    if (/vitamin|b12|b.?complex|glutathione|nad\+?|coq10|dhea|mineral|amino.?acid/i.test(lower)) return 'supplement';
+    
+    // Therapy - treatment modalities
+    if (/therapy|treatment|injection|infusion|iv.?drip|hydration/i.test(lower)) return 'therapy';
+    
+    // Fallback pattern for medications (chemical naming patterns)
+    if (/[a-z]+(ide|one|in|ol|ate|ine|rone|lide|tide)$/i.test(lower)) return 'medication';
     
     return 'unknown';
   }
@@ -307,23 +461,50 @@ export class TreatmentExtractor {
   private detectCategories(treatments: ExtractedTreatment[], content: string): string[] {
     const categories = new Set<string>();
     
-    const categoryMap = {
-      'hormone': /hormone|testosterone|hrt|trt|estrogen|thyroid/i,
-      'weight-loss': /weight|semaglutide|ozempic|wegovy|tirzepatide|mounjaro/i,
-      'sexual-health': /erectile|ed |cialis|viagra|sexual|libido/i,
-      'peptides': /peptide|bpc|tb-500|cjc|ipamorelin/i,
-      'anti-aging': /anti-?aging|longevity|nad|regenerative/i,
-      'aesthetics': /botox|filler|prp|hair|aesthetic/i,
-      'wellness': /vitamin|nutrient|iv|infusion|wellness/i
+    // Add categories from found treatments
+    treatments.forEach(treatment => {
+      if (treatment.category) {
+        categories.add(treatment.category);
+      }
+    });
+    
+    // Also check content for category indicators
+    const categoryIndicators = {
+      'hormone-optimization': /hormone.{0,20}(therapy|treatment|optimization)|hrt|trt|testosterone.{0,20}(therapy|replacement)/i,
+      'sexual-health': /sexual.{0,20}(health|wellness|performance)|erectile.{0,20}dysfunction|ed.{0,20}treatment/i,
+      'peptides-performance': /peptide.{0,20}(therapy|treatment)|performance.{0,20}enhancement/i,
+      'hair-loss-aesthetics': /hair.{0,20}(loss|restoration|transplant)|aesthetic.{0,20}(treatment|service)/i,
+      'weight-loss-metabolic': /weight.{0,20}(loss|management)|metabolic.{0,20}(health|optimization)/i,
+      'iv-injection-therapy': /iv.{0,20}(therapy|treatment|drip)|injection.{0,20}therapy|infusion/i,
+      'regenerative-medicine': /regenerative.{0,20}medicine|stem.{0,20}cell|prp.{0,20}therapy/i,
+      'diagnostics-panels': /diagnostic.{0,20}(test|panel)|lab.{0,20}(test|work)|blood.{0,20}(test|panel)/i
     };
     
-    for (const [category, pattern] of Object.entries(categoryMap)) {
-      if (treatments.some(t => pattern.test(t.term)) || pattern.test(content)) {
+    for (const [category, pattern] of Object.entries(categoryIndicators)) {
+      if (pattern.test(content)) {
         categories.add(category);
       }
     }
     
     return Array.from(categories);
+  }
+  
+  /**
+   * Map category keys to standardized names
+   */
+  private mapCategoryKeyToName(key: string): string {
+    const mapping: Record<string, string> = {
+      'hormone_optimization': 'hormone-optimization',
+      'sexual_health': 'sexual-health',
+      'peptides_performance': 'peptides-performance',
+      'hair_aesthetics': 'hair-loss-aesthetics',
+      'weight_metabolic': 'weight-loss-metabolic',
+      'iv_therapy': 'iv-injection-therapy',
+      'regenerative': 'regenerative-medicine',
+      'diagnostics': 'diagnostics-panels'
+    };
+    
+    return mapping[key] || key;
   }
   
   /**
