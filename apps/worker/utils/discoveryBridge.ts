@@ -1,5 +1,5 @@
-import { db } from '../../lib/firebase';
-import { doc, setDoc, getDoc, collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { doc, setDoc, getDoc, collection, query, where, getDocs, orderBy, limit } from '../lib/firebase-compat';
 import { DiscoveryTaskConfig } from '../types/discovery';
 
 /**

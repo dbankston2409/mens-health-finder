@@ -394,7 +394,7 @@ export class TreatmentExtractor {
     }
     
     // Contains treatment patterns
-    return TREATMENT_PATTERNS.some(pattern => pattern.test(text));
+    return Object.values(TREATMENT_PATTERNS).flat().some(pattern => pattern.test(text));
   }
   
   /**

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- 
+    MOCK PROFILE: Dallas Hormone Center
+    This represents the exact output of the Men's Health Finder system
+    
+    Data captured by the system:
+    - Basic info from Google Places API (name, address, phone, website)
+    - Services scraped from website (up to 25 pages crawled)
+    - AI-generated SEO content (700-1000 words)
+    - AI-generated FAQs (8-10 questions, stored in structured data only)
+    - Reviews from internal system + external sources
+    - Tier assignment (FREE, BASIC, ADVANCED)
+    
+    Note: FAQs are NOT displayed visually, only included in Schema.org markup for SEO
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dallas Hormone Center - Men's Health Clinic | TRT, Peptides, Weight Loss</title>
+    <meta name="description" content="Dallas Hormone Center offers comprehensive men's health services including Testosterone Replacement Therapy, Semaglutide weight loss, BPC-157 peptide therapy, and NAD+ IV treatments. Board certified providers with 15+ years experience.">
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MedicalClinic",
+      "name": "Dallas Hormone Center",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "123 Main Street, Suite 100",
+        "addressLocality": "Dallas",
+        "addressRegion": "TX",
+        "postalCode": "75201"
+      },
+      "telephone": "(214) 555-0123",
+      "url": "https://dallashormonecenter.com",
+      "medicalSpecialty": ["Hormone Therapy", "Weight Loss", "Peptide Therapy"],
+      "availableService": [
+        {"@type": "MedicalProcedure", "name": "Testosterone Replacement Therapy"},
+        {"@type": "MedicalProcedure", "name": "Semaglutide Weight Loss"},
+        {"@type": "MedicalProcedure", "name": "BPC-157 Peptide Therapy"},
+        {"@type": "MedicalProcedure", "name": "NAD+ IV Therapy"}
+      ]
+    }
+    </script>
+    
+    <!-- FAQ Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What men's health services does Dallas Hormone Center offer?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Dallas Hormone Center specializes in Testosterone Replacement Therapy (TRT), medical weight loss using Semaglutide (Ozempic/Wegovy), peptide therapies including BPC-157 and TB-500, NAD+ IV therapy, GAINSWave ED treatment, and comprehensive hormone testing with DEXA scans."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Dallas Hormone Center offer testosterone replacement therapy?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, Dallas Hormone Center provides comprehensive TRT programs including Testosterone Cypionate injections (200mg/ml), ongoing hormone monitoring, and personalized treatment plans managed by board-certified providers."
+          }
+        }
+      ]
+    }
+    </script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0a; color: #e5e5e5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Header */
+        .header { background: #111; border-bottom: 1px solid #222; padding: 20px 0; }
+        .clinic-header { background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); padding: 40px 0; }
+        .clinic-info { display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 30px; }
+        .clinic-details h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .tier-badge { display: inline-block; background: #f59e0b; color: #000; padding: 4px 12px; border-radius: 20px; font-size: 0.875rem; font-weight: 600; margin-left: 10px; }
+        .meta-info { display: flex; gap: 20px; margin-top: 10px; font-size: 0.875rem; color: #9ca3af; }
+        .rating { color: #fbbf24; }
+        
+        /* CTAs */
+        .cta-buttons { display: flex; gap: 15px; }
+        .btn { padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; }
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-primary:hover { background: #2563eb; transform: translateY(-1px); }
+        .btn-secondary { background: #374151; color: white; }
+        .btn-secondary:hover { background: #4b5563; }
+        
+        /* Tabs */
+        .tabs { background: #111; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 100; }
+        .tab-list { display: flex; gap: 30px; overflow-x: auto; }
+        .tab { padding: 20px 0; border-bottom: 2px solid transparent; color: #9ca3af; cursor: pointer; transition: all 0.2s; }
+        .tab.active { color: #3b82f6; border-bottom-color: #3b82f6; }
+        
+        /* Content */
+        .content { padding: 40px 0; }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        
+        /* Cards */
+        .card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+        .card h3 { margin-bottom: 16px; font-size: 1.25rem; }
+        
+        /* Services */
+        .services-grid { display: grid; gap: 15px; }
+        .service-item { display: flex; align-items: center; gap: 12px; padding: 16px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; }
+        .check-icon { color: #10b981; font-size: 1.25rem; }
+        
+        /* SEO Content */
+        .seo-content { line-height: 1.8; color: #d1d5db; }
+        .seo-content h2 { margin: 30px 0 15px; color: #f3f4f6; }
+        .seo-content h3 { margin: 25px 0 12px; color: #e5e7eb; }
+        .seo-content p { margin-bottom: 15px; }
+        
+        /* Map */
+        .map-container { height: 400px; background: #1f2937; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #6b7280; }
+        
+        /* Reviews */
+        .review { padding: 20px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; margin-bottom: 15px; }
+        .review-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .stars { color: #fbbf24; }
+        
+        /* FAQ */
+        .faq-container { space-y: 4; }
+        .faq-item { border: 1px solid #374151; border-radius: 8px; margin-bottom: 16px; overflow: hidden; transition: all 0.2s; }
+        .faq-item:hover { border-color: #4b5563; }
+        .faq-question { width: 100%; padding: 20px; text-align: left; background: transparent; border: none; color: white; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 500; transition: background 0.2s; }
+        .faq-question:hover { background: rgba(255, 255, 255, 0.05); }
+        .faq-icon { transition: transform 0.2s; color: #9ca3af; }
+        .faq-icon.rotated { transform: rotate(180deg); }
+        .faq-answer { padding: 0 20px 20px; color: #d1d5db; line-height: 1.7; }
+        .faq-answer p { margin: 0; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="font-size: 1.5rem; font-weight: bold; color: #3b82f6;">Men's Health Finder</div>
+                <nav style="display: flex; gap: 30px;">
+                    <a href="#" style="color: #9ca3af; text-decoration: none;">Search</a>
+                    <a href="#" style="color: #9ca3af; text-decoration: none;">Services</a>
+                    <a href="#" style="color: #9ca3af; text-decoration: none;">About</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Clinic Header -->
+    <section class="clinic-header">
+        <div class="container">
+            <div class="clinic-info">
+                <div class="clinic-details">
+                    <h1>
+                        Dallas Hormone Center
+                        <span class="tier-badge">ADVANCED</span>
+                    </h1>
+                    <p style="color: #9ca3af;">Hormone Optimization Clinic</p>
+                    <div class="meta-info">
+                        <span>📍 123 Main Street, Dallas, TX 75201</span>
+                        <span class="rating">⭐ 4.8 (127 reviews)</span>
+                    </div>
+                </div>
+                <div class="cta-buttons">
+                    <a href="tel:2145550123" class="btn btn-primary">
+                        📞 Call (214) 555-0123
+                    </a>
+                    <a href="https://dallashormonecenter.com" target="_blank" class="btn btn-secondary">
+                        🌐 Visit Website
+                    </a>
+                    <a href="https://dallashormonecenter.com/schedule" target="_blank" class="btn btn-primary">
+                        📅 Schedule Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tabs -->
+    <nav class="tabs">
+        <div class="container">
+            <div class="tab-list">
+                <div class="tab active" onclick="showTab('about')">About</div>
+                <div class="tab" onclick="showTab('services')">Services</div>
+                <div class="tab" onclick="showTab('location')">Location</div>
+                <div class="tab" onclick="showTab('reviews')">Reviews</div>
+                <div class="tab" onclick="showTab('faq')">FAQ</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <main class="content">
+        <div class="container">
+            <!-- About Tab -->
+            <div id="about" class="content-section active">
+                <div style="max-width: 800px;">
+                    <div class="seo-content">
+                        <h2>Dallas Hormone Center: Premier Men's Health and Hormone Optimization</h2>
+                        
+                        <p>Located in the heart of Dallas, Texas, Dallas Hormone Center stands as a leading provider of comprehensive men's health services, specializing in cutting-edge hormone optimization and wellness treatments. With over 15 years of experience and board-certified providers, this state-of-the-art facility offers personalized treatment plans designed to help men reclaim their vitality and optimize their health.</p>
+
+                        <h3>Comprehensive Testosterone Replacement Therapy</h3>
+                        
+                        <p>At the core of Dallas Hormone Center's services is their advanced Testosterone Replacement Therapy (TRT) program. Utilizing pharmaceutical-grade Testosterone Cypionate (200mg/ml), their medical team creates customized protocols based on comprehensive hormone panels and ongoing monitoring. Unlike one-size-fits-all approaches, each patient receives individualized dosing and injection schedules, whether weekly or bi-weekly, to maintain optimal testosterone levels throughout treatment.</p>
+
+                        <p>The clinic's TRT program goes beyond simple testosterone administration. Patients benefit from regular DEXA scans to monitor body composition changes, comprehensive metabolic panels every 3-6 months, and proactive management of estrogen levels using medications like Anastrozole when needed. This holistic approach ensures not just symptom relief but true hormone optimization.</p>
+
+                        <h3>Revolutionary Weight Loss Solutions</h3>
+                        
+                        <p>Dallas Hormone Center has embraced the latest advances in medical weight loss, offering both Semaglutide (Ozempic/Wegovy) and Tirzepatide (Mounjaro) programs. These GLP-1 receptor agonists have transformed weight management, with patients typically experiencing 15-20% body weight reduction. The clinic's medical team carefully titrates dosing, monitors for side effects, and combines these medications with comprehensive nutritional counseling and metabolic optimization.</p>
+
+                        <p>Complementing their prescription weight loss programs, the clinic offers lipotropic injections including MIC (Methionine, Inositol, Choline) with B12, L-Carnitine injections for enhanced fat metabolism, and customized vitamin protocols to support healthy weight loss while maintaining energy levels.</p>
+
+                        <h3>Advanced Peptide and Regenerative Therapies</h3>
+                        
+                        <p>What sets Dallas Hormone Center apart is their comprehensive peptide therapy program. Patients have access to cutting-edge peptides including BPC-157 for tissue repair and gut health, TB-500 for accelerated healing, CJC-1295 with Ipamorelin for growth hormone optimization, and AOD-9604 for targeted fat loss. Each peptide protocol is customized based on individual health goals and administered under strict medical supervision.</p>
+
+                        <p>The clinic also offers NAD+ IV therapy, delivering this crucial coenzyme directly into the bloodstream for enhanced cellular energy, improved cognitive function, and anti-aging benefits. Their IV suite provides a comfortable environment for these transformative treatments, with sessions typically lasting 2-4 hours depending on the protocol.</p>
+
+                        <h3>Specialized Men's Sexual Health Services</h3>
+                        
+                        <p>Understanding the sensitive nature of sexual health concerns, Dallas Hormone Center provides discrete and effective treatments for erectile dysfunction. Their GAINSWave acoustic wave therapy uses low-intensity sound waves to improve blood flow and restore natural function without medications. For those requiring pharmaceutical intervention, the clinic offers customized Trimix injections, oral medications including Sildenafil and Tadalafil, and combination therapies for optimal results.</p>
+
+                        <h3>State-of-the-Art Diagnostics and Monitoring</h3>
+                        
+                        <p>Every treatment journey at Dallas Hormone Center begins with comprehensive diagnostic testing. Their advanced lab panels include complete hormone profiles (Total and Free Testosterone, Estradiol, SHBG, LH, FSH), thyroid function tests, metabolic markers, and inflammatory indicators. The clinic's DEXA scanning technology provides precise body composition analysis, tracking muscle mass, bone density, and fat distribution throughout treatment.</p>
+
+                        <h3>Why Choose Dallas Hormone Center</h3>
+                        
+                        <p>What truly distinguishes Dallas Hormone Center is their commitment to evidence-based, personalized care. Their board-certified providers stay current with the latest research in hormone optimization and regenerative medicine. The clinic offers flexible scheduling including evening appointments, telemedicine consultations for established patients, and a concierge-level service that ensures each patient receives the attention they deserve.</p>
+
+                        <p>Located conveniently in downtown Dallas with easy parking, the clinic serves patients throughout the Dallas-Fort Worth metroplex including Highland Park, University Park, Richardson, Plano, and surrounding communities. Their modern facility features private consultation rooms, a comfortable IV therapy suite, and state-of-the-art diagnostic equipment.</p>
+
+                        <h3>Getting Started</h3>
+                        
+                        <p>Beginning your wellness journey at Dallas Hormone Center starts with a comprehensive consultation. New patients can expect a thorough medical history review, physical examination, and baseline laboratory testing. Results are typically available within 48-72 hours, followed by a detailed treatment plan discussion. The clinic accepts cash pay and HSA/FSA cards, with transparent pricing and no hidden fees.</p>
+
+                        <p>Take the first step toward optimizing your health and reclaiming your vitality. Contact Dallas Hormone Center today to schedule your consultation and discover how their personalized approach to men's health can transform your life.</p>
+                    </div>
+                </div>
+                
+                <div class="card" style="margin-top: 30px; max-width: 400px;">
+                    <h3>Contact Information</h3>
+                    <p>📞 <a href="tel:2145550123" style="color: #3b82f6; text-decoration: none;">(214) 555-0123</a></p>
+                    <p>📍 123 Main Street, Suite 100, Dallas, TX 75201</p>
+                    <p>🌐 <a href="https://dallashormonecenter.com" target="_blank" style="color: #3b82f6; text-decoration: none;">Visit Website</a></p>
+                </div>
+            </div>
+
+            <!-- Services Tab -->
+            <div id="services" class="content-section">
+                <h2 style="margin-bottom: 30px;">Services Offered</h2>
+                <div class="services-grid">
+                    <div class="card">
+                        <h3>🧬 Hormone Optimization</h3>
+                        <div class="service-item"><span class="check-icon">✓</span> Testosterone Replacement Therapy (TRT)</div>
+                        <div class="service-item"><span class="check-icon">✓</span> Testosterone Cypionate Injections</div>
+                        <div class="service-item"><span class="check-icon">✓</span> Thyroid Hormone Optimization</div>
+                        <div class="service-item"><span class="check-icon">✓</span> DHEA Supplementation</div>
+                        <div class="service-item"><span class="check-icon">✓</span> Comprehensive Hormone Panels</div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>⚡ Sexual Health</h3>
+                        <div class="service-item"><span class="check-icon">✓</span> GAINSWave Acoustic Wave Therapy</div>
+                        <div class="service-item"><span class="check-icon">✓</span> Trimix Injections</div>
+                        <div class="service-item"><span class="check-icon">✓</span> ED Medications (Sildenafil/Tadalafil)</div>
+                        <div class="service-item"><span class="check-icon">✓</span> P-Shot (Platelet Rich Plasma)</div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>🏃 Weight Loss & Metabolic</h3>
+                        <div class="service-item"><span class="check-icon">✓</span> Semaglutide (Ozempic/Wegovy)</div>
+                        <div class="service-item"><span class="check-icon">✓</span> Tirzepatide (Mounjaro)</div>
+                        <div class="service-item"><span class="check-icon">✓</span> Lipotropic Injections (MIC + B12)</div>
+                        <div class="service-item"><span class="check-icon">✓</span> L-Carnitine Injections</div>
+                        <div class="service-item"><span class="check-icon">✓</span> DEXA Body Composition Scans</div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>🧪 Peptide Therapy</h3>
+                        <div class="service-item"><span class="check-icon">✓</span> BPC-157</div>
+                        <div class="service-item"><span class="check-icon">✓</span> TB-500</div>
+                        <div class="service-item"><span class="check-icon">✓</span> CJC-1295 with Ipamorelin</div>
+                        <div class="service-item"><span class="check-icon">✓</span> AOD-9604</div>
+                        <div class="service-item"><span class="check-icon">✓</span> Sermorelin</div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>💧 IV & Injection Therapy</h3>
+                        <div class="service-item"><span class="check-icon">✓</span> NAD+ IV Therapy</div>
+                        <div class="service-item"><span class="check-icon">✓</span> Myers Cocktail</div>
+                        <div class="service-item"><span class="check-icon">✓</span> Glutathione IV</div>
+                        <div class="service-item"><span class="check-icon">✓</span> High-Dose Vitamin C</div>
+                        <div class="service-item"><span class="check-icon">✓</span> B12 Injections</div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>🔬 Diagnostics & Testing</h3>
+                        <div class="service-item"><span class="check-icon">✓</span> Comprehensive Hormone Panels</div>
+                        <div class="service-item"><span class="check-icon">✓</span> Metabolic Testing</div>
+                        <div class="service-item"><span class="check-icon">✓</span> DEXA Scans</div>
+                        <div class="service-item"><span class="check-icon">✓</span> Thyroid Function Tests</div>
+                        <div class="service-item"><span class="check-icon">✓</span> Inflammatory Markers</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location Tab -->
+            <div id="location" class="content-section">
+                <h2 style="margin-bottom: 30px;">Location & Directions</h2>
+                <div class="card">
+                    <h3>Address</h3>
+                    <p>123 Main Street, Suite 100<br>Dallas, TX 75201</p>
+                    <a href="https://maps.google.com/?q=123+Main+Street+Dallas+TX+75201" target="_blank" class="btn btn-primary" style="margin-top: 20px;">
+                        📍 Get Directions
+                    </a>
+                </div>
+                <div class="map-container" style="margin-top: 20px;">
+                    <p>Interactive Map Placeholder</p>
+                </div>
+            </div>
+
+            <!-- Reviews Tab -->
+            <div id="reviews" class="content-section">
+                <h2 style="margin-bottom: 30px;">Patient Reviews</h2>
+                
+                <div class="review">
+                    <div class="review-header">
+                        <div>
+                            <strong>Michael R.</strong>
+                            <div class="stars">⭐⭐⭐⭐⭐</div>
+                        </div>
+                        <span style="color: #6b7280;">2 weeks ago</span>
+                    </div>
+                    <p>Life-changing experience! After struggling with low energy and weight gain for years, the team at Dallas Hormone Center completely transformed my health. My testosterone levels are optimized, I've lost 35 pounds on Semaglutide, and I feel like I'm in my 30s again. Dr. Johnson is incredibly knowledgeable and the staff is professional.</p>
+                </div>
+                
+                <div class="review">
+                    <div class="review-header">
+                        <div>
+                            <strong>David T.</strong>
+                            <div class="stars">⭐⭐⭐⭐⭐</div>
+                        </div>
+                        <span style="color: #6b7280;">1 month ago</span>
+                    </div>
+                    <p>The peptide therapy program here is outstanding. I'm using BPC-157 and TB-500 for a shoulder injury and the results have been remarkable. They also got me started on TRT and the difference in my energy and mood is night and day. Highly recommend!</p>
+                </div>
+                
+                <div class="review">
+                    <div class="review-header">
+                        <div>
+                            <strong>James K.</strong>
+                            <div class="stars">⭐⭐⭐⭐⭐</div>
+                        </div>
+                        <span style="color: #6b7280;">3 months ago</span>
+                    </div>
+                    <p>Best men's health clinic in Dallas! The GAINSWave treatments have worked incredibly well for my ED issues. Combined with their hormone optimization program, I feel better than I have in 20 years. The staff is discrete and professional.</p>
+                </div>
+                
+                <div style="background: #1e40af; padding: 30px; border-radius: 12px; margin-top: 30px; text-align: center;">
+                    <h3 style="margin-bottom: 10px;">Share Your Experience</h3>
+                    <p style="margin-bottom: 20px;">Help others by sharing your experience at Dallas Hormone Center</p>
+                    <a href="#" class="btn" style="background: white; color: #1e40af;">Write a Review</a>
+                </div>
+                
+            </div>
+
+            <!-- FAQ Tab -->
+            <div id="faq" class="content-section">
+                <h2 style="margin-bottom: 30px;">Frequently Asked Questions</h2>
+                <p style="color: #9ca3af; margin-bottom: 30px;">Find answers to common questions about Dallas Hormone Center</p>
+                
+                <div class="faq-container">
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(0)">
+                            <span>What men's health services does Dallas Hormone Center offer?</span>
+                            <svg class="faq-icon" id="faq-icon-0" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div class="faq-answer" id="faq-answer-0" style="display: none;">
+                            <p>Dallas Hormone Center provides comprehensive men's health services including Testosterone Replacement Therapy, Erectile Dysfunction Treatment, Weight Loss Programs, Peptide Therapy, IV Therapy, and 5 more specialized treatments. We focus on personalized care to help men optimize their health, vitality, and overall well-being.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(1)">
+                            <span>Where is Dallas Hormone Center located?</span>
+                            <svg class="faq-icon" id="faq-icon-1" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div class="faq-answer" id="faq-answer-1" style="display: none;">
+                            <p>Dallas Hormone Center is located at 123 Main Street, Suite 100, Dallas, TX 75201. We proudly serve Dallas and the surrounding Dallas-Fort Worth area including Highland Park, University Park, Richardson, Plano, Frisco, Allen, McKinney, Addison, Irving, and Arlington.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(2)">
+                            <span>Does Dallas Hormone Center offer testosterone replacement therapy?</span>
+                            <svg class="faq-icon" id="faq-icon-2" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div class="faq-answer" id="faq-answer-2" style="display: none;">
+                            <p>Yes, Dallas Hormone Center specializes in Testosterone Replacement Therapy (TRT). We offer Testosterone Cypionate injections, comprehensive hormone testing, and personalized treatment plans to help men with low testosterone restore their energy, muscle mass, and overall vitality.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(3)">
+                            <span>What weight loss programs are available at Dallas Hormone Center?</span>
+                            <svg class="faq-icon" id="faq-icon-3" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div class="faq-answer" id="faq-answer-3" style="display: none;">
+                            <p>Dallas Hormone Center offers medical weight loss programs including Semaglutide (Ozempic/Wegovy), Tirzepatide (Mounjaro), lipotropic injections, and personalized nutrition plans. Our programs are medically supervised and tailored to each patient's specific goals and health needs.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(4)">
+                            <span>Does Dallas Hormone Center accept insurance?</span>
+                            <svg class="faq-icon" id="faq-icon-4" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div class="faq-answer" id="faq-answer-4" style="display: none;">
+                            <p>Dallas Hormone Center operates on a cash-pay basis to provide the highest quality care without insurance limitations. We accept cash, credit cards, and HSA/FSA cards. We provide detailed receipts that you can submit to your insurance for potential reimbursement.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(5)">
+                            <span>What should I expect during my first visit to Dallas Hormone Center?</span>
+                            <svg class="faq-icon" id="faq-icon-5" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div class="faq-answer" id="faq-answer-5" style="display: none;">
+                            <p>Your first visit includes a comprehensive consultation, medical history review, physical examination, and baseline laboratory testing. We'll discuss your health goals, symptoms, and create a personalized treatment plan. Results are typically available within 48-72 hours.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(6)">
+                            <span>What peptide therapies does Dallas Hormone Center offer?</span>
+                            <svg class="faq-icon" id="faq-icon-6" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div class="faq-answer" id="faq-answer-6" style="display: none;">
+                            <p>We offer advanced peptide therapies including BPC-157 for tissue repair, TB-500 for healing, CJC-1295 with Ipamorelin for growth hormone optimization, AOD-9604 for fat loss, and Sermorelin. All peptides are pharmaceutical-grade and administered under medical supervision.</p>
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <button class="faq-question" onclick="toggleFAQ(7)">
+                            <span>How do I schedule an appointment at Dallas Hormone Center?</span>
+                            <svg class="faq-icon" id="faq-icon-7" width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div class="faq-answer" id="faq-answer-7" style="display: none;">
+                            <p>You can schedule an appointment by calling (214) 555-0123, visiting our website at dallashormonecenter.com, or using our online scheduling system. We offer flexible scheduling including evening appointments and telemedicine consultations for established patients.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; padding: 15px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                    <p style="font-size: 0.875rem; color: #6b7280; font-style: italic;">
+                        These FAQs are also included in structured data for enhanced search visibility and potential rich snippets in Google search results.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(tabName).classList.add('active');
+            
+            // Mark tab as active
+            event.target.classList.add('active');
+        }
+        
+        function toggleFAQ(index) {
+            const answer = document.getElementById(`faq-answer-${index}`);
+            const icon = document.getElementById(`faq-icon-${index}`);
+            
+            if (answer.style.display === 'none') {
+                answer.style.display = 'block';
+                icon.classList.add('rotated');
+            } else {
+                answer.style.display = 'none';
+                icon.classList.remove('rotated');
+            }
+        }
+    </script>
+</body>
+</html>

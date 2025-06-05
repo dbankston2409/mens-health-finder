@@ -9,6 +9,7 @@ import TierBadge from '../../../../components/TierBadge';
 import StructuredData from '../../../../components/StructuredData';
 import TrackedPhoneLink from '../../../../components/TrackedPhoneLink';
 import SeoContentSection from '../../../../components/SeoContentSection';
+import { VisibleFAQSection } from '../../../../components/VisibleFAQSection';
 import { mockClinics, serviceCategories } from '../../../../lib/mockData';
 import { 
   slugify, 
@@ -413,6 +414,13 @@ export default function ClinicDetailPage({
               <div className="glass-card p-6 text-center">
                 <p className="text-gray-400">No reviews yet. Be the first to share your experience!</p>
               </div>
+              
+              {/* FAQ Section */}
+              {clinic.faqs && clinic.faqs.length > 0 && (
+                <div className="mt-8">
+                  <VisibleFAQSection faqs={clinic.faqs} clinicName={clinicDisplayName} />
+                </div>
+              )}
             </div>
           )}
         </div>

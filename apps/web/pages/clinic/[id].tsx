@@ -9,7 +9,8 @@ import RecommendedProviders from '../../components/RecommendedProviders';
 import ReviewsSection from '../../components/ReviewsSection';
 import TrackedPhoneLink from '../../components/TrackedPhoneLink';
 import SeoContentSection from '../../components/SeoContentSection';
-// import FaqSchemaScript from '../../components/FaqSchemaScript';
+import { VisibleFAQSection } from '../../components/VisibleFAQSection';
+import FaqSchemaScript from '../../components/FaqSchemaScript';
 import dynamic from 'next/dynamic';
 import { mockClinics } from '../../lib/mockData';
 import { useClinic } from '../../utils/hooks/useClinic';
@@ -143,9 +144,9 @@ const ClinicProfile: React.FC = () => {
       />
       
       {/* Add FAQ schema if clinic has FAQs */}
-      {/* {enhancedClinic.faqs && enhancedClinic.faqs.length > 0 && (
+      {enhancedClinic.faqs && enhancedClinic.faqs.length > 0 && (
         <FaqSchemaScript faqs={enhancedClinic.faqs} />
-      )} */}
+      )}
       
       <main className="min-h-screen bg-gray-900">
         {/* Clinic Header */}
@@ -336,6 +337,14 @@ const ClinicProfile: React.FC = () => {
                   reviews={clinicReviews}
                 />
               </div>
+              
+              {/* FAQ Section */}
+              {enhancedClinic.faqs && enhancedClinic.faqs.length > 0 && (
+                <VisibleFAQSection 
+                  faqs={enhancedClinic.faqs} 
+                  clinicName={formatClinicName(enhancedClinic.name)}
+                />
+              )}
               
               {/* Location Section */}
               <div ref={locationRef} className="glass-card p-6">
