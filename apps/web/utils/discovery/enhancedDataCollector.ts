@@ -218,16 +218,16 @@ export class ExtendedDataCollector extends EnhancedDataCollector {
   private getSearchTermsForNiche(searchNiche: SearchNiche | string): string[] {
     // Default search terms for men's health
     const defaultTerms = [
-      'mens health clinic',
-      'testosterone clinic',
-      'mens wellness center',
-      'low t center',
-      'mens hormone clinic',
-      'male health clinic',
-      'trt clinic',
-      'erectile dysfunction clinic',
-      'mens vitality clinic',
-      'male wellness clinic'
+      'testosterone',
+      'erectile dysfunction',
+      'peptide therapy',
+      'hair transplant for men',
+      'men\'s medical weight loss',
+      'vitamin IV drip',
+      'IV hydration therapy',
+      'stem cell therapy',
+      'cryotherapy',
+      'compression therapy'
     ];
 
     if (typeof searchNiche === 'string') {
