@@ -1,1 +1,33 @@
-{}
+{
+  "title": "Sign Up",
+  "heading": "Create Your Account",
+  "subheading": "Join Men's Health Finder to access exclusive features",
+  "benefits": [
+    "Save your favorite clinics",
+    "Get personalized recommendations",
+    "Access exclusive deals and discounts",
+    "Track your health journey"
+  ],
+  "formFields": {
+    "email": {
+      "label": "Email Address",
+      "placeholder": "Enter your email",
+      "required": true
+    },
+    "password": {
+      "label": "Password",
+      "placeholder": "Create a password",
+      "required": true,
+      "minLength": 8
+    },
+    "confirmPassword": {
+      "label": "Confirm Password",
+      "placeholder": "Confirm your password",
+      "required": true
+    }
+  },
+  "terms": "By signing up, you agree to our Terms of Service and Privacy Policy",
+  "cta": "Create Account",
+  "alternativeText": "Already have an account?",
+  "alternativeLink": "Log In"
+}

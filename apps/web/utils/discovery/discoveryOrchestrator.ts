@@ -1,7 +1,7 @@
 import { db } from '../../lib/firebase';
 import { doc, setDoc, getDoc, updateDoc, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import { GridGenerator } from './gridGenerator';
-import { EnhancedDataCollector } from './dataCollectors';
+import { ExtendedDataCollector } from './enhancedDataCollector';
 import { DiscoverySession, DiscoveryGrid, SearchNiche, Clinic } from '../../types';
 
 export interface DiscoveryConfig {
@@ -30,7 +30,7 @@ export interface DiscoveryProgress {
 
 export class DiscoveryOrchestrator {
   private gridGenerator: GridGenerator;
-  private dataCollector: EnhancedDataCollector;
+  private dataCollector: ExtendedDataCollector;
   private session: DiscoverySession | null = null;
   private grids: DiscoveryGrid[] = [];
   private isRunning: boolean = false;
@@ -44,7 +44,13 @@ export class DiscoveryOrchestrator {
 
   constructor(config: DiscoveryConfig, onProgressUpdate?: (progress: DiscoveryProgress) => void) {
     this.gridGenerator = new GridGenerator();
-    this.dataCollector = new EnhancedDataCollector();
+    // Get Google API key from environment or config
+    const googleApiKey = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY || 
+                        process.env.GOOGLE_PLACES_API_KEY || '';
+    if (!googleApiKey) {
+      console.warn('Google Places API key not found. Discovery features will be limited.');
+    }
+    this.dataCollector = new EnhancedDataCollector(googleApiKey);
     this.onProgressUpdate = onProgressUpdate;
   }
 

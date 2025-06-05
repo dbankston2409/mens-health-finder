@@ -147,78 +147,25 @@ async function fetchGoogleReviews(clinicId, placesId) {
 }
 
 /**
- * Fetch Yelp reviews using Yelp Fusion API
+ * Fetch Yelp reviews - DEPRECATED AND REMOVED
+ * Yelp integration has been removed to save $600/month
  * 
  * @param {string} clinicId - The clinic ID
  * @param {string} yelpBusinessId - The Yelp business ID
- * @returns {Promise<Object>} - Reviews and success status
+ * @returns {Promise<Object>} - Empty result
  */
-async function ;
-  }
-  
-  ;
-  }
-  
-  try {
-    const url = `https://api.yelp.com/v3/businesses/${yelpBusinessId}/reviews`;
-    
-    const response = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${process.env.
-      }
-    });
-    
-    if (!response.data.reviews) {
-      return { success: false, error: 'No reviews from Yelp API' };
-    }
-    
-    const { reviews } = response.data;
-    
-    // Also fetch the business to get the rating and review count
-    const businessResponse = await axios.get(`https://api.yelp.com/v3/businesses/${yelpBusinessId}`, {
-      headers: {
-        Authorization: `Bearer ${process.env.
-      }
-    });
-    
-    const { rating, review_count } = businessResponse.data;
-    
-    // Process and save reviews
-    let savedCount = 0;
-    
-    for (const review of reviews) {
-      const reviewData = {
-        source: 'yelp',
-        author: review.user.name,
-        rating: review.rating,
-        text: review.text,
-        date: new Date(review.time_created),
-        url: review.url,
-        verified: true
-      };
-      
-      const saved = await saveReview(clinicId, reviewData);
-      if (saved) savedCount++;
-    }
-    
-    // Update the clinic document with review counts
-    await firestore.collection('clinics').doc(clinicId).update({
-      yelpRating: rating || 0,
-      yelpReviewCount: review_count || 0,
-      lastUpdated: admin.firestore.FieldValue.serverTimestamp()
-    });
-    
-    return { 
-      success: true, 
-      savedCount,
-      totalCount: reviews.length,
-      averageRating: rating
-    };
-  } catch (error) {
-    console.error(`Error fetching Yelp reviews for ${clinicId}:`, error);
-    return { success: false, error: error.message };
-  }
+async function fetchYelpReviews(clinicId, yelpBusinessId) {
+  console.log('Yelp reviews have been deprecated and removed');
+  return { 
+    success: false, 
+    error: 'Yelp integration has been removed',
+    reviews: [],
+    totalCount: 0
+  };
 }
+
+// Original broken Yelp function has been removed
+// The function had syntax errors and incomplete implementation
 
 /**
  * Fetch Healthgrades reviews by scraping the public profile

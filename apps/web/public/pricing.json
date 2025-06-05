@@ -1,0 +1,55 @@
+{
+  "title": "Pricing Plans",
+  "heading": "Choose Your Plan",
+  "subheading": "Flexible pricing options for clinics of all sizes",
+  "plans": [
+    {
+      "id": "basic",
+      "name": "Basic",
+      "price": "$99",
+      "period": "per month",
+      "description": "Perfect for small clinics just getting started",
+      "features": [
+        "Basic listing",
+        "Up to 5 photos",
+        "Contact information",
+        "Service listing",
+        "Basic analytics"
+      ],
+      "cta": "Get Started"
+    },
+    {
+      "id": "professional",
+      "name": "Professional",
+      "price": "$299",
+      "period": "per month",
+      "description": "Ideal for growing clinics seeking more visibility",
+      "features": [
+        "Featured listing",
+        "Unlimited photos",
+        "Priority support",
+        "Advanced analytics",
+        "Review management",
+        "SEO optimization"
+      ],
+      "cta": "Get Started",
+      "popular": true
+    },
+    {
+      "id": "enterprise",
+      "name": "Enterprise",
+      "price": "Custom",
+      "period": "contact us",
+      "description": "Tailored solutions for large clinics and chains",
+      "features": [
+        "Premium placement",
+        "Custom branding",
+        "API access",
+        "Dedicated account manager",
+        "Multi-location management",
+        "Custom integrations"
+      ],
+      "cta": "Contact Sales"
+    }
+  ]
+}

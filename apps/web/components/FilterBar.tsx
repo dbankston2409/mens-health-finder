@@ -19,15 +19,15 @@ interface FilterOption {
 }
 
 const SERVICE_OPTIONS: FilterOption[] = [
-  { id: 'trt', label: 'TRT', count: 45 },
-  { id: 'ed-treatment', label: 'ED Treatment', count: 38 },
-  { id: 'hair-loss', label: 'Hair Loss', count: 32 },
-  { id: 'weight-loss', label: 'Weight Loss', count: 28 },
-  { id: 'peptide-therapy', label: 'Peptide Therapy', count: 24 },
-  { id: 'iv-therapy', label: 'IV Therapy', count: 19 },
-  { id: 'hormone-therapy', label: 'Hormone Therapy', count: 35 },
-  { id: 'wellness', label: 'Wellness', count: 42 },
-  { id: 'cryotherapy', label: 'Cryotherapy', count: 15 }];
+  { id: 'hormone-optimization', label: 'Hormone Optimization', count: 45 },
+  { id: 'sexual-health', label: 'Sexual Health', count: 38 },
+  { id: 'peptides-performance', label: 'Peptides & Performance', count: 24 },
+  { id: 'hair-loss-aesthetics', label: 'Hair Loss & Aesthetics', count: 32 },
+  { id: 'weight-loss-metabolic', label: 'Weight Loss & Metabolic', count: 28 },
+  { id: 'iv-injection-therapy', label: 'IV & Injection Therapy', count: 19 },
+  { id: 'regenerative-medicine', label: 'Regenerative Medicine', count: 15 },
+  { id: 'diagnostics-panels', label: 'Diagnostics & Panels', count: 42 }
+];
 
 const TIER_OPTIONS: FilterOption[] = [
   { id: 'high', label: 'Premium', count: 15 },

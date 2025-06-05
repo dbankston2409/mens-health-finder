@@ -61,40 +61,54 @@ import { serviceCategories as mockServiceCategories } from '../lib/mockData';
 // Service categories with icons
 const serviceCategories = [
   {
-    id: 'trt',
-    title: 'Testosterone Therapy',
-    description: 'Restore energy, strength and vitality with specialized TRT programs.',
-    emoji: '💉'},
+    id: 'hormone-optimization',
+    title: 'Hormone Optimization',
+    description: 'Comprehensive hormone replacement therapy including testosterone, HGH, and thyroid optimization.',
+    emoji: '💉'
+  },
   {
-    id: 'ed',
-    title: 'ED Treatment',
-    description: 'Effective solutions to restore confidence and performance.',
-    emoji: '⚡'},
+    id: 'sexual-health',
+    title: 'Sexual Health',
+    description: 'Advanced treatments for erectile dysfunction, premature ejaculation, and sexual wellness.',
+    emoji: '⚡'
+  },
   {
-    id: 'hairloss',
-    title: 'Hair Loss',
-    description: 'Advanced treatments to prevent and reverse hair loss.',
-    emoji: '💇‍♂️'},
+    id: 'peptides-performance',
+    title: 'Peptides & Performance',
+    description: 'Cutting-edge peptide therapies for performance enhancement, recovery, and longevity.',
+    emoji: '🧬'
+  },
   {
-    id: 'weightloss',
-    title: 'Weight Management',
-    description: 'Specialized programs designed for men&apos;s metabolic needs.',
-    emoji: '⚖️'},
+    id: 'hair-loss-aesthetics',
+    title: 'Hair Loss & Aesthetics',
+    description: 'Hair restoration treatments, PRP therapy, and aesthetic services for men.',
+    emoji: '💇‍♂️'
+  },
   {
-    id: 'peptide-therapy',
-    title: 'Peptide Therapy',
-    description: 'Cutting-edge peptide treatments to enhance performance and recovery.',
-    emoji: '🧬'},
+    id: 'weight-loss-metabolic',
+    title: 'Weight Loss & Metabolic',
+    description: 'Medical weight management, metabolic optimization, and body composition improvement.',
+    emoji: '⚖️'
+  },
   {
-    id: 'iv-therapy',
-    title: 'IV Therapy',
-    description: 'Hydration and nutrient delivery for optimal wellness and recovery.',
-    emoji: '💧'},
+    id: 'iv-injection-therapy',
+    title: 'IV & Injection Therapy',
+    description: 'IV nutrient therapy, vitamin injections, and hydration treatments.',
+    emoji: '💧'
+  },
   {
-    id: 'cryotherapy',
-    title: 'Cryotherapy',
-    description: 'Cold therapy treatments for recovery, inflammation and pain relief.',
-    emoji: '❄️'}];
+    id: 'regenerative-medicine',
+    title: 'Regenerative Medicine',
+    description: 'Stem cell therapy, PRP treatments, and advanced regenerative procedures.',
+    emoji: '🧬'
+  },
+  {
+    id: 'diagnostics-panels',
+    title: 'Diagnostics & Panels',
+    description: 'Comprehensive lab testing, hormone panels, and health diagnostics.',
+    emoji: '🔬'
+  }
+];
 
 export default function Home() {
   const router = useRouter();
@@ -106,7 +120,7 @@ export default function Home() {
   const [nearbyClinics, setNearbyClinics] = useState(mockClinics);
   
   // Use auto-location hook
-  const { location: autoLocation, loading: isLocating, error: autoLocationError } = useAutoLocation();
+  const { location: autoLocation, isLoading: isLocating, error: autoLocationError } = useAutoLocation();
 
   // Use auto-location when available
   useEffect(() => {
@@ -170,8 +184,8 @@ export default function Home() {
             </h1>
             
             <p className="text-[#AAAAAA] text-lg text-center mb-10 max-w-2xl">
-              Connect with top specialists offering testosterone therapy, ED treatment, 
-              hair loss solutions, and more.
+              Connect with top specialists offering hormone optimization, sexual health treatments, 
+              regenerative medicine, and more.
             </p>
             
             <div className="w-full max-w-3xl">
@@ -188,53 +202,60 @@ export default function Home() {
                     <label className="inline-block text-sm text-[#AAAAAA] mb-2">Treatment</label>
                     <div className="treatment-pills">
                       <div 
-                        className={`treatment-pill ${searchService === "TRT" ? "active" : ""}`}
-                        onClick={() => setSearchService(searchService === "TRT" ? "" : "TRT")}
+                        className={`treatment-pill ${searchService === "Hormone Optimization" ? "active" : ""}`}
+                        onClick={() => setSearchService(searchService === "Hormone Optimization" ? "" : "Hormone Optimization")}
                       >
                         <span className="text-lg">💉</span>
-                        <span>TRT</span>
+                        <span>Hormones</span>
                       </div>
                       <div 
-                        className={`treatment-pill ${searchService === "ED Treatment" ? "active" : ""}`}
-                        onClick={() => setSearchService(searchService === "ED Treatment" ? "" : "ED Treatment")}
+                        className={`treatment-pill ${searchService === "Sexual Health" ? "active" : ""}`}
+                        onClick={() => setSearchService(searchService === "Sexual Health" ? "" : "Sexual Health")}
                       >
                         <span className="text-lg">⚡</span>
-                        <span>ED Treatment</span>
+                        <span>Sexual Health</span>
                       </div>
                       <div 
-                        className={`treatment-pill ${searchService === "Hair Loss" ? "active" : ""}`}
-                        onClick={() => setSearchService(searchService === "Hair Loss" ? "" : "Hair Loss")}
+                        className={`treatment-pill ${searchService === "Hair & Aesthetics" ? "active" : ""}`}
+                        onClick={() => setSearchService(searchService === "Hair & Aesthetics" ? "" : "Hair & Aesthetics")}
                       >
                         <span className="text-lg">💇‍♂️</span>
-                        <span>Hair Loss</span>
+                        <span>Hair & Aesthetics</span>
                       </div>
                       <div 
-                        className={`treatment-pill ${searchService === "Weight Loss" ? "active" : ""}`}
-                        onClick={() => setSearchService(searchService === "Weight Loss" ? "" : "Weight Loss")}
+                        className={`treatment-pill ${searchService === "Weight & Metabolic" ? "active" : ""}`}
+                        onClick={() => setSearchService(searchService === "Weight & Metabolic" ? "" : "Weight & Metabolic")}
                       >
                         <span className="text-lg">⚖️</span>
-                        <span>Weight Loss</span>
+                        <span>Weight & Metabolic</span>
                       </div>
                       <div 
-                        className={`treatment-pill ${searchService === "Peptide Therapy" ? "active" : ""}`}
-                        onClick={() => setSearchService(searchService === "Peptide Therapy" ? "" : "Peptide Therapy")}
+                        className={`treatment-pill ${searchService === "Peptides" ? "active" : ""}`}
+                        onClick={() => setSearchService(searchService === "Peptides" ? "" : "Peptides")}
                       >
-                        <span className="text-lg">🧬</span>
-                        <span>Peptide Therapy</span>
+                        <span className="text-lg">💊</span>
+                        <span>Peptides</span>
                       </div>
                       <div 
-                        className={`treatment-pill ${searchService === "IV Therapy" ? "active" : ""}`}
-                        onClick={() => setSearchService(searchService === "IV Therapy" ? "" : "IV Therapy")}
+                        className={`treatment-pill ${searchService === "IV & Injections" ? "active" : ""}`}
+                        onClick={() => setSearchService(searchService === "IV & Injections" ? "" : "IV & Injections")}
                       >
                         <span className="text-lg">💧</span>
-                        <span>IV Therapy</span>
+                        <span>IV & Injections</span>
                       </div>
                       <div 
-                        className={`treatment-pill ${searchService === "Cryotherapy" ? "active" : ""}`}
-                        onClick={() => setSearchService(searchService === "Cryotherapy" ? "" : "Cryotherapy")}
+                        className={`treatment-pill ${searchService === "Regenerative Medicine" ? "active" : ""}`}
+                        onClick={() => setSearchService(searchService === "Regenerative Medicine" ? "" : "Regenerative Medicine")}
                       >
-                        <span className="text-lg">❄️</span>
-                        <span>Cryotherapy</span>
+                        <span className="text-lg">🧬</span>
+                        <span>Regenerative</span>
+                      </div>
+                      <div 
+                        className={`treatment-pill ${searchService === "Diagnostics" ? "active" : ""}`}
+                        onClick={() => setSearchService(searchService === "Diagnostics" ? "" : "Diagnostics")}
+                      >
+                        <span className="text-lg">🔬</span>
+                        <span>Diagnostics</span>
                       </div>
                     </div>
                   </div>
@@ -268,7 +289,7 @@ export default function Home() {
                 <p className="text-[#AAAAAA] text-sm">
                   {userLocation && userLocation.zoom > 6
                     ? "Showing clinics near your detected location"
-                    : locationError 
+                    : autoLocationError 
                       ? "Location access denied. Showing all available clinics."
                       : "Enable location access to see clinics near you"}
                 </p>

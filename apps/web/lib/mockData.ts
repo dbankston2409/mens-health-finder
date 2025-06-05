@@ -269,30 +269,43 @@ export const mockClinics: Clinic[] = [
 // Service categories with icons
 export const serviceCategories = [
   {
-    id: 'trt',
-    title: 'Testosterone Therapy',
-    description: 'Restore energy, strength and vitality with specialized TRT programs.'},
+    id: 'hormone-optimization',
+    title: 'Hormone Optimization',
+    description: 'Comprehensive hormone replacement therapy including testosterone, HGH, and thyroid optimization.'
+  },
   {
-    id: 'ed',
-    title: 'ED Treatment',
-    description: 'Effective solutions to restore confidence and performance.'},
+    id: 'sexual-health',
+    title: 'Sexual Health',
+    description: 'Advanced treatments for erectile dysfunction, premature ejaculation, and sexual wellness.'
+  },
   {
-    id: 'hairloss',
-    title: 'Hair Loss',
-    description: 'Advanced treatments to prevent and reverse hair loss.'},
+    id: 'peptides-performance',
+    title: 'Peptides & Performance',
+    description: 'Cutting-edge peptide therapies for performance enhancement, recovery, and longevity.'
+  },
   {
-    id: 'weightloss',
-    title: 'Weight Management',
-    description: 'Specialized programs designed for men\'s metabolic needs.'},
+    id: 'hair-loss-aesthetics',
+    title: 'Hair Loss & Aesthetics',
+    description: 'Hair restoration treatments, PRP therapy, and aesthetic services for men.'
+  },
   {
-    id: 'peptide-therapy',
-    title: 'Peptide Therapy',
-    description: 'Cutting-edge peptide treatments to enhance performance and recovery.'},
+    id: 'weight-loss-metabolic',
+    title: 'Weight Loss & Metabolic',
+    description: 'Medical weight management, metabolic optimization, and body composition improvement.'
+  },
   {
-    id: 'iv-therapy',
-    title: 'IV Therapy',
-    description: 'Hydration and nutrient delivery for optimal wellness and recovery.'},
+    id: 'iv-injection-therapy',
+    title: 'IV & Injection Therapy',
+    description: 'IV nutrient therapy, vitamin injections, and hydration treatments.'
+  },
   {
-    id: 'cryotherapy',
-    title: 'Cryotherapy',
-    description: 'Cold therapy treatments for recovery, inflammation and pain relief.'}];
+    id: 'regenerative-medicine',
+    title: 'Regenerative Medicine',
+    description: 'Stem cell therapy, PRP treatments, and advanced regenerative procedures.'
+  },
+  {
+    id: 'diagnostics-panels',
+    title: 'Diagnostics & Panels',
+    description: 'Comprehensive lab testing, hormone panels, and health diagnostics.'
+  }
+];

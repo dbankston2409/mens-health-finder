@@ -1,4 +1,4 @@
-import { Clinic } from '../../types';
+import { Clinic, DiscoveryGrid, SearchNiche } from '../../types';
 
 export interface GooglePlaceDetails {
   place_id: string;
@@ -154,5 +154,161 @@ export class EnhancedDataCollector {
    */
   private delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Search a geographic grid for clinics
+   */
+  async searchGrid(
+    grid: DiscoveryGrid,
+    searchNiche: SearchNiche,
+    maxConcurrentSearches: number
+  ): Promise<Clinic[]> {
+    const allClinics: Clinic[] = [];
+    const processedPlaceIds = new Set<string>();
+    
+    // Get center of grid for search
+    const centerLat = (grid.bounds.north + grid.bounds.south) / 2;
+    const centerLng = (grid.bounds.east + grid.bounds.west) / 2;
+    
+    // Calculate radius to cover the grid (in meters)
+    const latDistance = Math.abs(grid.bounds.north - grid.bounds.south) * 111000; // degrees to meters
+    const lngDistance = Math.abs(grid.bounds.east - grid.bounds.west) * 111000 * Math.cos(centerLat * Math.PI / 180);
+    const radius = Math.max(latDistance, lngDistance) / 2;
+    
+    // Search with each query term
+    const searchPromises = grid.searchQueries.slice(0, maxConcurrentSearches).map(async (query) => {
+      try {
+        const places = await this.searchGooglePlaces({
+          lat: centerLat,
+          lng: centerLng,
+          radius: Math.min(radius, 50000), // Google Places max radius is 50km
+          keyword: query
+        });
+        
+        return places;
+      } catch (error) {
+        console.error(`Search failed for query "${query}" in grid ${grid.id}:`, error);
+        return [];
+      }
+    });
+    
+    const searchResults = await Promise.all(searchPromises);
+    
+    // Process and deduplicate results
+    for (const places of searchResults) {
+      for (const place of places) {
+        if (!processedPlaceIds.has(place.place_id)) {
+          processedPlaceIds.add(place.place_id);
+          
+          // Check if place is within grid bounds
+          if (place.geometry.location.lat >= grid.bounds.south &&
+              place.geometry.location.lat <= grid.bounds.north &&
+              place.geometry.location.lng >= grid.bounds.west &&
+              place.geometry.location.lng <= grid.bounds.east) {
+            
+            // Convert to clinic format
+            try {
+              const clinicData = this.convertToClinic(place);
+              
+              // Filter based on search niche
+              if (this.isRelevantToNiche(place.name, searchNiche)) {
+                allClinics.push(clinicData as Clinic);
+              }
+            } catch (error) {
+              console.warn(`Failed to convert place to clinic: ${place.name}`, error);
+            }
+          }
+        }
+      }
+    }
+    
+    return allClinics;
+  }
+
+  /**
+   * Check if a business name is relevant to the search niche
+   */
+  private isRelevantToNiche(name: string, niche: SearchNiche): boolean {
+    const lowerName = name.toLowerCase();
+    
+    switch (niche) {
+      case 'mensHealth':
+        return (
+          lowerName.includes('men') ||
+          lowerName.includes('male') ||
+          lowerName.includes('testosterone') ||
+          lowerName.includes('trt') ||
+          lowerName.includes('hormone') ||
+          lowerName.includes('wellness') && !lowerName.includes('women')
+        );
+      case 'urgentCare':
+        return (
+          lowerName.includes('urgent') ||
+          lowerName.includes('immediate') ||
+          lowerName.includes('walk-in') ||
+          lowerName.includes('express care')
+        );
+      case 'wellness':
+        return (
+          lowerName.includes('wellness') ||
+          lowerName.includes('health center') ||
+          lowerName.includes('medical center') ||
+          lowerName.includes('clinic')
+        );
+      default:
+        return true;
+    }
+  }
+
+  /**
+   * Extract social media links from a website
+   */
+  async extractSocialMediaLinks(websiteUrl: string): Promise<{
+    facebookUrl?: string;
+    instagramUrl?: string;
+    twitterUrl?: string;
+    linkedinUrl?: string;
+    youtubeUrl?: string;
+  }> {
+    try {
+      // Note: In a real implementation, you'd need to handle CORS by using a proxy or server-side fetching
+      const response = await fetch(websiteUrl);
+      const html = await response.text();
+      
+      const socialLinks: any = {};
+      
+      // Simple regex patterns for social media URLs
+      const patterns = {
+        facebookUrl: /(?:https?:\/\/)?(?:www\.)?facebook\.com\/[\w\-\.]+/gi,
+        instagramUrl: /(?:https?:\/\/)?(?:www\.)?instagram\.com\/[\w\-\.]+/gi,
+        twitterUrl: /(?:https?:\/\/)?(?:www\.)?twitter\.com\/[\w\-\.]+/gi,
+        linkedinUrl: /(?:https?:\/\/)?(?:www\.)?linkedin\.com\/(?:company|in)\/[\w\-\.]+/gi,
+        youtubeUrl: /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:channel|user|c)\/[\w\-\.]+/gi
+      };
+      
+      for (const [key, pattern] of Object.entries(patterns)) {
+        const matches = html.match(pattern);
+        if (matches && matches.length > 0) {
+          // Take the first match and ensure it has https://
+          socialLinks[key] = matches[0].startsWith('http') ? matches[0] : `https://${matches[0]}`;
+        }
+      }
+      
+      return socialLinks;
+    } catch (error) {
+      console.error(`Failed to extract social media links from ${websiteUrl}:`, error);
+      return {};
+    }
+  }
+
+  /**
+   * Get Google reviews for a place
+   */
+  async getGoogleReviews(placeId: string): Promise<any[]> {
+    // Note: Google Places API doesn't directly provide review details in the basic API
+    // You would need to use the Google My Business API or scrape reviews
+    // For now, returning empty array as reviews are handled separately
+    return [];
   }
 }

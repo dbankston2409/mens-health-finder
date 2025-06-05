@@ -1,4 +1,5 @@
 import { DiscoveryTaskConfig } from '../types/discovery';
+import { discoveryBridge } from '../utils/discoveryBridge';
 
 export async function runBusinessDiscovery(config: DiscoveryTaskConfig): Promise<{
   success: boolean;
@@ -10,32 +11,39 @@ export async function runBusinessDiscovery(config: DiscoveryTaskConfig): Promise
   console.log('Business discovery task initiated with config:', config);
   
   try {
-    // For now, log the configuration - full orchestrator requires web app integration
-    console.log('Discovery Configuration:');
-    console.log(`  Target Clinics: ${config.targetClinicCount}`);
-    console.log(`  Strategy: ${config.strategy}`);
-    console.log(`  Search Niche: ${config.searchNiche}`);
-    console.log(`  Enable Reviews: ${config.enableReviewImport}`);
-    console.log(`  Enable Social: ${config.enableSocialEnhancement}`);
-    console.log(`  Max Concurrent: ${config.maxConcurrentSearches}`);
+    let sessionId: string;
     
     if (config.sessionId) {
-      console.log(`  Resume Session: ${config.sessionId}`);
+      // Resume existing session
+      console.log(`Resuming session: ${config.sessionId}`);
+      const resumed = await discoveryBridge.resumeSession(config.sessionId);
+      
+      if (!resumed) {
+        throw new Error('Failed to resume session');
+      }
+      
+      sessionId = config.sessionId;
+    } else {
+      // Create new discovery session
+      console.log('Creating new discovery session...');
+      sessionId = await discoveryBridge.createDiscoverySession(config);
     }
     
-    if (config.pauseAfterMinutes) {
-      console.log(`  Auto-pause after: ${config.pauseAfterMinutes} minutes`);
-    }
-
-    // TODO: Implement actual discovery orchestration when web app dependencies are available
-    console.log('Note: Full discovery orchestration requires web app integration.');
-    console.log('Use the web interface at /admin/discovery for complete functionality.');
+    console.log(`\nDiscovery session: ${sessionId}`);
+    console.log('The web app discovery orchestrator will process this session.');
+    console.log('\nYou can:');
+    console.log('1. Monitor progress: npm run worker discovery:status ' + sessionId);
+    console.log('2. View in browser: http://localhost:3000/admin/discovery');
+    console.log('3. Pause session: npm run worker discovery:pause ' + sessionId);
+    
+    // Get initial status
+    const status = await discoveryBridge.getSessionStatus(sessionId);
     
     return {
       success: true,
-      sessionId: config.sessionId || `discovery_${Date.now()}`,
-      clinicsFound: 0,
-      clinicsImported: 0
+      sessionId,
+      clinicsFound: status?.clinicsFound || 0,
+      clinicsImported: status?.clinicsImported || 0
     };
 
   } catch (error) {
@@ -49,6 +57,66 @@ export async function runBusinessDiscovery(config: DiscoveryTaskConfig): Promise
 
 // CLI command interface
 export async function executeDiscoveryCommand(args: string[]) {
+  // Special commands
+  if (args[0] === 'status' && args[1]) {
+    const sessionId = args[1];
+    const status = await discoveryBridge.getSessionStatus(sessionId);
+    
+    if (!status) {
+      console.error('Session not found');
+      process.exit(1);
+    }
+    
+    console.log('\nDiscovery Session Status:');
+    console.log(`  Status: ${status.status}`);
+    console.log(`  Progress: ${status.progress}%`);
+    console.log(`  Clinics Found: ${status.clinicsFound}`);
+    console.log(`  Clinics Imported: ${status.clinicsImported}`);
+    
+    if (status.errors.length > 0) {
+      console.log(`  Errors: ${status.errors.length}`);
+      status.errors.slice(-3).forEach(err => console.log(`    - ${err}`));
+    }
+    
+    return;
+  }
+  
+  if (args[0] === 'pause' && args[1]) {
+    const sessionId = args[1];
+    const paused = await discoveryBridge.pauseSession(sessionId);
+    
+    if (paused) {
+      console.log('Pause requested successfully');
+    } else {
+      console.error('Failed to pause session');
+      process.exit(1);
+    }
+    
+    return;
+  }
+  
+  if (args[0] === 'monitor' && args[1]) {
+    const sessionId = args[1];
+    await discoveryBridge.monitorSession(sessionId);
+    return;
+  }
+  
+  if (args[0] === 'list') {
+    const sessions = await discoveryBridge.getAllSessions();
+    
+    console.log('\nRecent Discovery Sessions:');
+    sessions.forEach(session => {
+      const createdAt = new Date(session.createdAt.seconds * 1000).toLocaleString();
+      console.log(`\n  ID: ${session.id}`);
+      console.log(`  Status: ${session.status}`);
+      console.log(`  Created: ${createdAt}`);
+      console.log(`  Found: ${session.clinicsFound || 0} | Imported: ${session.clinicsImported || 0}`);
+    });
+    
+    return;
+  }
+  
+  // Regular discovery command
   const config: DiscoveryTaskConfig = {
     targetClinicCount: 5000,
     strategy: 'metro_first' as const,
@@ -105,11 +173,13 @@ export async function executeDiscoveryCommand(args: string[]) {
   const result = await runBusinessDiscovery(config);
   
   if (result.success) {
-    console.log('Discovery completed successfully:', {
-      sessionId: result.sessionId,
-      clinicsFound: result.clinicsFound,
-      clinicsImported: result.clinicsImported
-    });
+    console.log('\nDiscovery started successfully!');
+    console.log(`Session ID: ${result.sessionId}`);
+    
+    // Optionally monitor the session
+    if (args.includes('--monitor')) {
+      await discoveryBridge.monitorSession(result.sessionId!);
+    }
   } else {
     console.error('Discovery failed:', result.error);
     process.exit(1);
@@ -120,3 +190,7 @@ export async function executeDiscoveryCommand(args: string[]) {
 // npm run worker discovery --target 10000 --strategy metro_first --niche mensHealth
 // npm run worker discovery --resume session_123456789 
 // npm run worker discovery --target 5000 --no-reviews --concurrent 5
+// npm run worker discovery:status session_123456789
+// npm run worker discovery:pause session_123456789
+// npm run worker discovery:monitor session_123456789
+// npm run worker discovery:list

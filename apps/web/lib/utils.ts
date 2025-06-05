@@ -215,25 +215,37 @@ export const stateMap: Record<string, string> = {
   'DC': 'District of Columbia'};
 
 /**
- * Map of service category IDs to full service names
+ * Map of service category IDs to URL slugs
+ * Includes legacy mappings for backward compatibility
  */
 export const serviceCategoryMap: Record<string, string> = {
-  'trt': 'testosterone-therapy',
-  'ed': 'erectile-dysfunction',
-  'ed-treatment': 'erectile-dysfunction',
-  'ed-therapy': 'erectile-dysfunction',
-  'erectile-dysfunction': 'erectile-dysfunction',
-  'hairloss': 'hair-loss',
-  'hair-loss': 'hair-loss',
-  'weightloss': 'weight-management',
-  'weight-loss': 'weight-management',
-  'weight-management': 'weight-management',
+  // New categories
   'hormone-optimization': 'hormone-optimization',
-  'peptide-therapy': 'peptide-therapy',
-  'iv-therapy': 'iv-therapy',
-  'iv': 'iv-therapy',
-  'cryotherapy': 'cryotherapy',
-  'cryo': 'cryotherapy'
+  'sexual-health': 'sexual-health',
+  'peptides-performance': 'peptides-performance',
+  'hair-loss-aesthetics': 'hair-loss-aesthetics',
+  'weight-loss-metabolic': 'weight-loss-metabolic',
+  'iv-injection-therapy': 'iv-injection-therapy',
+  'regenerative-medicine': 'regenerative-medicine',
+  'diagnostics-panels': 'diagnostics-panels',
+  
+  // Legacy mappings for backward compatibility
+  'trt': 'hormone-optimization',
+  'testosterone-therapy': 'hormone-optimization',
+  'ed': 'sexual-health',
+  'ed-treatment': 'sexual-health',
+  'ed-therapy': 'sexual-health',
+  'erectile-dysfunction': 'sexual-health',
+  'hairloss': 'hair-loss-aesthetics',
+  'hair-loss': 'hair-loss-aesthetics',
+  'weightloss': 'weight-loss-metabolic',
+  'weight-loss': 'weight-loss-metabolic',
+  'weight-management': 'weight-loss-metabolic',
+  'peptide-therapy': 'peptides-performance',
+  'iv-therapy': 'iv-injection-therapy',
+  'iv': 'iv-injection-therapy',
+  'cryotherapy': 'regenerative-medicine',
+  'cryo': 'regenerative-medicine'
 };
 
 /**

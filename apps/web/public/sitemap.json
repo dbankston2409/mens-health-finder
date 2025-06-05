@@ -1,0 +1,41 @@
+{
+  "title": "Sitemap",
+  "sections": [
+    {
+      "title": "Main Pages",
+      "links": [
+        {"text": "Home", "url": "/"},
+        {"text": "Search Clinics", "url": "/search"},
+        {"text": "Online Providers", "url": "/online-providers"},
+        {"text": "About Us", "url": "/about"},
+        {"text": "Contact", "url": "/contact"}
+      ]
+    },
+    {
+      "title": "Services",
+      "links": [
+        {"text": "Hormone Optimization", "url": "/hormone-optimization"},
+        {"text": "Sexual Health", "url": "/sexual-health"},
+        {"text": "Weight Management", "url": "/weight-management"},
+        {"text": "Hair Loss Treatment", "url": "/hair-loss"},
+        {"text": "Peptide Therapy", "url": "/peptides-performance"}
+      ]
+    },
+    {
+      "title": "Resources",
+      "links": [
+        {"text": "Blog", "url": "/blog"},
+        {"text": "FAQ", "url": "/faq"},
+        {"text": "Health Library", "url": "/resources"}
+      ]
+    },
+    {
+      "title": "Legal",
+      "links": [
+        {"text": "Privacy Policy", "url": "/privacy"},
+        {"text": "Terms of Service", "url": "/terms"},
+        {"text": "Cookie Policy", "url": "/cookies"}
+      ]
+    }
+  ]
+}

@@ -10,6 +10,7 @@ import { getServiceSlug } from '../lib/utils';
 import SearchResultsList from '../components/SearchResultsList';
 import { useAutoLocation } from '../hooks/useAutoLocation';
 import ChangeLocationModal from '../components/ChangeLocationModal';
+import { geocodeLocation } from '../utils/geoUtils';
 
 // Import the clinic service
 import * as clinicService from '../lib/api/clinicService';
@@ -192,7 +193,8 @@ const SearchPage: React.FC = () => {
     try {
       // Only attempt geocoding on the client side
       if (typeof window !== 'undefined') {
-        const coords = await geocodeCityState(city, state);
+        const locationString = `${city}, ${state}`;
+        const coords = await geocodeLocation(locationString);
         if (coords) {
           setMapCenter(coords);
         }

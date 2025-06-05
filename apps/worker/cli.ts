@@ -33,9 +33,13 @@ ${colors.bright}USAGE:${colors.reset}
 
 ${colors.bright}COMMANDS:${colors.reset}
 
-  ${colors.bright}import${colors.reset} [file-path]       Import clinics from CSV/JSON files
-  ${colors.bright}discovery${colors.reset} [options]     Run automated business discovery
-  ${colors.bright}review-update${colors.reset} [options] Update reviews for existing clinics
+  ${colors.bright}import${colors.reset} [file-path]         Import clinics from CSV/JSON files
+  ${colors.bright}discovery${colors.reset} [options]       Run automated business discovery
+  ${colors.bright}discovery:status${colors.reset} [session-id]      Check discovery session status
+  ${colors.bright}discovery:pause${colors.reset} [session-id]       Pause a running discovery session
+  ${colors.bright}discovery:monitor${colors.reset} [session-id]     Monitor discovery session progress
+  ${colors.bright}discovery:list${colors.reset}                    List recent discovery sessions
+  ${colors.bright}review-update${colors.reset} [options]   Update reviews for existing clinics
 
 ${colors.bright}IMPORT EXAMPLES:${colors.reset}
   npm run worker import sample-clinics.csv
@@ -47,6 +51,9 @@ ${colors.bright}DISCOVERY EXAMPLES:${colors.reset}
   npm run worker discovery --target 10000 --niche mensHealth --no-reviews
   npm run worker discovery --resume session_123456789
   npm run worker discovery --target 2000 --concurrent 5 --pause-after 120
+  npm run worker discovery:status
+  npm run worker discovery:status --session discovery_1234567890
+  npm run worker discovery:pause --session discovery_1234567890
 
 ${colors.bright}REVIEW UPDATE EXAMPLES:${colors.reset}
   npm run worker review-update --discovery-session session_123456789
@@ -186,8 +193,68 @@ const args = process.argv.slice(3);
     }
   }
   
+  if (command === 'discovery:status') {
+    try {
+      log.info('Checking discovery status...');
+      
+      const { executeDiscoveryCommand } = await import('./tasks/runBusinessDiscovery');
+      await executeDiscoveryCommand(['status', ...args]);
+      
+      process.exit(0);
+      
+    } catch (error) {
+      log.error(`Status check failed: ${error}`);
+      process.exit(1);
+    }
+  }
+  
+  if (command === 'discovery:pause') {
+    try {
+      log.info('Pausing discovery session...');
+      
+      const { executeDiscoveryCommand } = await import('./tasks/runBusinessDiscovery');
+      await executeDiscoveryCommand(['pause', ...args]);
+      
+      process.exit(0);
+      
+    } catch (error) {
+      log.error(`Pause failed: ${error}`);
+      process.exit(1);
+    }
+  }
+  
+  if (command === 'discovery:monitor') {
+    try {
+      log.info('Monitoring discovery session...');
+      
+      const { executeDiscoveryCommand } = await import('./tasks/runBusinessDiscovery');
+      await executeDiscoveryCommand(['monitor', ...args]);
+      
+      process.exit(0);
+      
+    } catch (error) {
+      log.error(`Monitor failed: ${error}`);
+      process.exit(1);
+    }
+  }
+  
+  if (command === 'discovery:list') {
+    try {
+      log.info('Listing discovery sessions...');
+      
+      const { executeDiscoveryCommand } = await import('./tasks/runBusinessDiscovery');
+      await executeDiscoveryCommand(['list']);
+      
+      process.exit(0);
+      
+    } catch (error) {
+      log.error(`List failed: ${error}`);
+      process.exit(1);
+    }
+  }
+  
   // Default behavior - show usage if no valid command
-  if (!command || !['import', 'discovery', 'review-update'].includes(command)) {
+  if (!command || !['import', 'discovery', 'discovery:status', 'discovery:pause', 'discovery:monitor', 'discovery:list', 'review-update'].includes(command)) {
     log.warning('Invalid or missing command');
     showUsage();
     process.exit(1);
