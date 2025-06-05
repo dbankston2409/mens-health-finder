@@ -174,25 +174,3 @@ export const getStaticPaths_old: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const slug = params?.slug as string;
-  const post = mockBlogPosts.find((post) => post.slug === slug);
-  
-  // Find related posts (same category, excluding current post)
-  let relatedPosts: BlogPost[] = [];
-  
-  if (post) {
-    // Get posts that share at least one category with the current post
-    relatedPosts = mockBlogPosts
-      .filter((p) => 
-        p.id !== post.id && 
-        p.categories.some((cat) => post.categories.includes(cat))
-      )
-      .slice(0, 3); // Limit to 3 related posts
-  }
-
-  return {
-    props: {
-      post: post || null,
-      relatedPosts}};
-};

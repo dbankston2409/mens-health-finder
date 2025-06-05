@@ -136,7 +136,6 @@ export default function Home() {
     });
   };
 
-
   return (
     <>
       <Head>
@@ -436,55 +435,9 @@ export default function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
             {/* Blog posts section - currently no data */}
-            {
-                  <div key={post.id} className="card overflow-hidden flex flex-col h-full transition-transform hover:translate-y-[-4px]">
-                    {/* Featured Image */}
-                    <Link href={`/blog/${post.slug}`} className="block">
-                      <div className="h-48 bg-[#222] relative overflow-hidden">
-                        {/* In a real app, we'd use Next.js Image component with actual images */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#000000] to-transparent opacity-50"></div>
-                        <div className="w-full h-full flex items-center justify-center text-[#AAAAAA]">
-                          {post.featuredImage ? (
-                            <img 
-                              src={post.featuredImage} 
-                              alt={post.title}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            "Featured Image"
-                          )}
-                        </div>
-                      </div>
-                    </Link>
-                    
-                    {/* Content */}
-                    <div className="p-6 flex flex-col flex-grow">
-                      <Link href={`/blog/${post.slug}`} className="block">
-                        <h3 className="text-xl font-bold mb-3 hover:text-primary transition-colors line-clamp-2">
-                          {post.title.length > 80 ? `${post.title.substring(0, 77)}...` : post.title}
-                        </h3>
-                      </Link>
-                      
-                      <p className="text-[#AAAAAA] text-sm mb-4 flex-grow">
-                        {post.excerpt.split(' ').slice(0, 35).join(' ')}
-                        {post.excerpt.split(' ').length > 35 ? '...' : ''}
-                      </p>
-                      
-                      <Link 
-                        href={`/blog/${post.slug}`} 
-                        className="btn-secondary inline-flex self-start items-center text-sm"
-                      >
-                        Read More
-                        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
-                      </Link>
-                    </div>
-                  </div>
-              <div className="col-span-3 text-center py-16">
-                <div className="text-xl text-[#AAAAAA]">New insights coming soon</div>
-              </div>
-            }
+            <div className="col-span-3 text-center py-16">
+              <div className="text-xl text-[#AAAAAA]">New insights coming soon</div>
+            </div>
           </div>
           
           <div className="mt-10 text-center">
