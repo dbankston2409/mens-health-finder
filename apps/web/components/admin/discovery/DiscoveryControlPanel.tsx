@@ -34,7 +34,15 @@ const DiscoveryControlPanel: React.FC = () => {
     const tempOrchestrator = new DiscoveryOrchestrator(config, () => {});
     try {
       const sessions = await tempOrchestrator.getAllSessions();
-      setSavedSessions(sessions.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+      setSavedSessions(sessions.sort((a, b) => {
+        const aDate = a.createdAt && typeof a.createdAt === 'object' && 'toDate' in a.createdAt 
+          ? a.createdAt.toDate().getTime()
+          : new Date(a.createdAt).getTime();
+        const bDate = b.createdAt && typeof b.createdAt === 'object' && 'toDate' in b.createdAt
+          ? b.createdAt.toDate().getTime()
+          : new Date(b.createdAt).getTime();
+        return bDate - aDate;
+      }));
     } catch (error) {
       console.error('Failed to load sessions:', error);
     }
@@ -119,9 +127,26 @@ const DiscoveryControlPanel: React.FC = () => {
     }
   };
 
-  const formatDate = (date: Date | string) => {
-    const d = typeof date === 'string' ? new Date(date) : date;
-    return d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
+  const formatDate = (date: Date | string | any) => {
+    try {
+      let d: Date;
+      
+      // Handle Firestore Timestamp
+      if (date && typeof date === 'object' && 'toDate' in date) {
+        d = date.toDate();
+      } else if (typeof date === 'string') {
+        d = new Date(date);
+      } else if (date instanceof Date) {
+        d = date;
+      } else {
+        return 'Invalid date';
+      }
+      
+      return d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
+    } catch (error) {
+      console.error('Error formatting date:', error, date);
+      return 'Invalid date';
+    }
   };
 
   const formatTimeRemaining = (minutes: number) => {
