@@ -5,7 +5,7 @@
   "scripts": {
     "prebuild": "node fix-imports-correct.js",
     "build": "tsc",
-    "postbuild": "mkdir -p dist/utils dist/scripts/services && cp utils/*.js dist/utils/ 2>/dev/null || true && cp ../../scripts/services/reviewAggregator.js dist/scripts/services/ 2>/dev/null || true",
+    "postbuild": "mkdir -p dist/utils && cp utils/*.js dist/utils/ 2>/dev/null || true",
     "start": "node dist/index.js",
     "dev": "ts-node index.ts",
     "worker:import": "ts-node cli.ts import",
