@@ -3,20 +3,32 @@ import { getAuth } from 'firebase-admin/auth';
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
 
 // Initialize Firebase Admin with error handling
+let isFirebaseAdminInitialized = false;
+
 try {
   if (!getApps().length) {
     const privateKey = process.env.FIREBASE_PRIVATE_KEY;
-    if (!privateKey || !process.env.FIREBASE_PROJECT_ID || !process.env.FIREBASE_CLIENT_EMAIL) {
-      console.error('Missing Firebase Admin credentials');
+    const projectId = process.env.FIREBASE_PROJECT_ID;
+    const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+    
+    if (!privateKey || !projectId || !clientEmail) {
+      console.error('Missing Firebase Admin credentials:', {
+        hasPrivateKey: !!privateKey,
+        hasProjectId: !!projectId,
+        hasClientEmail: !!clientEmail
+      });
     } else {
       initializeApp({
         credential: cert({
-          projectId: process.env.FIREBASE_PROJECT_ID,
-          clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+          projectId,
+          clientEmail,
           privateKey: privateKey.replace(/\\n/g, '\n'),
         }),
       });
+      isFirebaseAdminInitialized = true;
     }
+  } else {
+    isFirebaseAdminInitialized = true;
   }
 } catch (error) {
   console.error('Firebase Admin initialization error:', error);
@@ -29,6 +41,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    // Check if Firebase Admin is initialized
+    if (!isFirebaseAdminInitialized) {
+      console.error('Firebase Admin not initialized - cannot verify auth');
+      return res.status(500).json({ error: 'Server configuration error: Firebase Admin not initialized' });
+    }
+
     // Verify user is authenticated and is admin
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
