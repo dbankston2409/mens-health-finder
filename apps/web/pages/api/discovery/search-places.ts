@@ -29,15 +29,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // Temporarily skip auth check for debugging
-    console.log('Request received:', {
-      method: req.method,
-      hasAuth: !!req.headers.authorization,
-      body: req.body
-    });
-
-    // TODO: Re-enable auth after debugging
-    /*
     // Verify user is authenticated and is admin
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -45,13 +36,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const token = authHeader.split('Bearer ')[1];
-    const decodedToken = await getAuth().verifyIdToken(token);
     
-    // Check if user is admin (you may want to check custom claims or database)
-    if (!decodedToken.uid) {
-      return res.status(403).json({ error: 'Forbidden' });
+    try {
+      const decodedToken = await getAuth().verifyIdToken(token);
+      
+      // Check if user is admin (you may want to check custom claims or database)
+      if (!decodedToken.uid) {
+        return res.status(403).json({ error: 'Forbidden' });
+      }
+    } catch (authError) {
+      console.error('Auth verification failed:', authError);
+      return res.status(401).json({ error: 'Invalid authentication token' });
     }
-    */
 
     // Get search parameters from request body
     const { location, radius, keyword, type = 'health' } = req.body;
@@ -102,6 +98,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!response.ok) {
       console.error('Google Places API error:', data);
       return res.status(response.status).json({ error: data.error_message || 'Google Places API error' });
+    }
+
+    // Check if the API returned an error status
+    if (data.status === 'REQUEST_DENIED') {
+      console.error('Google Places API denied request:', data.error_message);
+      return res.status(403).json({ 
+        error: 'Google Places API request denied', 
+        details: data.error_message 
+      });
+    }
+    
+    if (data.status !== 'OK' && data.status !== 'ZERO_RESULTS') {
+      console.error('Google Places API error status:', data.status, data.error_message);
+      return res.status(500).json({ 
+        error: 'Google Places API error', 
+        status: data.status,
+        details: data.error_message 
+      });
     }
 
     console.log('Google Places API success:', {

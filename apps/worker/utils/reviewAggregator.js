@@ -558,6 +558,12 @@ if (require.main === module) {
   }
 }
 
+        process.exit(1);
+      });
+  }
+}
+
+// Export functions for use by other modules
 module.exports = {
   fetchGoogleReviews,
   fetchYelpReviews,
@@ -567,3 +573,4 @@ module.exports = {
   refreshClinicReviews,
   updateClinicReviewMetrics
 };
+
