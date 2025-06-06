@@ -450,3 +450,4 @@ class FirestoreClient {
 }
 
 export default FirestoreClient;
+export { db };

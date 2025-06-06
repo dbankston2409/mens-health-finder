@@ -47,8 +47,14 @@ export class DiscoveryOrchestrator {
     // Get Google API key from environment or config
     const googleApiKey = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY || 
                         process.env.GOOGLE_PLACES_API_KEY || '';
+    console.log('DiscoveryOrchestrator initialized with:', {
+      hasApiKey: !!googleApiKey,
+      apiKeyLength: googleApiKey.length,
+      config
+    });
     if (!googleApiKey) {
-      console.warn('Google Places API key not found. Discovery features will be limited.');
+      console.error('⚠️ Google Places API key not found! Discovery will fail.');
+      console.error('Please set NEXT_PUBLIC_GOOGLE_PLACES_API_KEY in your environment');
     }
     this.dataCollector = new ExtendedDataCollector(googleApiKey);
     this.onProgressUpdate = onProgressUpdate;
@@ -77,7 +83,14 @@ export class DiscoveryOrchestrator {
     this.session.totalGrids = this.grids.length;
 
     // Save session to Firestore
-    await setDoc(doc(db, 'discoverySession', sessionId), this.session);
+    console.log('Saving session to Firestore:', sessionId);
+    try {
+      await setDoc(doc(db, 'discoverySession', sessionId), this.session);
+      console.log('Session saved successfully');
+    } catch (error) {
+      console.error('Failed to save session:', error);
+      throw error;
+    }
 
     this.startTime = new Date();
     this.isRunning = true;
@@ -168,11 +181,22 @@ export class DiscoveryOrchestrator {
   }
 
   private async runDiscovery(): Promise<void> {
-    if (!this.session) return;
+    if (!this.session) {
+      console.error('No session available for discovery');
+      return;
+    }
+
+    console.log('Starting discovery process:', {
+      totalGrids: this.grids.length,
+      currentIndex: this.currentGridIndex,
+      isRunning: this.isRunning,
+      isPaused: this.isPaused
+    });
 
     try {
       while (this.currentGridIndex < this.grids.length && this.isRunning && !this.isPaused) {
         const grid = this.grids[this.currentGridIndex];
+        console.log(`Processing grid ${this.currentGridIndex + 1}/${this.grids.length}:`, grid);
         
         // Update grid status
         grid.status = 'searching';
@@ -238,11 +262,19 @@ export class DiscoveryOrchestrator {
   private async searchGridForClinics(grid: DiscoveryGrid): Promise<Clinic[]> {
     if (!this.session) return [];
 
+    console.log('Searching grid for clinics:', {
+      center: `${grid.center.lat}, ${grid.center.lng}`,
+      radius: grid.radius,
+      niche: this.session.config.searchNiche
+    });
+
     const searchResults = await this.dataCollector.searchGrid(
       grid,
       this.session.config.searchNiche,
       this.session.config.maxConcurrentSearches
     );
+    
+    console.log(`Found ${searchResults.length} clinics in grid`);
 
     // Enhance with additional data if enabled
     const enhancedClinics: Clinic[] = [];
@@ -375,8 +407,16 @@ export class DiscoveryOrchestrator {
   }
 
   async getAllSessions(): Promise<DiscoverySession[]> {
-    const sessionsSnapshot = await getDocs(collection(db, 'discoverySession'));
-    return sessionsSnapshot.docs.map(doc => doc.data() as DiscoverySession);
+    console.log('Fetching all discovery sessions...');
+    try {
+      const sessionsSnapshot = await getDocs(collection(db, 'discoverySession'));
+      const sessions = sessionsSnapshot.docs.map(doc => doc.data() as DiscoverySession);
+      console.log(`Found ${sessions.length} discovery sessions`);
+      return sessions;
+    } catch (error) {
+      console.error('Failed to fetch sessions:', error);
+      return [];
+    }
   }
 
   getProgress(): DiscoveryProgress | null {

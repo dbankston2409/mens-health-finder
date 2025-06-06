@@ -101,7 +101,7 @@ ${colors.bright}OPTIONAL CSV COLUMNS:${colors.reset}
 
 ${colors.bright}FEATURES:${colors.reset}
   ✅ Automated business discovery across entire US
-  ✅ Google Places & Yelp API integration
+  ✅ Google Places API integration
   ✅ Visual grid-based search with progress tracking
   ✅ Pause/resume functionality for long-running searches
   ✅ Social media and review data enhancement

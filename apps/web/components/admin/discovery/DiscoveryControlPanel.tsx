@@ -28,9 +28,12 @@ const DiscoveryControlPanel: React.FC = () => {
   }, []);
 
   const loadSavedSessions = async () => {
-    if (!orchestrator) return;
+    console.log('loadSavedSessions called, orchestrator exists:', !!orchestrator);
+    
+    // Create a temporary orchestrator just for loading sessions
+    const tempOrchestrator = new DiscoveryOrchestrator(config, () => {});
     try {
-      const sessions = await orchestrator.getAllSessions();
+      const sessions = await tempOrchestrator.getAllSessions();
       setSavedSessions(sessions.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
     } catch (error) {
       console.error('Failed to load sessions:', error);
@@ -43,9 +46,12 @@ const DiscoveryControlPanel: React.FC = () => {
 
   const startNewDiscovery = async () => {
     try {
+      console.log('Starting new discovery with config:', config);
+      
       const newOrchestrator = new DiscoveryOrchestrator(config, handleProgressUpdate);
       setOrchestrator(newOrchestrator);
       
+      console.log('Orchestrator created, starting session...');
       const sessionId = await newOrchestrator.startNewSession(config);
       console.log(`Started new discovery session: ${sessionId}`);
       
@@ -54,7 +60,7 @@ const DiscoveryControlPanel: React.FC = () => {
       await loadSavedSessions();
     } catch (error) {
       console.error('Failed to start discovery:', error);
-      alert('Failed to start discovery. Please check the console for details.');
+      alert(`Failed to start discovery: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -230,7 +236,7 @@ const DiscoveryControlPanel: React.FC = () => {
                 onChange={(e) => setConfig({...config, enableReviewImport: e.target.checked})}
                 className="rounded border-gray-600 text-primary bg-[#111111] focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
               />
-              <span className="ml-2 text-sm text-gray-300">Import Google & Yelp Reviews</span>
+              <span className="ml-2 text-sm text-gray-300">Import Google Reviews</span>
             </label>
             
             <label className="flex items-center">
