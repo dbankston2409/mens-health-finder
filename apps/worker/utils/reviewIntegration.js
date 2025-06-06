@@ -9,7 +9,8 @@ const path = require('path');
 const admin = require('firebase-admin');
 
 // Import the existing review aggregator
-const reviewAggregator = require('../../../../scripts/services/reviewAggregator.js');
+// In production, this file is copied to dist/scripts/services/
+const reviewAggregator = require('../scripts/services/reviewAggregator.js');
 
 /**
  * Update reviews for multiple clinics
