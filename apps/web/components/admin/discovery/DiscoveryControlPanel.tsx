@@ -41,7 +41,26 @@ const DiscoveryControlPanel: React.FC = () => {
   };
 
   const handleProgressUpdate = (newProgress: DiscoveryProgress) => {
+    console.log('Progress update received:', newProgress);
     setProgress(newProgress);
+    
+    // If we don't have a current session yet, try to load it
+    if (!currentSession && newProgress.sessionId) {
+      loadSessionById(newProgress.sessionId);
+    }
+  };
+  
+  const loadSessionById = async (sessionId: string) => {
+    try {
+      const tempOrchestrator = new DiscoveryOrchestrator(config, () => {});
+      const sessions = await tempOrchestrator.getAllSessions();
+      const session = sessions.find(s => s.id === sessionId);
+      if (session) {
+        setCurrentSession(session);
+      }
+    } catch (error) {
+      console.error('Failed to load session by ID:', error);
+    }
   };
 
   const startNewDiscovery = async () => {
@@ -258,6 +277,19 @@ const DiscoveryControlPanel: React.FC = () => {
               Start Discovery
             </button>
             <button
+              onClick={() => {
+                // Preview grids that would be generated
+                const gridGen = new DiscoveryOrchestrator(config, () => {});
+                console.log('Preview: Grid generator would create grids for:', {
+                  strategy: config.strategy,
+                  targetCount: config.targetClinicCount
+                });
+              }}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Preview Grids
+            </button>
+            <button
               onClick={() => setIsConfigVisible(false)}
               className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
             >
@@ -344,7 +376,13 @@ const DiscoveryControlPanel: React.FC = () => {
       {/* Discovery Map */}
       <div className="bg-[#0A0A0A] p-6 rounded-lg border border-[#222222]">
         <h3 className="text-lg font-semibold mb-4 text-white">Discovery Map</h3>
-        <DiscoveryMap session={currentSession} />
+        {currentSession || progress ? (
+          <DiscoveryMap session={currentSession} />
+        ) : (
+          <div className="text-gray-400 text-center py-8">
+            Start a discovery session to see the search grid visualization
+          </div>
+        )}
       </div>
 
       {/* Review Update Panel */}
