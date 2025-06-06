@@ -259,17 +259,46 @@ export class DiscoveryOrchestrator {
     }
   }
 
-  private async searchGridForClinics(grid: DiscoveryGrid): Promise<Clinic[]> {
+  private async searchGridForClinics(grid: any): Promise<Clinic[]> {
     if (!this.session) return [];
 
+    // Calculate center from bounds if not available
+    let centerLat, centerLng, radius;
+    
+    if (grid.bounds) {
+      centerLat = (grid.bounds.north + grid.bounds.south) / 2;
+      centerLng = (grid.bounds.east + grid.bounds.west) / 2;
+      // Calculate approximate radius in km (rough approximation)
+      const latDiff = Math.abs(grid.bounds.north - grid.bounds.south);
+      const lngDiff = Math.abs(grid.bounds.east - grid.bounds.west);
+      radius = Math.max(latDiff, lngDiff) * 111 / 2; // Convert degrees to km
+    } else if (grid.lat && grid.lng) {
+      centerLat = grid.lat;
+      centerLng = grid.lng;
+      radius = grid.radius || 10;
+    } else {
+      console.error('Invalid grid structure:', grid);
+      return [];
+    }
+
     console.log('Searching grid for clinics:', {
-      center: `${grid.center.lat}, ${grid.center.lng}`,
-      radius: grid.radius,
-      niche: this.session.config.searchNiche
+      center: `${centerLat}, ${centerLng}`,
+      radius: radius,
+      niche: this.session.config.searchNiche,
+      gridId: grid.id
     });
 
+    // Create a search-compatible grid object
+    const searchGrid = {
+      ...grid,
+      lat: centerLat,
+      lng: centerLng,
+      radius: radius,
+      center: { lat: centerLat, lng: centerLng }
+    };
+
     const searchResults = await this.dataCollector.searchGrid(
-      grid,
+      searchGrid,
       this.session.config.searchNiche,
       this.session.config.maxConcurrentSearches
     );

@@ -55,12 +55,26 @@ const DiscoveryMap: React.FC<DiscoveryMapProps> = ({
     }
   };
 
-  const getGridBounds = (grid: DiscoveryGrid): [[number, number], [number, number]] => {
-    const halfSize = grid.radius / 111; // Convert km to approximate degrees
-    return [
-      [grid.lat - halfSize, grid.lng - halfSize],
-      [grid.lat + halfSize, grid.lng + halfSize]
-    ];
+  const getGridBounds = (grid: any): [[number, number], [number, number]] => {
+    // If grid has bounds, use them directly
+    if (grid.bounds) {
+      return [
+        [grid.bounds.south, grid.bounds.west],
+        [grid.bounds.north, grid.bounds.east]
+      ];
+    }
+    
+    // Otherwise calculate from lat/lng/radius
+    if (grid.lat && grid.lng && grid.radius) {
+      const halfSize = grid.radius / 111; // Convert km to approximate degrees
+      return [
+        [grid.lat - halfSize, grid.lng - halfSize],
+        [grid.lat + halfSize, grid.lng + halfSize]
+      ];
+    }
+    
+    // Default fallback
+    return [[0, 0], [0, 0]];
   };
 
   if (!isClient) {
@@ -106,8 +120,8 @@ const DiscoveryMap: React.FC<DiscoveryMapProps> = ({
                 </h3>
                 <div className="text-xs space-y-1">
                   <div>Status: <span className="capitalize">{grid.status}</span></div>
-                  <div>Location: {grid.lat.toFixed(4)}, {grid.lng.toFixed(4)}</div>
-                  <div>Radius: {grid.radius}km</div>
+                  <div>Location: {grid.lat?.toFixed(4) || 'N/A'}, {grid.lng?.toFixed(4) || 'N/A'}</div>
+                  {grid.radius && <div>Radius: {grid.radius}km</div>}
                   {grid.priority && (
                     <div>Priority: {grid.priority}</div>
                   )}
@@ -127,25 +141,35 @@ const DiscoveryMap: React.FC<DiscoveryMapProps> = ({
         ))}
         
         {/* Show current search location if running */}
-        {session?.status === 'running' && session.grids[session.currentGridIndex] && (
-          <Marker
-            position={[
-              session.grids[session.currentGridIndex].lat,
-              session.grids[session.currentGridIndex].lng
-            ]}
-          >
-            <Popup>
-              <div className="p-2">
-                <h3 className="font-semibold text-sm text-blue-600">
-                  Currently Searching
-                </h3>
-                <div className="text-xs">
-                  Grid {session.currentGridIndex + 1} of {session.grids.length}
+        {session?.status === 'running' && session.grids[session.currentGridIndex] && (() => {
+          const currentGrid = session.grids[session.currentGridIndex];
+          let markerLat, markerLng;
+          
+          if (currentGrid.bounds) {
+            markerLat = (currentGrid.bounds.north + currentGrid.bounds.south) / 2;
+            markerLng = (currentGrid.bounds.east + currentGrid.bounds.west) / 2;
+          } else if (currentGrid.lat && currentGrid.lng) {
+            markerLat = currentGrid.lat;
+            markerLng = currentGrid.lng;
+          } else {
+            return null;
+          }
+          
+          return (
+            <Marker position={[markerLat, markerLng]}>
+              <Popup>
+                <div className="p-2">
+                  <h3 className="font-semibold text-sm text-blue-600">
+                    Currently Searching
+                  </h3>
+                  <div className="text-xs">
+                    Grid {session.currentGridIndex + 1} of {session.grids.length}
+                  </div>
                 </div>
-              </div>
-            </Popup>
-          </Marker>
-        )}
+              </Popup>
+            </Marker>
+          );
+        })()}
       </MapContainer>
       
       {showProgress && session && (
