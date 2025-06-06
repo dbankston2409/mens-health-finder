@@ -25,6 +25,7 @@
     "chart.js": "^4.4.9",
     "commander": "^13.1.0",
     "csv-parser": "^3.2.0",
+    "date-fns": "^4.1.0",
     "dotenv": "^16.5.0",
     "firebase": "^11.6.0",
     "firebase-admin": "^13.3.0",

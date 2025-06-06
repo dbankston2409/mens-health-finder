@@ -10,6 +10,7 @@ import { runSeoIndexAudit } from './tasks/runSeoIndexAudit';
 import { runTagAudit } from './tasks/runTagAudit';
 import { missedOpportunityScanner } from './tasks/missedOpportunityScanner';
 import { ghostClinicScanner } from './tasks/ghostClinicScanner';
+import { updateClinicReviews } from './tasks/updateClinicReviews';
 import { db } from './lib/firebase';
 import { doc, getDoc, onSnapshot } from './lib/firebase-compat';
 
@@ -26,6 +27,7 @@ const SCHEDULES = {
   tagAudit: 12 * 60 * 60 * 1000,    // Every 12 hours
   missedOpportunities: 4 * 60 * 60 * 1000, // Every 4 hours
   ghostClinics: 24 * 60 * 60 * 1000, // Daily
+  reviewUpdates: 24 * 60 * 60 * 1000, // Daily review refresh
 };
 
 // Track last run times
@@ -148,8 +150,12 @@ async function startWorker() {
         await runJob('ghost-clinics', ghostClinicScanner);
         break;
         
+      case 'review-updates':
+        await runJob('review-updates', updateClinicReviews);
+        break;
+        
       default:
-        console.error('❌ Unknown job type. Available jobs: import, import-jobs, analytics, reports, seo-index, tag-audit, opportunities, ghost-clinics');
+        console.error('❌ Unknown job type. Available jobs: import, import-jobs, analytics, reports, seo-index, tag-audit, opportunities, ghost-clinics, review-updates');
         process.exit(1);
     }
     
@@ -202,6 +208,10 @@ async function startWorker() {
     
     if (shouldRun('ghost-clinics', SCHEDULES.ghostClinics)) {
       await runJob('ghost-clinics', ghostClinicScanner);
+    }
+    
+    if (shouldRun('review-updates', SCHEDULES.reviewUpdates)) {
+      await runJob('review-updates', updateClinicReviews);
     }
   }, 60 * 1000); // Check every minute
 

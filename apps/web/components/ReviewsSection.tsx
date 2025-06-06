@@ -1,55 +1,74 @@
 import React from 'react';
 import Link from 'next/link';
-
-interface Review {
-  source: string;
-  author: string;
-  rating: number;
-  text: string;
-  date?: string;
-}
+import { useClinicReviews } from '../hooks/useClinicReviews';
+import { Star, RefreshCw } from 'lucide-react';
+import { format } from 'date-fns';
 
 interface ReviewsSectionProps {
-  clinicId: number;
+  clinicId: string;
   clinicName: string;
-  reviews: Review[];
+  reviews?: any[]; // Legacy prop, will be ignored
   showWriteReview?: boolean;
 }
 
 const ReviewsSection: React.FC<ReviewsSectionProps> = ({ 
   clinicId, 
   clinicName, 
-  reviews, 
+  reviews: legacyReviews, // Ignored, using hook instead
   showWriteReview = true 
 }) => {
+  // Fetch reviews from Firestore subcollection
+  const { reviews, loading, error, averageRating, totalCount } = useClinicReviews(clinicId);
+  
   // Separate native MHF reviews from external reviews
-  const nativeReviews = reviews?.filter(review => review.source === 'MHF') || [];
-  const googleReviews = reviews?.filter(review => review.source === 'Google') || [];
+  const nativeReviews = reviews?.filter(review => review.source === 'internal') || [];
+  const googleReviews = reviews?.filter(review => review.source === 'google') || [];
+  const yelpReviews = reviews?.filter(review => review.source === 'yelp') || [];
+  const healthgradesReviews = reviews?.filter(review => review.source === 'healthgrades') || [];
   
-  const calculateAvgRating = (reviews: any[]) => {
-    if (reviews.length === 0) return 0;
-    return reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
-  };
-  
-  const nativeRating = calculateAvgRating(nativeReviews);
+  const nativeRating = nativeReviews.length > 0
+    ? nativeReviews.reduce((sum, review) => sum + review.rating, 0) / nativeReviews.length
+    : 0;
   const nativeReviewCount = nativeReviews.length;
   
-  const hasExternalReviews = googleReviews.length > 0;
+  const hasExternalReviews = googleReviews.length > 0 || yelpReviews.length > 0 || healthgradesReviews.length > 0;
+  
+  if (loading) {
+    return (
+      <div className="glass-card p-6">
+        <div className="flex items-center justify-center py-8">
+          <RefreshCw className="h-8 w-8 text-gray-400 animate-spin" />
+          <span className="ml-2 text-gray-400">Loading reviews...</span>
+        </div>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="glass-card p-6">
+        <div className="rounded-md bg-red-50 p-4">
+          <p className="text-sm text-red-800">Error loading reviews. Please try again later.</p>
+        </div>
+      </div>
+    );
+  }
   
   return (
-    <div>
+    <div className="glass-card p-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold">Reviews</h2>
-        {nativeReviewCount > 0 && (
+        <h2 className="text-2xl font-bold text-white">Reviews</h2>
+        {totalCount > 0 && (
           <div className="flex items-center">
             <div className="flex text-yellow-400">
               {[1, 2, 3, 4, 5].map((star) => (
-                <svg key={star} className="w-5 h-5" fill={star <= Math.floor(nativeRating) ? 'currentColor' : 'none'} viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
+                <Star
+                  key={star}
+                  className={`w-5 h-5 ${star <= Math.floor(averageRating) ? 'fill-current' : ''}`}
+                />
               ))}
             </div>
-            <span className="ml-2 text-textSecondary">{nativeRating.toFixed(1)} ({nativeReviewCount} reviews)</span>
+            <span className="ml-2 text-textSecondary">{averageRating.toFixed(1)} ({totalCount} reviews)</span>
           </div>
         )}
       </div>
@@ -64,17 +83,20 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = ({
               <div key={`mhf-${index}`} className="bg-gray-900 rounded-xl p-6">
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <p className="font-bold">{review.author}</p>
+                    <p className="font-bold">{review.author_name}</p>
                     <div className="flex items-center">
                       <div className="flex text-yellow-400 mr-2">
                         {[1, 2, 3, 4, 5].map((star) => (
-                          <svg key={star} className="w-4 h-4" fill={star <= review.rating ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
+                          <Star
+                            key={star}
+                            className={`w-4 h-4 ${star <= review.rating ? 'fill-current' : ''}`}
+                          />
                         ))}
                       </div>
-                      {review.date && (
-                        <span className="text-textSecondary text-sm">{review.date}</span>
+                      {review.time && (
+                        <span className="text-textSecondary text-sm">
+                          {format(review.time.toDate(), 'MMM d, yyyy')}
+                        </span>
                       )}
                     </div>
                   </div>
@@ -124,15 +146,21 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = ({
               <div key={`google-${index}`} className="bg-gray-900 rounded-xl p-6">
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <p className="font-bold">{review.author}</p>
+                    <p className="font-bold">{review.author_name}</p>
                     <div className="flex items-center">
                       <div className="flex text-yellow-400 mr-2">
                         {[1, 2, 3, 4, 5].map((star) => (
-                          <svg key={star} className="w-4 h-4" fill={star <= review.rating ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
+                          <Star
+                            key={star}
+                            className={`w-4 h-4 ${star <= review.rating ? 'fill-current' : ''}`}
+                          />
                         ))}
                       </div>
+                      {review.time && (
+                        <span className="text-textSecondary text-sm">
+                          {format(review.time.toDate(), 'MMM d, yyyy')}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -160,12 +188,12 @@ const ReviewsSection: React.FC<ReviewsSectionProps> = ({
       
       {/* Write a Review Section */}
       {showWriteReview && (
-        <div className="mb-10 bg-gray-900 rounded-xl p-6">
-          <h3 className="text-xl font-bold mb-4">Submit Your Review</h3>
+        <div className="mt-8 bg-gray-800 rounded-xl p-6">
+          <h3 className="text-xl font-bold mb-4 text-white">Submit Your Review</h3>
           <p className="text-textSecondary mb-4">
             Share your experience with {clinicName} to help others make informed decisions about their healthcare.
           </p>
-          <Link href={`/review/create/${clinicId}`} className="btn">
+          <Link href={`/review/create/${clinicId}`} className="btn-primary">
             Write a Review
           </Link>
         </div>

@@ -340,7 +340,6 @@ const ClinicProfile: React.FC = () => {
                 <ReviewsSection 
                   clinicId={enhancedClinic.id} 
                   clinicName={formatClinicName(enhancedClinic.name)}
-                  reviews={clinicReviews}
                 />
               </div>
               
