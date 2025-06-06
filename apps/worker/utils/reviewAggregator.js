@@ -560,4 +560,10 @@ if (require.main === module) {
 
 module.exports = {
   fetchGoogleReviews,
-  ;
+  fetchYelpReviews,
+  fetchHealthgradesReviews,
+  fetchAllReviews,
+  refreshAllClinicsReviews,
+  refreshClinicReviews,
+  updateClinicReviewMetrics
+};
