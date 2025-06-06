@@ -151,7 +151,15 @@ async function startWorker() {
         break;
         
       case 'review-updates':
-        await runJob('review-updates', updateClinicReviews);
+        await runJob('review-updates', async () => {
+          // Run review updates with default config
+          return updateClinicReviews({
+            enableGoogleReviews: true,
+            maxReviewsPerSource: 10,
+            rateLimitMs: 1000,
+            batchSize: 50
+          });
+        });
         break;
         
       default:
@@ -211,7 +219,15 @@ async function startWorker() {
     }
     
     if (shouldRun('review-updates', SCHEDULES.reviewUpdates)) {
-      await runJob('review-updates', updateClinicReviews);
+      await runJob('review-updates', async () => {
+        // Run review updates with default config for scheduled jobs
+        return updateClinicReviews({
+          enableGoogleReviews: true,
+          maxReviewsPerSource: 10,
+          rateLimitMs: 1000,
+          batchSize: 50
+        });
+      });
     }
   }, 60 * 1000); // Check every minute
 
