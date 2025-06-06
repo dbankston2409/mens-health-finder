@@ -40,20 +40,40 @@ export class EnhancedDataCollector {
   }): Promise<GooglePlaceDetails[]> {
     try {
       const { lat, lng, radius, keyword, type } = config;
-      const params = new URLSearchParams({
-        location: `${lat},${lng}`,
-        radius: radius.toString(),
-        key: this.googleApiKey
+      
+      // Get auth token from Firebase
+      const auth = await import('firebase/auth');
+      const { getAuth } = auth;
+      const currentUser = getAuth().currentUser;
+      
+      if (!currentUser) {
+        throw new Error('User not authenticated');
+      }
+      
+      const token = await currentUser.getIdToken();
+      
+      // Call our backend API instead of Google directly
+      const response = await fetch('/api/discovery/search-places', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          location: `${lat},${lng}`,
+          radius: radius * 1000, // Convert km to meters
+          keyword,
+          type
+        })
       });
-
-      if (keyword) params.append('keyword', keyword);
-      if (type) params.append('type', type);
-
-      const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?${params.toString()}`;
-      const response = await fetch(url);
+      
       const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || `API error: ${response.status}`);
+      }
 
-      if (data.status !== 'OK') {
+      if (data.status !== 'OK' && data.status !== 'ZERO_RESULTS') {
         throw new Error(`Google Places API error: ${data.status}`);
       }
 
@@ -82,15 +102,35 @@ export class EnhancedDataCollector {
    */
   async getGooglePlaceDetails(placeId: string): Promise<GooglePlaceDetails | null> {
     try {
-      const params = new URLSearchParams({
-        place_id: placeId,
-        fields: 'name,formatted_address,formatted_phone_number,website,rating,user_ratings_total,geometry,address_components',
-        key: this.googleApiKey
+      // Get auth token from Firebase
+      const auth = await import('firebase/auth');
+      const { getAuth } = auth;
+      const currentUser = getAuth().currentUser;
+      
+      if (!currentUser) {
+        throw new Error('User not authenticated');
+      }
+      
+      const token = await currentUser.getIdToken();
+      
+      // Call our backend API instead of Google directly
+      const response = await fetch('/api/discovery/place-details', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          placeId,
+          fields: 'name,formatted_address,formatted_phone_number,website,rating,user_ratings_total,geometry,address_components'
+        })
       });
-
-      const url = `https://maps.googleapis.com/maps/api/place/details/json?${params.toString()}`;
-      const response = await fetch(url);
+      
       const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || `API error: ${response.status}`);
+      }
 
       if (data.status !== 'OK') {
         throw new Error(`Google Place Details API error: ${data.status}`);
