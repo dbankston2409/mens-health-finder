@@ -558,6 +558,7 @@ if (require.main === module) {
   }
 }
 
+// Export functions for use by other modules
 module.exports = {
   fetchGoogleReviews,
   fetchYelpReviews,
