@@ -486,7 +486,8 @@ async function refreshClinicReviews(clinicId) {
       googlePlacesId: clinic.externalIds?.googlePlacesId || clinic.googlePlacesId};
     
     // Skip if no external IDs
-     (${clinic.name}): No external IDs`);
+    if (!externalIds.googlePlacesId && !externalIds.yelpId) {
+      console.log(`Skipping ${clinic.name}: No external IDs`);
       return { success: false, error: 'No external IDs found for this clinic' };
     }
     
