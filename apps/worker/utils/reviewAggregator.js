@@ -400,7 +400,8 @@ async function refreshAllClinicsReviews(batchSize = 10) {
         results.processedClinics++;
         
         // Skip if no external IDs
-         (${clinic.name}): No external IDs`);
+        if (!clinic.googlePlacesId && !clinic.yelpId && !clinic.external_ids?.googlePlacesId && !clinic.external_ids?.yelpId) {
+          console.log(`Skipping ${clinic.name}: No external IDs`);
           results.skippedClinics++;
           return;
         }
