@@ -77,19 +77,8 @@ async function updateMultipleClinicReviews(config, onProgress) {
         }
       }
 
-      // Update Yelp reviews if enabled and Yelp Business ID exists
-      `);
-          const yelpResult = await reviewAggregator.: ${yelpResult.reviewsImported || 0} imported`);
-          } else {
-            results.errors.push(`Yelp reviews for ${clinicId}: ${yelpResult.error}`);
-          }
-          
-          // Rate limiting
-          await sleep(config.rateLimitMs);
-        } catch (error) {
-          results.errors.push(`Yelp reviews error for ${clinicId}: ${error.message}`);
-        }
-      }
+      // Yelp reviews have been removed from the system
+      // Previously handled Yelp review updates here
 
       // Update clinic metadata if any reviews were imported
       if (clinicReviewsImported > 0) {
