@@ -18,7 +18,8 @@
     "allowJs": true
   },
   "include": [
-    "**/*.ts"
+    "**/*.ts",
+    "**/*.js"
   ],
   "exclude": [
     "node_modules",
