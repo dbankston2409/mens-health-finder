@@ -337,10 +337,13 @@ export class DiscoveryOrchestrator {
   }
 
   private async importClinics(clinics: Clinic[]): Promise<number> {
+    console.log(`Starting import of ${clinics.length} clinics`);
     let importedCount = 0;
 
     for (const clinic of clinics) {
       try {
+        console.log(`Importing clinic: ${clinic.name} at ${clinic.address}`);
+        
         // Check for duplicates using address matching
         const existingClinics = await getDocs(
           query(
@@ -362,7 +365,9 @@ export class DiscoveryOrchestrator {
             discoveryDate: new Date()
           };
 
-          await addDoc(collection(db, 'clinics'), clinicData);
+          console.log(`Saving clinic to Firestore:`, clinicData);
+          const docRef = await addDoc(collection(db, 'clinics'), clinicData);
+          console.log(`Clinic saved with ID: ${docRef.id}`);
           importedCount++;
         } else {
           console.log(`Duplicate clinic found for ${clinic.name} at ${clinic.address}`);
@@ -373,6 +378,7 @@ export class DiscoveryOrchestrator {
       }
     }
 
+    console.log(`Import complete. Imported ${importedCount} out of ${clinics.length} clinics`);
     return importedCount;
   }
 
