@@ -106,7 +106,7 @@ const SearchVisibilityPanel: React.FC<SearchVisibilityPanelProps> = ({ data, loa
                 Total Search Impressions
               </div>
               <div className="text-2xl font-semibold text-white">
-                {data.totalSearchImpressions.toLocaleString()}
+                {(data.totalSearchImpressions || 0).toLocaleString()}
               </div>
             </div>
             
@@ -116,7 +116,7 @@ const SearchVisibilityPanel: React.FC<SearchVisibilityPanelProps> = ({ data, loa
                 <span>Click-Through Rate</span>
               </div>
               <div className="text-2xl font-semibold text-white">
-                {(data.averageClicksPerSearch * 100).toFixed(1)}%
+                {((data.averageClicksPerSearch || 0) * 100).toFixed(1)}%
               </div>
             </div>
             
