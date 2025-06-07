@@ -365,6 +365,13 @@ export class DiscoveryOrchestrator {
             discoveryDate: new Date()
           };
 
+          // Remove undefined values which Firestore doesn't accept
+          Object.keys(clinicData).forEach(key => {
+            if (clinicData[key] === undefined) {
+              delete clinicData[key];
+            }
+          });
+
           console.log(`Saving clinic to Firestore:`, clinicData);
           const docRef = await addDoc(collection(db, 'clinics'), clinicData);
           console.log(`Clinic saved with ID: ${docRef.id}`);
