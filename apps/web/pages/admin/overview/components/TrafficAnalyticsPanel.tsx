@@ -147,7 +147,7 @@ const TrafficAnalyticsPanel: React.FC<TrafficAnalyticsPanelProps> = ({ data, loa
                 <span>Total Clicks (30d)</span>
               </div>
               <div className="text-2xl font-semibold text-white">
-                {data.totalClicksThisMonth.toLocaleString()}
+                {(data.totalClicksThisMonth || 0).toLocaleString()}
               </div>
             </div>
             
@@ -155,7 +155,7 @@ const TrafficAnalyticsPanel: React.FC<TrafficAnalyticsPanelProps> = ({ data, loa
               <div className="bg-gray-800 rounded-lg p-4">
                 <div className="text-sm text-gray-300 mb-1">Bounce Rate</div>
                 <div className="text-2xl font-semibold text-white">
-                  {data.bounceRateEstimate.toFixed(1)}%
+                  {(data.bounceRateEstimate || 0).toFixed(1)}%
                 </div>
               </div>
             )}
@@ -167,7 +167,7 @@ const TrafficAnalyticsPanel: React.FC<TrafficAnalyticsPanelProps> = ({ data, loa
                   <span>Avg. Clicks/Day</span>
                 </div>
                 <div className="text-2xl font-semibold text-white">
-                  {data.avgClicksPerDay.toFixed(1)}
+                  {(data.avgClicksPerDay || 0).toFixed(1)}
                 </div>
               </div>
             )}
