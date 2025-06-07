@@ -445,7 +445,20 @@ const DiscoveryControlPanel: React.FC = () => {
           </div>
 
           {/* Actions */}
-          <div className="flex space-x-2">
+          {/* Show errors if any */}
+          {currentSession.errors && currentSession.errors.length > 0 && (
+            <div className="mt-4 p-4 bg-red-900/20 border border-red-800 rounded">
+              <h4 className="text-red-400 font-semibold mb-2">Errors ({currentSession.errors.length}):</h4>
+              <ul className="text-sm text-red-300 space-y-1">
+                {currentSession.errors.map((error, index) => (
+                  <li key={index} className="break-words">• {error}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex space-x-2 mt-4">
             {(currentSession.status === 'paused' || currentSession.status === 'stopped') && (
               <button
                 onClick={() => resumeSession(currentSession.id)}
