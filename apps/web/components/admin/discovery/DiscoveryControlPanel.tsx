@@ -410,6 +410,62 @@ const DiscoveryControlPanel: React.FC = () => {
         )}
       </div>
 
+      {/* Selected Session Details */}
+      {currentSession && !progress && (
+        <div className="bg-[#0A0A0A] p-6 rounded-lg border border-[#222222]">
+          <div className="flex justify-between items-start mb-4">
+            <h3 className="text-lg font-semibold text-white">Session Details</h3>
+            <button
+              onClick={() => setCurrentSession(null)}
+              className="text-gray-400 hover:text-white"
+            >
+              ✕
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+            <div>
+              <div className="text-gray-400 text-sm">Status</div>
+              <div className="font-semibold text-white">{currentSession.status}</div>
+            </div>
+            <div>
+              <div className="text-gray-400 text-sm">Clinics Found</div>
+              <div className="font-semibold text-white">{currentSession.clinicsFound}</div>
+            </div>
+            <div>
+              <div className="text-gray-400 text-sm">Clinics Imported</div>
+              <div className="font-semibold text-white">{currentSession.clinicsImported}</div>
+            </div>
+            <div>
+              <div className="text-gray-400 text-sm">Progress</div>
+              <div className="font-semibold text-white">
+                {currentSession.grids?.filter(g => g.status === 'completed').length || 0}/{currentSession.totalGrids} grids
+              </div>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex space-x-2">
+            {(currentSession.status === 'paused' || currentSession.status === 'stopped') && (
+              <button
+                onClick={() => resumeSession(currentSession.id)}
+                className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark transition-colors"
+              >
+                Resume Discovery
+              </button>
+            )}
+            {currentSession.clinicsFound > 0 && (
+              <button
+                onClick={() => window.location.href = '/admin'}
+                className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition-colors"
+              >
+                View Imported Clinics
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Review Update Panel */}
       {(currentSession || progress) && (
         <ReviewUpdatePanel 
